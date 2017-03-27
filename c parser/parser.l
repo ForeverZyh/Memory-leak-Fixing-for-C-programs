@@ -22,14 +22,24 @@ ES  (\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
 WS  [ \t\v\n\f]
 
 %{
+#include "myheader.h"
+#define YYSTYPE myYYSTYPE
 #include <stdio.h>
+#include <string.h>
 #include "y.tab.h"
+char *sym_table[10000];
+int cnt;
 
 extern void yyerror(const char *);  /* prints grammar violation message */
 
-extern int sym_type(const char *);  /* returns type from symbol table */
+static int sym_type(const char * s)  /* returns type from symbol table */
+{
+	for(int i=0;i<cnt;i++)
+		if (strcmp(s,sym_table[i])==0) return TYPEDEF_NAME;
+	return IDENTIFIER;
+}
 
-#define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
+//#define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
 
 static void comment(void);
 static int check_type(void);
@@ -191,12 +201,13 @@ void count()
 			column += 8 - (column % 8);
 		else
 			column++;
-
 	ECHO;
 }
 
 static int check_type(void)
 {
+	yylval.str=strdup(yytext);
+	//printf("\n=====%s=====\n",yylval.str);
     switch (sym_type(yytext))
     {
     case TYPEDEF_NAME:                /* previously defined */

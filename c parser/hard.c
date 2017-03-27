@@ -1,20 +1,22 @@
+typedef unsigned int UI;
+typedef unsigned int size_t;
 static void *memheaplo;
 
-static inline unsigned int *pointer(unsigned int *node) { return (unsigned int *) (memheaplo + (*node)); }
+static inline UI *pointer(UI *node) { return (UI *) (memheaplo + (*node)); }
 
-static inline unsigned int *pre(unsigned int *node) { return pointer(node + 1); }
+static inline UI *pre(UI *node) { return pointer(node + 1); }
 
-static inline unsigned int *suc(unsigned int *node) { return pointer(node + 2); }
+static inline UI *suc(UI *node) { return pointer(node + 2); }
 
-static inline unsigned int *fa(unsigned int *node) { return pointer(node + 1); }
+static inline UI *fa(UI *node) { return pointer(node + 1); }
 
-static inline unsigned int *lc(unsigned int *node) { return pointer(node + 2); }
+static inline UI *lc(UI *node) { return pointer(node + 2); }
 
-static inline unsigned int *rc(unsigned int *node) { return pointer(node + 3); }
+static inline UI *rc(UI *node) { return pointer(node + 3); }
 
-static inline int isson(unsigned int *fa, unsigned int *son) { return rc(fa) == son; }
+static inline int isson(UI *fa, UI *son) { return rc(fa) == son; }
 
-static unsigned int *list_head, *list_tail, *BST_root, *begin;
+static UI *list_head, *list_tail, *BST_root, *begin;
 static int debug = 1, if_exit = 1;
 
 /*
@@ -26,19 +28,19 @@ static int in_heap(const void *p) {
 }
 
 
-static inline unsigned int getsize(unsigned int *p)//get pure size
+static inline UI getsize(UI *p)//get pure size
 {
     return (*p) >> 2 << 2;
 }
 
-static inline void set_pointer(unsigned int *p, unsigned int *q)
+static inline void set_pointer(UI *p, UI *q)
 //set pointer like(pre,suc,fa,l_son,r_son) to be the offset by mem_heap_hi()
 {
     *p = ((void *) q) - memheaplo;
 }
 
 
-static void init_node_list(unsigned int *p, unsigned int size, unsigned int *pre, unsigned int *suc)
+static void init_node_list(UI *p, UI size, UI *pre, UI *suc)
 //initialize the node in list
 {
     *p = size;
@@ -47,7 +49,7 @@ static void init_node_list(unsigned int *p, unsigned int size, unsigned int *pre
     *(p + size / 4 - 1) = size;
 }
 
-static void init_node_BST(unsigned int *p, unsigned int size, unsigned int *fa)
+static void init_node_BST(UI *p, UI size, UI *fa)
 //initialize the node in BST
 {
     *p = size;
@@ -71,7 +73,7 @@ int mm_init(void) {
     return 0;
 }
 
-static void insert_BST(unsigned int *r, unsigned int *node, unsigned int size)
+static void insert_BST(UI *r, UI *node, UI size)
 //insert node into BST
 {
     if (r == NULL)    //BST has no root
@@ -81,7 +83,7 @@ static void insert_BST(unsigned int *r, unsigned int *node, unsigned int size)
         return;
     }
     //printf("in %lld\n",(long long)r);
-    unsigned int rsize = getsize(r);
+    UI rsize = getsize(r);
     int t = 2;
     if (rsize == size) t += rand() & 1;
     else if (rsize < size) t++;
@@ -92,19 +94,19 @@ static void insert_BST(unsigned int *r, unsigned int *node, unsigned int size)
     }
 }
 
-static void delete_from_list(unsigned int *p)
+static void delete_from_list(UI *p)
 //delete a free block from list
 {
-    unsigned int Pre = *(p + 1), Suc = *(p + 2);
+    UI Pre = *(p + 1), Suc = *(p + 2);
     *(pre(p) + 2) = Suc;
     *(suc(p) + 1) = Pre;
 }
 
-static unsigned int *find_in_list(unsigned int size)
+static UI *find_in_list(UI size)
 //find a 'size' block in list
 {
     if (suc(list_head) == list_tail) return NULL;
-    unsigned int *r = suc(list_head);
+    UI *r = suc(list_head);
     if (getsize(r) >= size) {
         delete_from_list(r);
         return r;
@@ -117,49 +119,49 @@ static unsigned int *find_in_list(unsigned int size)
     return NULL;
 }
 
-static void delete_node(unsigned int *r) {
-    unsigned int *FA = fa(r), *LC = lc(r);
+static void delete_node(UI *r) {
+    UI *FA = fa(r), *LC = lc(r);
     *(FA + isson(FA, r) + 2) = *(r + 2);
     if (*(r + 2)) *(LC + 1) = *(r + 1);
 }
 
-static void delete_from_BST(unsigned int *r)
+static void delete_from_BST(UI *r)
 //delete r from BST
 {
-    unsigned int *replace = NULL;
+    UI *replace = NULL;
     if (*(r + 2) && *(r + 3)) {
-        unsigned int *t;
+        UI *t;
         for (replace = lc(r);; replace = t) {
             t = rc(replace);
             if (t == memheaplo) break;
         }
         delete_node(replace);
         *(replace + 1) = *(r + 1);
-        unsigned int *FA = fa(r);
+        UI *FA = fa(r);
         set_pointer((FA + isson(FA, r) + 2), replace);
         *(replace + 2) = *(r + 2);
         if (*(r + 2)) set_pointer(lc(replace) + 1, replace);
         *(replace + 3) = *(r + 3);
         if (*(r + 3)) set_pointer(rc(replace) + 1, replace);
     } else if (*(r + 2)) {
-        unsigned int *FA = fa(r);
+        UI *FA = fa(r);
         if (FA != memheaplo) *(FA + isson(FA, r) + 2) = *(r + 2);
-        unsigned int *C = lc(r);
+        UI *C = lc(r);
         *(C + 1) = *(r + 1);
         replace = C;
     } else if (*(r + 3)) {
-        unsigned int *FA = fa(r);
+        UI *FA = fa(r);
         if (FA != memheaplo) *(FA + isson(FA, r) + 2) = *(r + 3);
-        unsigned int *C = rc(r);
+        UI *C = rc(r);
         *(C + 1) = *(r + 1);
         replace = C;
     } else {
-        unsigned int *FA = fa(r);
+        UI *FA = fa(r);
         if (FA != memheaplo)
             *(FA + isson(FA, r) + 2) = 0;
     }
     //printf("delete %lld replace with %lld\n",(long long)r,(long long)replace);
-    /*unsigned int*FA=fa(r);
+    /*UI*FA=fa(r);
     if (FA!=memheaplo)
         set_pointer(FA+isson(FA,r)+2,replace);
     if (replace)
@@ -174,12 +176,12 @@ static void delete_from_BST(unsigned int *r)
     //mm_checkheap(0);
 }
 
-static unsigned int *find_in_BST(unsigned int *r, unsigned int size)
+static UI *find_in_BST(UI *r, UI size)
 //find a 'size' block in BST
 {
     if (r == NULL) return NULL;
     if (r == memheaplo) return NULL;
-    unsigned int *ans = NULL;
+    UI *ans = NULL;
     if (size > *r) return find_in_BST(rc(r), size);
     if (size < *r) ans = find_in_BST(lc(r), size);
     if (ans == NULL) {
@@ -189,53 +191,53 @@ static unsigned int *find_in_BST(unsigned int *r, unsigned int size)
     return ans;
 }
 
-static void insert_list(unsigned int *r, unsigned int size)
+static void insert_list(UI *r, UI size)
 //insert r into list
 {
     if (size == 16) {
-        unsigned int *Suc = suc(list_head);
+        UI *Suc = suc(list_head);
         init_node_list(r, *r, list_head, Suc);
         set_pointer(list_head + 2, r);
         set_pointer(Suc + 1, r);
     } else {
-        unsigned int *Pre = pre(list_tail);
+        UI *Pre = pre(list_tail);
         init_node_list(r, *r, Pre, list_tail);
         set_pointer(Pre + 2, r);
         set_pointer(list_tail + 1, r);
     }
 }
 
-static unsigned int *split(unsigned int *r, unsigned int size)
+static UI *split(UI *r, UI size)
 //split r into |----size--X-|----remain----|
 {
-    unsigned int remain = getsize(r) - size;
+    UI remain = getsize(r) - size;
     *r = size | ((*r) & 3);
-    unsigned int *ans = r + (size >> 2);
+    UI *ans = r + (size >> 2);
     *ans = remain;
     return ans;
 }
 
-static inline void delete_from_xxx(unsigned int *r)
+static inline void delete_from_xxx(UI *r)
 //delete r from xxx
 {
     if (getsize(r) <= MAX_IN_LIST) delete_from_list(r);
     else delete_from_BST(r);
 }
 
-static inline void insert_xxx(unsigned int *r) {
-    unsigned int tmp = getsize(r);
+static inline void insert_xxx(UI *r) {
+    UI tmp = getsize(r);
     if (tmp <= MAX_IN_LIST) insert_list(r, tmp);
     else insert_BST(BST_root, r, tmp);
 }
 
-static void *free_to_used(unsigned int *r, unsigned int size)
+static void *free_to_used(UI *r, UI size)
 //set r to used. remember to left the status which pre block is or isn't free untouched.
 //|----pre----|----free to used----|----split----|----suc----|
 {
-    unsigned int free_size = getsize(r);
-    unsigned int *next = r + (free_size >> 2);
-    unsigned int *sp = NULL;
-    unsigned int remain = free_size - size;
+    UI free_size = getsize(r);
+    UI *next = r + (free_size >> 2);
+    UI *sp = NULL;
+    UI remain = free_size - size;
     if (remain > MAX_IN_LIST) {
         sp = split(r, size);
         insert_BST(BST_root, sp, remain);
@@ -251,16 +253,16 @@ static void *free_to_used(unsigned int *r, unsigned int size)
     return (void *) r;
 }
 
-static void SBRK(unsigned int size)
+static void SBRK(UI size)
 //mem_sbrk a PAGE_SIZE and insert it to BST
 {
     size = max(size, PAGE_SIZE);
-    unsigned int *p = mem_sbrk(size);
+    UI *p = mem_sbrk(size);
     *p = size;
     *p |= (*begin) & 2;    //begin restore the statu that the last block is or isn't used
     *begin &= ~2;
     if (((*p) & 2) == 0) {
-        unsigned int *prev = p - (*(p - 1)) / 4;
+        UI *prev = p - (*(p - 1)) / 4;
         if (prev != list_tail) {
             delete_from_xxx(prev);
             *prev += *p;
@@ -273,8 +275,8 @@ static void SBRK(unsigned int size)
 /*
  * malloc
  */
-void *malloc(unsigned int size) {
-    unsigned int *ans = NULL;
+void *malloc(size_t size) {
+    UI *ans = NULL;
     size = max(16, ALIGN(size + 4));
     if (size <= MAX_IN_LIST) ans = find_in_list(size);
     if (ans == NULL) ans = find_in_BST(BST_root, size);
@@ -292,16 +294,16 @@ void *malloc(unsigned int size) {
     return ret;
 }
 
-static void used_to_free(unsigned int *r)
+static void used_to_free(UI *r)
 //set r to free
 {
     (*r)--;
-    unsigned int size = (*r) >> 2;
-    unsigned int *next = r + size;
+    UI size = (*r) >> 2;
+    UI *next = r + size;
     if (in_heap(next)) {
         if (is_used(next)) *next &= ~2u;
         else {
-            unsigned int tmp = getsize(next);
+            UI tmp = getsize(next);
             delete_from_xxx(next);
             *r += tmp;
         }
@@ -309,7 +311,7 @@ static void used_to_free(unsigned int *r)
     //printf("alive!\n");
     if (((*r) & 2) == 0) {
         //printf("size:%lld\n",(long long)*(r-1));
-        unsigned int *prev = r - (*(r - 1)) / 4;
+        UI *prev = r - (*(r - 1)) / 4;
         if (prev != list_tail) {
             //printf("size:%lld\n",(long long)r);
             delete_from_xxx(prev);
@@ -328,13 +330,13 @@ static void used_to_free(unsigned int *r)
  */
 void free(void *ptr) {
     if (ptr) {
-        unsigned int *p = ptr - 4;
+        UI *p = ptr - 4;
         used_to_free(p);
         //mm_checkheap(329);
     }
 }
 
-static void set_end(unsigned int *pre, int flag) {
+static void set_end(UI *pre, int flag) {
     pre += getsize(pre) / 4;
     if (!in_heap(pre)) pre = begin;
     if (flag) *pre |= 2;
@@ -344,9 +346,9 @@ static void set_end(unsigned int *pre, int flag) {
 /*
  * realloc - you may want to look at mm-naive.c
  */
-void *realloc(void *Oldptr, unsigned int size) {
-    unsigned int *oldptr = Oldptr;
-    unsigned int presize = size;
+void *realloc(void *Oldptr, size_t size) {
+    UI *oldptr = Oldptr;
+    UI presize = size;
     if (oldptr == NULL) return malloc(size);    //if oldptr is NULL, call malloc
     else if (size == 0) free(oldptr);    //if size is zero, call free
     else    //otherwise
@@ -356,19 +358,19 @@ void *realloc(void *Oldptr, unsigned int size) {
         long long dlt = (long long) size - getsize(oldptr);
         if (dlt > 0)    //if the newsize is bigger than before
         {
-            unsigned int *next = oldptr + getsize(oldptr) / 4;
+            UI *next = oldptr + getsize(oldptr) / 4;
             if (in_heap(next) && !is_used(next) && (long long) getsize(next) >= dlt) {
                 delete_from_xxx(next);
                 //mm_checkheap(0);
                 long long remain = getsize(next) - dlt;
                 //|----used----|----new_used----|----free----|
                 if (remain > MAX_IN_LIST) {
-                    unsigned int *sp = split(next, dlt);
+                    UI *sp = split(next, dlt);
                     *sp |= 2;
                     insert_BST(BST_root, sp, remain);
                     *oldptr += dlt;
                 } else if (remain >= MIN_IN_LIST) {
-                    unsigned int *sp = split(next, dlt);
+                    UI *sp = split(next, dlt);
                     *sp |= 2;
                     insert_list(sp, remain);
                     *oldptr += dlt;
@@ -379,10 +381,10 @@ void *realloc(void *Oldptr, unsigned int size) {
                 //mm_checkheap(369);
                 return oldptr + 1;
             } else {
-                unsigned int *new = malloc(presize);
+                UI *new = malloc(presize);
                 new--;
-                unsigned int len = getsize(new) / 4;
-                for (unsigned int i = 1; i < len; i++) *(new + i) = *(oldptr + i);
+                UI len = getsize(new) / 4;
+                for (UI i = 1; i < len; i++) *(new + i) = *(oldptr + i);
                 free(oldptr + 1);
                 //mm_checkheap(378);
                 return new + 1;
@@ -391,23 +393,23 @@ void *realloc(void *Oldptr, unsigned int size) {
         {
             //printf("dlt: %lld\n",-dlt);
             if (-dlt > MAX_IN_LIST) {
-                unsigned int *sp = split(oldptr, getsize(oldptr) + dlt);
+                UI *sp = split(oldptr, getsize(oldptr) + dlt);
                 insert_BST(BST_root, sp, -dlt);
                 *sp |= 2;
                 set_end(sp, 0);
 
-                /*unsigned int ss=(*sp)>>2;
-                unsigned int*next=sp+ss;
+                /*UI ss=(*sp)>>2;
+                UI*next=sp+ss;
                 if (in_heap(next)&&!is_used(next))
                 {
-                    unsigned int tmp=getsize(next);
+                    UI tmp=getsize(next);
                     delete_from_xxx(next);
                     *sp+=tmp;
                 }*/
                 //mm_checkheap(0);
                 //*oldptr+=dlt;
             } else if (-dlt >= MIN_IN_LIST) {
-                unsigned int *sp = split(oldptr, getsize(oldptr) + dlt);
+                UI *sp = split(oldptr, getsize(oldptr) + dlt);
                 insert_list(sp, -dlt);
                 *sp |= 2;
                 set_end(sp, 0);
@@ -425,11 +427,11 @@ void *realloc(void *Oldptr, unsigned int size) {
  * This function is not tested by mdriver, but it is
  * needed to run the traces.
  */
-void *calloc(unsigned int nmemb, unsigned int size) {
-    unsigned int *ans = malloc(nmemb * size);
+void *calloc(size_t nmemb, size_t size) {
+    UI *ans = malloc(nmemb * size);
     ans--;
-    unsigned int len = getsize(ans) / 4;
-    for (unsigned int i = 1; i < len; i++) *(ans + i) = 0;
+    UI len = getsize(ans) / 4;
+    for (UI i = 1; i < len; i++) *(ans + i) = 0;
     //mm_checkheap(416);
     return ans + 1;
 }
@@ -440,7 +442,7 @@ void *calloc(unsigned int nmemb, unsigned int size) {
  * May be useful for debugging.
  */
 static int aligned(const void *p) {
-    return (unsigned int) ALIGN(p) == (unsigned int) p;
+    return (size_t) ALIGN(p) == (size_t) p;
 }
 
 /*

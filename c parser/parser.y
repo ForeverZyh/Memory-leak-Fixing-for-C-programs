@@ -1,3 +1,22 @@
+%{
+#include <stdio.h>
+#include "myheader.h"
+#define YYSTYPE myYYSTYPE
+extern char yytext[];
+extern int column;
+extern char *sym_table[10000];
+extern int cnt;
+
+yyerror(s)
+char *s;
+{
+	fflush(stdout);
+	printf("\n%*s\n%*s\n", column, "^", column, s);
+}
+
+%}
+
+
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
 %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token	AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -19,7 +38,7 @@
 %%
 
 primary_expression
-	: IDENTIFIER
+	: IDENTIFIER {printf("\nIDENTIFIER: %s\n",(YYSTYPE)$1.str);}
 	| constant
 	| string
 	| '(' expression ')'
@@ -191,12 +210,26 @@ constant_expression
 declaration
 	: declaration_specifiers ';'
 	| declaration_specifiers init_declarator_list ';'
+	{
+		if ($1.tag==1)
+		{
+			sym_table[cnt++]=strdup($2.str);
+		}
+	}
 	| static_assert_declaration
 	;
 
 declaration_specifiers
 	: storage_class_specifier declaration_specifiers
+	{
+		if ($1.tag==1)	/* if this is a typedef */
+			$$.tag=1;
+	}
 	| storage_class_specifier
+	{
+		if ($1.tag==1)	/* if this is a typedef */
+			$$.tag=1;
+	}
 	| type_specifier declaration_specifiers
 	| type_specifier
 	| type_qualifier declaration_specifiers
@@ -209,16 +242,25 @@ declaration_specifiers
 
 init_declarator_list
 	: init_declarator
+	{
+		$$.str=strdup($1.str);
+	}
 	| init_declarator_list ',' init_declarator
 	;
 
 init_declarator
 	: declarator '=' initializer
 	| declarator
+	{
+		$$.str=strdup($1.str);
+	}
 	;
 
 storage_class_specifier
 	: TYPEDEF	/* identifiers must be flagged as TYPEDEF_NAME */
+	{
+		$$.tag=1;
+	}
 	| EXTERN
 	| STATIC
 	| THREAD_LOCAL
@@ -327,10 +369,16 @@ alignment_specifier
 declarator
 	: pointer direct_declarator
 	| direct_declarator
+	{
+		$$.str=strdup($1.str);
+	}
 	;
 
 direct_declarator
 	: IDENTIFIER
+	{
+		$$.str=strdup($1.str);
+	}
 	| '(' declarator ')'
 	| direct_declarator '[' ']'
 	| direct_declarator '[' '*' ']'
@@ -525,15 +573,4 @@ declaration_list
 	;
 
 %%
-#include <stdio.h>
-
-extern char yytext[];
-extern int column;
-
-yyerror(s)
-char *s;
-{
-	fflush(stdout);
-	printf("\n%*s\n%*s\n", column, "^", column, s);
-}
 

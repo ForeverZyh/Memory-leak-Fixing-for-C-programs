@@ -749,19 +749,29 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "parser.l"
 #line 25 "parser.l"
+#include "myheader.h"
+#define YYSTYPE myYYSTYPE
 #include <stdio.h>
+#include <string.h>
 #include "y.tab.h"
+char *sym_table[10000];
+int cnt;
 
 extern void yyerror(const char *);  /* prints grammar violation message */
 
-extern int sym_type(const char *);  /* returns type from symbol table */
+static int sym_type(const char * s)  /* returns type from symbol table */
+{
+	for(int i=0;i<cnt;i++)
+		if (strcmp(s,sym_table[i])==0) return TYPEDEF_NAME;
+	return IDENTIFIER;
+}
 
-#define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
+//#define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
 
 static void comment(void);
 static int check_type(void);
 void count();
-#line 765 "lex.yy.c"
+#line 775 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -979,9 +989,9 @@ YY_DECL
 		}
 
 	{
-#line 39 "parser.l"
+#line 49 "parser.l"
 
-#line 985 "lex.yy.c"
+#line 995 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1040,547 +1050,547 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 40 "parser.l"
+#line 50 "parser.l"
 { count();comment(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 41 "parser.l"
+#line 51 "parser.l"
 { count();/* consume //-comment */ }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 43 "parser.l"
+#line 53 "parser.l"
 { count(); return(AUTO); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 44 "parser.l"
+#line 54 "parser.l"
 { count(); return(BREAK); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "parser.l"
+#line 55 "parser.l"
 { count(); return(CASE); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "parser.l"
+#line 56 "parser.l"
 { count(); return(CHAR); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 47 "parser.l"
+#line 57 "parser.l"
 { count(); return(CONST); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 48 "parser.l"
+#line 58 "parser.l"
 { count(); return(CONTINUE); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 49 "parser.l"
+#line 59 "parser.l"
 { count(); return(DEFAULT); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 50 "parser.l"
+#line 60 "parser.l"
 { count(); return(DO); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 51 "parser.l"
+#line 61 "parser.l"
 { count(); return(DOUBLE); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 52 "parser.l"
+#line 62 "parser.l"
 { count(); return(ELSE); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 53 "parser.l"
+#line 63 "parser.l"
 { count(); return(ENUM); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 54 "parser.l"
+#line 64 "parser.l"
 { count(); return(EXTERN); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 55 "parser.l"
+#line 65 "parser.l"
 { count(); return(FLOAT); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 56 "parser.l"
+#line 66 "parser.l"
 { count(); return(FOR); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 57 "parser.l"
+#line 67 "parser.l"
 { count(); return(GOTO); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 58 "parser.l"
+#line 68 "parser.l"
 { count(); return(IF); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 59 "parser.l"
+#line 69 "parser.l"
 { count(); return(INLINE); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 60 "parser.l"
+#line 70 "parser.l"
 { count(); return(INT); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 61 "parser.l"
+#line 71 "parser.l"
 { count(); return(LONG); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 62 "parser.l"
+#line 72 "parser.l"
 { count(); return(REGISTER); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 63 "parser.l"
+#line 73 "parser.l"
 { count(); return(RESTRICT); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 64 "parser.l"
+#line 74 "parser.l"
 { count(); return(RETURN); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 65 "parser.l"
+#line 75 "parser.l"
 { count(); return(SHORT); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 66 "parser.l"
+#line 76 "parser.l"
 { count(); return(SIGNED); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 67 "parser.l"
+#line 77 "parser.l"
 { count(); return(SIZEOF); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 68 "parser.l"
+#line 78 "parser.l"
 { count(); return(STATIC); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 69 "parser.l"
+#line 79 "parser.l"
 { count(); return(STRUCT); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 70 "parser.l"
+#line 80 "parser.l"
 { count(); return(SWITCH); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 71 "parser.l"
+#line 81 "parser.l"
 { count(); return(TYPEDEF); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 72 "parser.l"
+#line 82 "parser.l"
 { count(); return(UNION); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 73 "parser.l"
+#line 83 "parser.l"
 { count(); return(UNSIGNED); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 74 "parser.l"
+#line 84 "parser.l"
 { count(); return(VOID); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 75 "parser.l"
+#line 85 "parser.l"
 { count(); return(VOLATILE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 76 "parser.l"
+#line 86 "parser.l"
 { count(); return(WHILE); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 77 "parser.l"
+#line 87 "parser.l"
 { count(); return ALIGNAS; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 78 "parser.l"
+#line 88 "parser.l"
 { count(); return ALIGNOF; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 79 "parser.l"
+#line 89 "parser.l"
 { count(); return ATOMIC; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 80 "parser.l"
+#line 90 "parser.l"
 { count(); return BOOL; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 81 "parser.l"
+#line 91 "parser.l"
 { count(); return COMPLEX; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 82 "parser.l"
+#line 92 "parser.l"
 { count(); return GENERIC; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 83 "parser.l"
+#line 93 "parser.l"
 { count(); return IMAGINARY; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 84 "parser.l"
+#line 94 "parser.l"
 { count(); return NORETURN; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 85 "parser.l"
+#line 95 "parser.l"
 { count(); return STATIC_ASSERT; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 86 "parser.l"
+#line 96 "parser.l"
 { count(); return THREAD_LOCAL; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 87 "parser.l"
+#line 97 "parser.l"
 { count(); return FUNC_NAME; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 89 "parser.l"
+#line 99 "parser.l"
 { count(); return check_type(); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 91 "parser.l"
+#line 101 "parser.l"
 { count(); return I_CONSTANT; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 92 "parser.l"
+#line 102 "parser.l"
 { count(); return I_CONSTANT; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 93 "parser.l"
+#line 103 "parser.l"
 { count(); return I_CONSTANT; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 94 "parser.l"
+#line 104 "parser.l"
 { count(); return I_CONSTANT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 96 "parser.l"
+#line 106 "parser.l"
 { count(); return F_CONSTANT; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 97 "parser.l"
+#line 107 "parser.l"
 { count(); return F_CONSTANT; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 98 "parser.l"
+#line 108 "parser.l"
 { count(); return F_CONSTANT; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 99 "parser.l"
+#line 109 "parser.l"
 { count(); return F_CONSTANT; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 100 "parser.l"
+#line 110 "parser.l"
 { count(); return F_CONSTANT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 101 "parser.l"
+#line 111 "parser.l"
 { count(); return F_CONSTANT; }
 	YY_BREAK
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
-#line 103 "parser.l"
+#line 113 "parser.l"
 { count(); return STRING_LITERAL; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 105 "parser.l"
+#line 115 "parser.l"
 { count(); return ELLIPSIS; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 106 "parser.l"
+#line 116 "parser.l"
 { count(); return RIGHT_ASSIGN; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 107 "parser.l"
+#line 117 "parser.l"
 { count(); return LEFT_ASSIGN; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 108 "parser.l"
+#line 118 "parser.l"
 { count(); return ADD_ASSIGN; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 109 "parser.l"
+#line 119 "parser.l"
 { count(); return SUB_ASSIGN; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 110 "parser.l"
+#line 120 "parser.l"
 { count(); return MUL_ASSIGN; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 111 "parser.l"
+#line 121 "parser.l"
 { count(); return DIV_ASSIGN; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 112 "parser.l"
+#line 122 "parser.l"
 { count(); return MOD_ASSIGN; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 113 "parser.l"
+#line 123 "parser.l"
 { count(); return AND_ASSIGN; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 114 "parser.l"
+#line 124 "parser.l"
 { count(); return XOR_ASSIGN; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 115 "parser.l"
+#line 125 "parser.l"
 { count(); return OR_ASSIGN; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 116 "parser.l"
+#line 126 "parser.l"
 { count(); return RIGHT_OP; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 117 "parser.l"
+#line 127 "parser.l"
 { count(); return LEFT_OP; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 118 "parser.l"
+#line 128 "parser.l"
 { count(); return INC_OP; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 119 "parser.l"
+#line 129 "parser.l"
 { count(); return DEC_OP; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 120 "parser.l"
+#line 130 "parser.l"
 { count(); return PTR_OP; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 121 "parser.l"
+#line 131 "parser.l"
 { count(); return AND_OP; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 122 "parser.l"
+#line 132 "parser.l"
 { count(); return OR_OP; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 123 "parser.l"
+#line 133 "parser.l"
 { count(); return LE_OP; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 124 "parser.l"
+#line 134 "parser.l"
 { count(); return GE_OP; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 125 "parser.l"
+#line 135 "parser.l"
 { count(); return EQ_OP; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 126 "parser.l"
+#line 136 "parser.l"
 { count(); return NE_OP; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 127 "parser.l"
+#line 137 "parser.l"
 { count(); return ';'; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 128 "parser.l"
+#line 138 "parser.l"
 { count(); return '{'; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 129 "parser.l"
+#line 139 "parser.l"
 { count(); return '}'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 130 "parser.l"
+#line 140 "parser.l"
 { count(); return ','; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 131 "parser.l"
+#line 141 "parser.l"
 { count(); return ':'; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 132 "parser.l"
+#line 142 "parser.l"
 { count(); return '='; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 133 "parser.l"
+#line 143 "parser.l"
 { count(); return '('; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 134 "parser.l"
+#line 144 "parser.l"
 { count(); return ')'; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 135 "parser.l"
+#line 145 "parser.l"
 { count(); return '['; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 136 "parser.l"
+#line 146 "parser.l"
 { count(); return ']'; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 137 "parser.l"
+#line 147 "parser.l"
 { count(); return '.'; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 138 "parser.l"
+#line 148 "parser.l"
 { count(); return '&'; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 139 "parser.l"
+#line 149 "parser.l"
 { count(); return '!'; }
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 140 "parser.l"
+#line 150 "parser.l"
 { count(); return '~'; }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 141 "parser.l"
+#line 151 "parser.l"
 { count(); return '-'; }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 142 "parser.l"
+#line 152 "parser.l"
 { count(); return '+'; }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 143 "parser.l"
+#line 153 "parser.l"
 { count(); return '*'; }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 144 "parser.l"
+#line 154 "parser.l"
 { count(); return '/'; }
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 145 "parser.l"
+#line 155 "parser.l"
 { count(); return '%'; }
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 146 "parser.l"
+#line 156 "parser.l"
 { count(); return '<'; }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 147 "parser.l"
+#line 157 "parser.l"
 { count(); return '>'; }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 148 "parser.l"
+#line 158 "parser.l"
 { count(); return '^'; }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 149 "parser.l"
+#line 159 "parser.l"
 { count(); return '|'; }
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 150 "parser.l"
+#line 160 "parser.l"
 { count(); return '?'; }
 	YY_BREAK
 case 106:
 /* rule 106 can match eol */
 YY_RULE_SETUP
-#line 152 "parser.l"
+#line 162 "parser.l"
 { count();/* whitespace separates tokens */ }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 153 "parser.l"
+#line 163 "parser.l"
 { count();/* discard bad characters */ }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 155 "parser.l"
+#line 165 "parser.l"
 ECHO;
 	YY_BREAK
-#line 1584 "lex.yy.c"
+#line 1594 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2581,7 +2591,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 155 "parser.l"
+#line 165 "parser.l"
 
 
 
@@ -2622,12 +2632,13 @@ void count()
 			column += 8 - (column % 8);
 		else
 			column++;
-
 	ECHO;
 }
 
 static int check_type(void)
 {
+	yylval.str=strdup(yytext);
+	//printf("\n=====%s=====\n",yylval.str);
     switch (sym_type(yytext))
     {
     case TYPEDEF_NAME:                /* previously defined */
