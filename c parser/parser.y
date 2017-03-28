@@ -1,19 +1,21 @@
 %{
-#include <stdio.h>
 #include "myheader.h"
 #define YYSTYPE myYYSTYPE
 extern char yytext[];
 extern int column;
 extern char *sym_table[10000];
 extern int cnt;
-
-yyerror(s)
-char *s;
+extern int yylex(void);
+extern "C"
+{
+	void yyerror(char *s);
+}
+void yyerror(char *s)
 {
 	fflush(stdout);
 	printf("\n%*s\n%*s\n", column, "^", column, s);
-}
 
+}
 %}
 
 
@@ -38,7 +40,7 @@ char *s;
 %%
 
 primary_expression
-	: IDENTIFIER {printf("\nIDENTIFIER: %s\n",(YYSTYPE)$1.str);}
+	: IDENTIFIER {$$.str=strdup($1.str);}
 	| constant
 	| string
 	| '(' expression ')'

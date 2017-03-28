@@ -24,13 +24,9 @@ WS  [ \t\v\n\f]
 %{
 #include "myheader.h"
 #define YYSTYPE myYYSTYPE
-#include <stdio.h>
-#include <string.h>
 #include "y.tab.h"
 char *sym_table[10000];
 int cnt;
-
-extern void yyerror(const char *);  /* prints grammar violation message */
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -164,6 +160,11 @@ void count();
 
 %%
 
+extern "C"
+{
+	extern void yyerror(const char *);  /* prints grammar violation message */
+}
+
 int yywrap(void)        /* called at end of input */
 {
     return 1;           /* terminate now */
@@ -173,10 +174,10 @@ static void comment(void)
 {
     int c;
 
-    while ((c = input()) != 0)
+    while ((c = yyinput()) != 0)
         if (c == '*')
         {
-            while ((c = input()) == '*')
+            while ((c = yyinput()) == '*')
                 ;
 
             if (c == '/')
