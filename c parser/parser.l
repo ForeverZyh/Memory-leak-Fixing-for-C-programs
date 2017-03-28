@@ -25,13 +25,26 @@ WS  [ \t\v\n\f]
 #include "myheader.h"
 #define YYSTYPE myYYSTYPE
 #include "y.tab.h"
-char *sym_table[10000];
+int sym_table[10000];
 int cnt;
+map<string,int> string_to_int;
+int total_string=0;
+vector<string> int_to_string;
+
+void stype::print_filter_tag(int Tag)
+{
+    for(int i=0;i<inside.size();i++)
+        if (inside[i].tag==Tag) printf("%s\n",int_to_string[inside[i].id].c_str());
+}
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
 	for(int i=0;i<cnt;i++)
-		if (strcmp(s,sym_table[i])==0) return TYPEDEF_NAME;
+		if (s==int_to_string[sym_table[i]]) 
+        {
+            //printf("\ncheck! %s\n",s);
+            return TYPEDEF_NAME;
+        }
 	return IDENTIFIER;
 }
 
@@ -205,10 +218,21 @@ void count()
 	ECHO;
 }
 
+int hash_string_to_int(const string&s)
+{
+    int t=string_to_int[s];
+    if (t==0)
+    {
+        t=string_to_int[s]=++total_string;
+        int_to_string.push_back(s);
+    }
+    return t;
+}
+
 static int check_type(void)
 {
-	yylval.str=strdup(yytext);
-	//printf("\n=====%s=====\n",yylval.str);
+	yylval.str=yytext;
+    hash_string_to_int(yytext);
     switch (sym_type(yytext))
     {
     case TYPEDEF_NAME:                /* previously defined */
@@ -222,6 +246,7 @@ static int check_type(void)
 
 int main(int argv,char* argc[])
 {
+    int_to_string.push_back("");
 	if (argv==2)
 	{
 		FILE* in=fopen(argc[1],"r");

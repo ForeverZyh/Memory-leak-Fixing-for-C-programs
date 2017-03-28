@@ -3,9 +3,12 @@
 #define YYSTYPE myYYSTYPE
 extern char yytext[];
 extern int column;
-extern char *sym_table[10000];
+extern int sym_table[10000];
 extern int cnt;
 extern int yylex(void);
+extern map<string,int> string_to_int;
+extern int total_string;
+extern vector<string> int_to_string;
 extern "C"
 {
 	void yyerror(char *s);
@@ -40,7 +43,7 @@ void yyerror(char *s)
 %%
 
 primary_expression
-	: IDENTIFIER {$$.str=strdup($1.str);}
+	: IDENTIFIER {$$=$1;}
 	| constant
 	| string
 	| '(' expression ')'
@@ -215,8 +218,10 @@ declaration
 	{
 		if ($1.tag==1)
 		{
-			sym_table[cnt++]=strdup($2.str);
+			sym_table[cnt++]=string_to_int[$2.str];
 		}
+		printf("\n=====pointer=====\n");
+		$2.print_filter_tag(2);
 	}
 	| static_assert_declaration
 	;
@@ -245,16 +250,23 @@ declaration_specifiers
 init_declarator_list
 	: init_declarator
 	{
-		$$.str=strdup($1.str);
+		$$.add(leaf(string_to_int[$1.str],$1.tag));
+		//printf("\n%s %d\n",$1.str.c_str(),$1.tag);
 	}
 	| init_declarator_list ',' init_declarator
+	{
+		$$.add(leaf(string_to_int[$3.str],$3.tag));
+	}
 	;
 
 init_declarator
 	: declarator '=' initializer
+	{
+		$$=$1;
+	}
 	| declarator
 	{
-		$$.str=strdup($1.str);
+		$$=$1;
 	}
 	;
 
@@ -370,16 +382,20 @@ alignment_specifier
 
 declarator
 	: pointer direct_declarator
+	{
+		$$.str=$2.str;
+		$$.tag=2;
+	}
 	| direct_declarator
 	{
-		$$.str=strdup($1.str);
+		$$=$1;
 	}
 	;
 
 direct_declarator
 	: IDENTIFIER
 	{
-		$$.str=strdup($1.str);
+		$$=$1;
 	}
 	| '(' declarator ')'
 	| direct_declarator '[' ']'
