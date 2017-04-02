@@ -26,16 +26,11 @@ WS  [ \t\v\n\f]
 #define YYSTYPE myYYSTYPE
 #include "y.tab.h"
 int sym_table[10000];
+vector<node*> forest;
 int cnt;
 map<string,int> string_to_int;
 int total_string=0;
 vector<string> int_to_string;
-
-void stype::print_filter_tag(int Tag)
-{
-    for(int i=0;i<inside.size();i++)
-        if (inside[i].tag==Tag) printf("%s\n",int_to_string[inside[i].id].c_str());
-}
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -178,8 +173,23 @@ extern "C"
 	extern void yyerror(const char *);  /* prints grammar violation message */
 }
 
+void dfs(node*r,int num)
+{
+    for(int i=0;i<num;i++) cout<<"  ";
+    cout<<r->str<<endl;
+    for(int i=0;i<(int)r->son.size();i++) dfs(r->son[i],num+1);
+}
+
 int yywrap(void)        /* called at end of input */
 {
+    printf("%d\n",(int)forest.size());
+    node *root;
+    for(int i=0;i<(int)forest.size();i++)
+        if (forest[i]->fa==NULL)
+        {
+            root=forest[i];
+        }
+    //dfs(root,0);
     return 1;           /* terminate now */
 }
 
@@ -231,7 +241,7 @@ int hash_string_to_int(const string&s)
 
 static int check_type(void)
 {
-	yylval.str=yytext;
+	yylval=new node(yytext);
     hash_string_to_int(yytext);
     switch (sym_type(yytext))
     {

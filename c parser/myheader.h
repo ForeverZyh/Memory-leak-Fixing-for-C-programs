@@ -3,45 +3,24 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 using namespace std;
-struct leaf
-{
-	int id,tag;
-	/*
-		tag:
-		0 for nothing
-		1 for TYPEDEF
-		2 for pointer
-	*/
-	leaf(int Id,int Tag)
-	{
-		id=Id;tag=Tag;
-	}
-};
-typedef struct stype
+struct node
 {
 	string str;
 	int tag;
-	vector<leaf> inside;
-	stype()
+	node * fa;
+	vector<node*> son;
+	node()
 	{
-		str="";tag=0;inside.clear();
+		str="";tag=0;fa=NULL;
+		son.clear();
 	}
-	void add(const leaf& ele)
+	node(char *s)
 	{
-		inside.push_back(ele);
-	}
-	void print_filter_tag(int Tag);
-} myYYSTYPE;
-struct node
-{
-	int id;
-	vector<node*> use,def;
-	node(int Id)
-	{
-		id=Id;
-		use.clear();
-		def.clear();
+		str=s;tag=0;fa=NULL;
+		son.clear();
 	}
 };
+typedef node* myYYSTYPE;
 int hash_string_to_int(const string&);
