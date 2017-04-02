@@ -31,6 +31,7 @@ int cnt;
 map<string,int> string_to_int;
 int total_string=0;
 vector<string> int_to_string;
+int line=0;
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -41,6 +42,20 @@ static int sym_type(const char * s)  /* returns type from symbol table */
             return TYPEDEF_NAME;
         }
 	return IDENTIFIER;
+}
+
+node::node()
+{
+    ln=line;
+    str="";tag=0;fa=NULL;
+    son.clear();
+}
+
+node::node(char *s)
+{
+    ln=line;
+    str=s;tag=0;fa=NULL;
+    son.clear();
 }
 
 //#define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
@@ -220,7 +235,7 @@ void count()
 
 	for (i = 0; yytext[i] != '\0'; i++)
 		if (yytext[i] == '\n')
-			column = 0;
+			column = 0,line++;
 		else if (yytext[i] == '\t')
 			column += 8 - (column % 8);
 		else

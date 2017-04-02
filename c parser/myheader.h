@@ -8,19 +8,11 @@ using namespace std;
 struct node
 {
 	string str;
-	int tag;
+	int tag,ln;
 	node * fa;
 	vector<node*> son;
-	node()
-	{
-		str="";tag=0;fa=NULL;
-		son.clear();
-	}
-	node(char *s)
-	{
-		str=s;tag=0;fa=NULL;
-		son.clear();
-	}
+	node();
+	node(char *s);
 };
 typedef node* myYYSTYPE;
 int hash_string_to_int(const string&);
