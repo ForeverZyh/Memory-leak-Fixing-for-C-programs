@@ -4953,7 +4953,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="iteration_statement";
+		(yyval)->str="WHILE";
 		if ((yyvsp[-2])){
 			(yyval)->son.push_back((yyvsp[-2]));
 			(yyvsp[-2])->fa=(yyval);}
@@ -4969,7 +4969,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="iteration_statement";
+		(yyval)->str="DO WHILE";
 		if ((yyvsp[-5])){
 			(yyval)->son.push_back((yyvsp[-5]));
 			(yyvsp[-5])->fa=(yyval);}
@@ -4985,7 +4985,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="iteration_statement";
+		(yyval)->str="FOR(x;x;)";
 		if ((yyvsp[-3])){
 			(yyval)->son.push_back((yyvsp[-3]));
 			(yyvsp[-3])->fa=(yyval);}
@@ -5004,7 +5004,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="iteration_statement";
+		(yyval)->str="FOR(x;x;x)";
 		if ((yyvsp[-4])){
 			(yyval)->son.push_back((yyvsp[-4]));
 			(yyvsp[-4])->fa=(yyval);}
@@ -5026,7 +5026,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="iteration_statement";
+		(yyval)->str="FOR(d;x;)";
 		if ((yyvsp[-3])){
 			(yyval)->son.push_back((yyvsp[-3]));
 			(yyvsp[-3])->fa=(yyval);}
@@ -5045,7 +5045,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="iteration_statement";
+		(yyval)->str="FOR(d;x;x)";
 		if ((yyvsp[-4])){
 			(yyval)->son.push_back((yyvsp[-4]));
 			(yyvsp[-4])->fa=(yyval);}

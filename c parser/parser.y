@@ -2357,7 +2357,7 @@ iteration_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="iteration_statement";
+		$$->str="WHILE";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}
@@ -2369,7 +2369,7 @@ iteration_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="iteration_statement";
+		$$->str="DO WHILE";
 		if ($2){
 			$$->son.push_back($2);
 			$2->fa=$$;}
@@ -2381,7 +2381,7 @@ iteration_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="iteration_statement";
+		$$->str="FOR(x;x;)";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}
@@ -2396,7 +2396,7 @@ iteration_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="iteration_statement";
+		$$->str="FOR(x;x;x)";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}
@@ -2414,7 +2414,7 @@ iteration_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="iteration_statement";
+		$$->str="FOR(d;x;)";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}
@@ -2429,7 +2429,7 @@ iteration_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="iteration_statement";
+		$$->str="FOR(d;x;x)";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}
