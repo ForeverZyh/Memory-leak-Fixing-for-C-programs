@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <utility>
 using namespace std;
 struct node
 {
@@ -13,6 +14,15 @@ struct node
 	vector<node*> son;
 	node();
 	node(char *s);
+};
+struct CFGnode
+{
+	vector<CFGnode*> succ,prev;
+	CFGnode()
+	{
+		succ.clear();
+		prev.clear();
+	}
 };
 typedef node* myYYSTYPE;
 int hash_string_to_int(const string&);

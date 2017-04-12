@@ -25,6 +25,7 @@ WS  [ \t\v\n\f]
 #include "myheader.h"
 #define YYSTYPE myYYSTYPE
 #include "y.tab.h"
+#include "cfg.h"
 int sym_table[10000];
 vector<node*> forest;
 int cnt;
@@ -188,13 +189,6 @@ extern "C"
 	extern void yyerror(const char *);  /* prints grammar violation message */
 }
 
-void dfs(node*r,int num)
-{
-    for(int i=0;i<num;i++) cout<<"  ";
-    cout<<r->str<<endl;
-    for(int i=0;i<(int)r->son.size();i++) dfs(r->son[i],num+1);
-}
-
 int yywrap(void)        /* called at end of input */
 {
     printf("%d\n",(int)forest.size());
@@ -204,7 +198,7 @@ int yywrap(void)        /* called at end of input */
         {
             root=forest[i];
         }
-    //dfs(root,0);
+    create(root);
     return 1;           /* terminate now */
 }
 
