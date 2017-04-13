@@ -784,6 +784,11 @@ assignment_expression
 
 assignment_operator
 	: '='
+	{
+		$$=new node();
+		forest.push_back($$);
+		$$->str="=";
+	}
 	| MUL_ASSIGN
 	| DIV_ASSIGN
 	| MOD_ASSIGN

@@ -7,7 +7,7 @@ primary_expression
 	;
 
 constant
-	: I_CONSTANT		
+	: I_CONSTANT
 	| F_CONSTANT
 	| ENUMERATION_CONSTANT	
 	;

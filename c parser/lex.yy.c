@@ -779,7 +779,7 @@ node::node()
     son.clear();
 }
 
-node::node(char *s)
+node::node(const char *s)
 {
     ln=line;
     str=s;tag=0;fa=NULL;
@@ -1081,172 +1081,172 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 73 "parser.l"
-{ count(); return(AUTO); }
+{ count(); yylval=new node("AUTO"); return(AUTO); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 74 "parser.l"
-{ count(); return(BREAK); }
+{ count(); yylval=new node("BREAK"); return(BREAK); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 75 "parser.l"
-{ count(); return(CASE); }
+{ count(); yylval=new node("CASE"); return(CASE); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 76 "parser.l"
-{ count(); return(CHAR); }
+{ count(); yylval=new node("CHAR"); return(CHAR); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 77 "parser.l"
-{ count(); return(CONST); }
+{ count(); yylval=new node("CONST"); return(CONST); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 78 "parser.l"
-{ count(); return(CONTINUE); }
+{ count(); yylval=new node("CONTINUE"); return(CONTINUE); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 79 "parser.l"
-{ count(); return(DEFAULT); }
+{ count(); yylval=new node("DEFAULT"); return(DEFAULT); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 80 "parser.l"
-{ count(); return(DO); }
+{ count(); yylval=new node("DO"); return(DO); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 81 "parser.l"
-{ count(); return(DOUBLE); }
+{ count(); yylval=new node("DOUBLE"); return(DOUBLE); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 82 "parser.l"
-{ count(); return(ELSE); }
+{ count(); yylval=new node("ELSE"); return(ELSE); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 83 "parser.l"
-{ count(); return(ENUM); }
+{ count(); yylval=new node("ENUM"); return(ENUM); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 84 "parser.l"
-{ count(); return(EXTERN); }
+{ count(); yylval=new node("EXTERN"); return(EXTERN); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 85 "parser.l"
-{ count(); return(FLOAT); }
+{ count(); yylval=new node("FLOAT"); return(FLOAT); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 86 "parser.l"
-{ count(); return(FOR); }
+{ count(); yylval=new node("FOR"); return(FOR); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 87 "parser.l"
-{ count(); return(GOTO); }
+{ count(); yylval=new node("GOTO"); return(GOTO); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 88 "parser.l"
-{ count(); return(IF); }
+{ count(); yylval=new node("IF"); return(IF); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 89 "parser.l"
-{ count(); return(INLINE); }
+{ count(); yylval=new node("INLINE"); return(INLINE); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 90 "parser.l"
-{ count(); return(INT); }
+{ count(); yylval=new node("INT"); return(INT); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 91 "parser.l"
-{ count(); return(LONG); }
+{ count(); yylval=new node("LONG"); return(LONG); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 92 "parser.l"
-{ count(); return(REGISTER); }
+{ count(); yylval=new node("REGISTER"); return(REGISTER); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 93 "parser.l"
-{ count(); return(RESTRICT); }
+{ count(); yylval=new node("RESTRICT"); return(RESTRICT); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 94 "parser.l"
-{ count(); return(RETURN); }
+{ count(); yylval=new node("RETURN"); return(RETURN); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 95 "parser.l"
-{ count(); return(SHORT); }
+{ count(); yylval=new node("SHORT"); return(SHORT); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 96 "parser.l"
-{ count(); return(SIGNED); }
+{ count(); yylval=new node("SIGNED"); return(SIGNED); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 97 "parser.l"
-{ count(); return(SIZEOF); }
+{ count(); yylval=new node("SIZEOF"); return(SIZEOF); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 98 "parser.l"
-{ count(); return(STATIC); }
+{ count(); yylval=new node("STATIC"); return(STATIC); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 99 "parser.l"
-{ count(); return(STRUCT); }
+{ count(); yylval=new node("STRUCT"); return(STRUCT); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 100 "parser.l"
-{ count(); return(SWITCH); }
+{ count(); yylval=new node("SWITCH"); return(SWITCH); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 101 "parser.l"
-{ count(); return(TYPEDEF); }
+{ count(); yylval=new node("TYPEDEF"); return(TYPEDEF); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 102 "parser.l"
-{ count(); return(UNION); }
+{ count(); yylval=new node("UNION"); return(UNION); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 103 "parser.l"
-{ count(); return(UNSIGNED); }
+{ count(); yylval=new node("UNSIGNED"); return(UNSIGNED); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 104 "parser.l"
-{ count(); return(VOID); }
+{ count(); yylval=new node("VOID"); return(VOID); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 105 "parser.l"
-{ count(); return(VOLATILE); }
+{ count(); yylval=new node("VOLATILE"); return(VOLATILE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 106 "parser.l"
-{ count(); return(WHILE); }
+{ count(); yylval=new node("WHILE"); return(WHILE); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
@@ -1311,58 +1311,58 @@ YY_RULE_SETUP
 case 49:
 YY_RULE_SETUP
 #line 121 "parser.l"
-{ count(); return I_CONSTANT; }
+{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 122 "parser.l"
-{ count(); return I_CONSTANT; }
+{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 123 "parser.l"
-{ count(); return I_CONSTANT; }
+{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 124 "parser.l"
-{ count(); return I_CONSTANT; }
+{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 126 "parser.l"
-{ count(); return F_CONSTANT; }
+{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 127 "parser.l"
-{ count(); return F_CONSTANT; }
+{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 128 "parser.l"
-{ count(); return F_CONSTANT; }
+{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 129 "parser.l"
-{ count(); return F_CONSTANT; }
+{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 130 "parser.l"
-{ count(); return F_CONSTANT; }
+{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 131 "parser.l"
-{ count(); return F_CONSTANT; }
+{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 	YY_BREAK
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
 #line 133 "parser.l"
-{ count(); return STRING_LITERAL; }
+{ count(); yylval=new node("STRING_LITERAL"); return STRING_LITERAL; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
@@ -1532,7 +1532,7 @@ YY_RULE_SETUP
 case 93:
 YY_RULE_SETUP
 #line 168 "parser.l"
-{ count(); return '&'; }
+{ count(); yylval=new node("&"); return '&'; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
@@ -1557,7 +1557,7 @@ YY_RULE_SETUP
 case 98:
 YY_RULE_SETUP
 #line 173 "parser.l"
-{ count(); return '*'; }
+{ count(); yylval=new node("*"); return '*'; }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
@@ -2620,6 +2620,14 @@ extern "C"
 	extern void yyerror(const char *);  /* prints grammar violation message */
 }
 
+void dfs(node* root,int cnt)
+{
+    for(int i=0;i<cnt;i++) printf(" ");
+    printf("%s\n",root->str.c_str());
+    for(int i=0;i<(int)root->son.size();i++)
+        dfs(root->son[i],cnt+1);
+}
+
 int yywrap(void)        /* called at end of input */
 {
     printf("%d\n",(int)forest.size());
@@ -2629,7 +2637,8 @@ int yywrap(void)        /* called at end of input */
         {
             root=forest[i];
         }
-    create(root);
+    dfs(root,0);
+    //create(root);
     return 1;           /* terminate now */
 }
 

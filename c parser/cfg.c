@@ -16,37 +16,38 @@ pair<CFGnode*,CFGnode*> declaration(node* root)
 
 }
 
-pair<CFGnode*,CFGnode*> IF(node* root)
+pair<CFGnode*,CFGnode*> IF(node* root,CFGnode* return_node)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> WHILE(node* root)
+pair<CFGnode*,CFGnode*> WHILE(node* root,CFGnode* return_node)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> DO_WHILE(node* root)
+pair<CFGnode*,CFGnode*> DO_WHILE(node* root,CFGnode* return_node)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> FOR(node* root)
+pair<CFGnode*,CFGnode*> FOR(node* root,CFGnode* return_node)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> create(node* root)
+pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL)
 {
-	CFGnode* begin=new CFGnode(),*end=begin;
+	CFGnode* begin=new CFGnode(),*pre=begin,*end=new CFGnode();
+	if (!return_node) return_node=end;
 	for(int i=0;i<root->son.size();i++)
 	{
 		if (root->son[i]->str=="expression") /* maybe use substr */
 		{
 			CFGnode* newnode=new CFGnode();
 			expression(root,newnode);
-			link(end,newnode);
-			end=newnode;
+			link(pre,newnode);
+			pre=newnode;
 		}
 		/*
 			if IF detected
@@ -58,9 +59,9 @@ pair<CFGnode*,CFGnode*> create(node* root)
 		*/
 		else
 		{
-			pair<CFGnode*,CFGnode*> it=create(root->son[i]);
-			link(end,it.first);
-			end=it.second;
+			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node);
+			link(pre,it.first);
+			pre=it.second;
 		}
 	}
 	return make_pair(begin,end);

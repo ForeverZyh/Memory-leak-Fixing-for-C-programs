@@ -1,7 +1,7 @@
 //this is a comment
 int main()
 {
-	unsigned *x;
+	unsigned int *x;
 	*x=1;
 	unsigned int *p,*q=x;
 	{

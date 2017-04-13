@@ -52,7 +52,7 @@ node::node()
     son.clear();
 }
 
-node::node(char *s)
+node::node(const char *s)
 {
     ln=line;
     str=s;tag=0;fa=NULL;
@@ -70,40 +70,40 @@ void count();
 "/*"                                    { count();comment(); }
 "//".*                                    { count();/* consume //-comment */ }
 
-"auto"					{ count(); return(AUTO); }
-"break"					{ count(); return(BREAK); }
-"case"					{ count(); return(CASE); }
-"char"					{ count(); return(CHAR); }
-"const"					{ count(); return(CONST); }
-"continue"				{ count(); return(CONTINUE); }
-"default"				{ count(); return(DEFAULT); }
-"do"					{ count(); return(DO); }
-"double"				{ count(); return(DOUBLE); }
-"else"					{ count(); return(ELSE); }
-"enum"					{ count(); return(ENUM); }
-"extern"				{ count(); return(EXTERN); }
-"float"					{ count(); return(FLOAT); }
-"for"					{ count(); return(FOR); }
-"goto"					{ count(); return(GOTO); }
-"if"					{ count(); return(IF); }
-"inline"				{ count(); return(INLINE); }
-"int"					{ count(); return(INT); }
-"long"					{ count(); return(LONG); }
-"register"				{ count(); return(REGISTER); }
-"restrict"				{ count(); return(RESTRICT); }
-"return"				{ count(); return(RETURN); }
-"short"					{ count(); return(SHORT); }
-"signed"				{ count(); return(SIGNED); }
-"sizeof"				{ count(); return(SIZEOF); }
-"static"				{ count(); return(STATIC); }
-"struct"				{ count(); return(STRUCT); }
-"switch"				{ count(); return(SWITCH); }
-"typedef"				{ count(); return(TYPEDEF); }
-"union"					{ count(); return(UNION); }
-"unsigned"				{ count(); return(UNSIGNED); }
-"void"					{ count(); return(VOID); }
-"volatile"				{ count(); return(VOLATILE); }
-"while"					{ count(); return(WHILE); }
+"auto"					{ count(); yylval=new node("AUTO"); return(AUTO); }
+"break"					{ count(); yylval=new node("BREAK"); return(BREAK); }
+"case"					{ count(); yylval=new node("CASE"); return(CASE); }
+"char"					{ count(); yylval=new node("CHAR"); return(CHAR); }
+"const"					{ count(); yylval=new node("CONST"); return(CONST); }
+"continue"				{ count(); yylval=new node("CONTINUE"); return(CONTINUE); }
+"default"				{ count(); yylval=new node("DEFAULT"); return(DEFAULT); }
+"do"					{ count(); yylval=new node("DO"); return(DO); }
+"double"				{ count(); yylval=new node("DOUBLE"); return(DOUBLE); }
+"else"					{ count(); yylval=new node("ELSE"); return(ELSE); }
+"enum"					{ count(); yylval=new node("ENUM"); return(ENUM); }
+"extern"				{ count(); yylval=new node("EXTERN"); return(EXTERN); }
+"float"					{ count(); yylval=new node("FLOAT"); return(FLOAT); }
+"for"					{ count(); yylval=new node("FOR"); return(FOR); }
+"goto"					{ count(); yylval=new node("GOTO"); return(GOTO); }
+"if"					{ count(); yylval=new node("IF"); return(IF); }
+"inline"				{ count(); yylval=new node("INLINE"); return(INLINE); }
+"int"					{ count(); yylval=new node("INT"); return(INT); }
+"long"					{ count(); yylval=new node("LONG"); return(LONG); }
+"register"				{ count(); yylval=new node("REGISTER"); return(REGISTER); }
+"restrict"				{ count(); yylval=new node("RESTRICT"); return(RESTRICT); }
+"return"				{ count(); yylval=new node("RETURN"); return(RETURN); }
+"short"					{ count(); yylval=new node("SHORT"); return(SHORT); }
+"signed"				{ count(); yylval=new node("SIGNED"); return(SIGNED); }
+"sizeof"				{ count(); yylval=new node("SIZEOF"); return(SIZEOF); }
+"static"				{ count(); yylval=new node("STATIC"); return(STATIC); }
+"struct"				{ count(); yylval=new node("STRUCT"); return(STRUCT); }
+"switch"				{ count(); yylval=new node("SWITCH"); return(SWITCH); }
+"typedef"				{ count(); yylval=new node("TYPEDEF"); return(TYPEDEF); }
+"union"					{ count(); yylval=new node("UNION"); return(UNION); }
+"unsigned"				{ count(); yylval=new node("UNSIGNED"); return(UNSIGNED); }
+"void"					{ count(); yylval=new node("VOID"); return(VOID); }
+"volatile"				{ count(); yylval=new node("VOLATILE"); return(VOLATILE); }
+"while"					{ count(); yylval=new node("WHILE"); return(WHILE); }
 "_Alignas"                              { count(); return ALIGNAS; }
 "_Alignof"                              { count(); return ALIGNOF; }
 "_Atomic"                               { count(); return ATOMIC; }
@@ -118,19 +118,19 @@ void count();
 
 {L}{A}*					{ count(); return check_type(); }
 
-{HP}{H}+{IS}?				{ count(); return I_CONSTANT; }
-{NZ}{D}*{IS}?				{ count(); return I_CONSTANT; }
-"0"{O}*{IS}?				{ count(); return I_CONSTANT; }
-{CP}?"'"([^'\\\n]|{ES})+"'"		{ count(); return I_CONSTANT; }
+{HP}{H}+{IS}?				{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
+{NZ}{D}*{IS}?				{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
+"0"{O}*{IS}?				{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
+{CP}?"'"([^'\\\n]|{ES})+"'"		{ count(); yylval=new node("I_CONSTANT"); return I_CONSTANT; }
 
-{D}+{E}{FS}?				{ count(); return F_CONSTANT; }
-{D}*"."{D}+{E}?{FS}?			{ count(); return F_CONSTANT; }
-{D}+"."{E}?{FS}?			{ count(); return F_CONSTANT; }
-{HP}{H}+{P}{FS}?			{ count(); return F_CONSTANT; }
-{HP}{H}*"."{H}+{P}{FS}?			{ count(); return F_CONSTANT; }
-{HP}{H}+"."{P}{FS}?			{ count(); return F_CONSTANT; }
+{D}+{E}{FS}?				{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?			{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
+{D}+"."{E}?{FS}?			{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
+{HP}{H}+{P}{FS}?			{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?			{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
+{HP}{H}+"."{P}{FS}?			{ count(); yylval=new node("F_CONSTANT"); return F_CONSTANT; }
 
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ count(); return STRING_LITERAL; }
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ count(); yylval=new node("STRING_LITERAL"); return STRING_LITERAL; }
 
 "..."					{ count(); return ELLIPSIS; }
 ">>="					{ count(); return RIGHT_ASSIGN; }
@@ -165,12 +165,12 @@ void count();
 ("["|"<:")				{ count(); return '['; }
 ("]"|":>")				{ count(); return ']'; }
 "."					{ count(); return '.'; }
-"&"					{ count(); return '&'; }
+"&"					{ count(); yylval=new node("&"); return '&'; }
 "!"					{ count(); return '!'; }
 "~"					{ count(); return '~'; }
 "-"					{ count(); return '-'; }
 "+"					{ count(); return '+'; }
-"*"					{ count(); return '*'; }
+"*"					{ count(); yylval=new node("*"); return '*'; }
 "/"					{ count(); return '/'; }
 "%"					{ count(); return '%'; }
 "<"					{ count(); return '<'; }
@@ -189,6 +189,14 @@ extern "C"
 	extern void yyerror(const char *);  /* prints grammar violation message */
 }
 
+void dfs(node* root,int cnt)
+{
+    for(int i=0;i<cnt;i++) printf(" ");
+    printf("%s\n",root->str.c_str());
+    for(int i=0;i<(int)root->son.size();i++)
+        dfs(root->son[i],cnt+1);
+}
+
 int yywrap(void)        /* called at end of input */
 {
     printf("%d\n",(int)forest.size());
@@ -198,7 +206,8 @@ int yywrap(void)        /* called at end of input */
         {
             root=forest[i];
         }
-    create(root);
+    dfs(root,0);
+    //create(root);
     return 1;           /* terminate now */
 }
 

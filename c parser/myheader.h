@@ -13,7 +13,7 @@ struct node
 	node * fa;
 	vector<node*> son;
 	node();
-	node(char *s);
+	node(const char *s);
 };
 struct CFGnode
 {
