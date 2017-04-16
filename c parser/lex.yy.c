@@ -2638,7 +2638,7 @@ int yywrap(void)        /* called at end of input */
             root=forest[i];
         }
     dfs(root,0);
-    //create(root);
+    create(root,NULL);
     return 1;           /* terminate now */
 }
 
