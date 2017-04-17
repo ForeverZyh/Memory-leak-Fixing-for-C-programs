@@ -62,27 +62,27 @@ pair<CFGnode*,CFGnode*> declaration(node* root)
 
 }
 
-pair<CFGnode*,CFGnode*> IF(node* root,CFGnode* return_node)
+/*pair<CFGnode*,CFGnode*> IF(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> WHILE(node* root,CFGnode* return_node)
+pair<CFGnode*,CFGnode*> WHILE(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> DO_WHILE(node* root,CFGnode* return_node)
+pair<CFGnode*,CFGnode*> DO_WHILE(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
 
 }
 
-pair<CFGnode*,CFGnode*> FOR(node* root,CFGnode* return_node)
+pair<CFGnode*,CFGnode*> FOR(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
 
-}
+}*/
 
-pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL)
+pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
 	CFGnode* begin=new CFGnode(),*pre=begin,*end=new CFGnode();
 	if (!return_node) return_node=end;
@@ -95,17 +95,59 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL)
 			link(pre,newnode);
 			pre=newnode;
 		}
-		/*
-			if IF detected
-			if WHILE(DO WHILE) detected
-			if FOR detected
-			FOR -> FOR(x;x;) FOR(x;x;x) FOR(d;x;) FOR(d;x;x)
-			if declaration detected
-			if function call detected
-		*/
+		else if (root->son[i]->str=="CONTINUE")
+		{
+			link(pre,continue_node);
+		}
+		else if (root->son[i]->str=="BREAK")
+		{
+			link(pre,break_node);
+		}
+		else if (root->son[i]->str=="RETURN")
+		{
+			link(pre,return_node);
+		}
+		else if (root->son[i]->str=="WHILE")
+		{
+
+		}
+		else if (root->son[i]->str=="DO WHILE")
+		{
+
+		}
+		else if (root->son[i]->str.find("FOR(d;")!=-1)
+		{
+			if (root->son[i]->son.size()==2)  /*FOR(d;x;)*/
+			{
+
+			}
+			else	/*FOR(d;x;x)*/
+			{
+
+			}
+		}
+		else if (root->son[i]->str.find("FOR(x;")!=-1)
+		{
+			if (root->son[i]->son.size()==2)  /*FOR(x;x;)*/
+			{
+
+			}
+			else	/*FOR(x;x;x)*/
+			{
+
+			}
+		}
+		else if (root->son[i]->str=="declaration")
+		{
+
+		}
+		else if (root->son[i]->str=="function_definition")
+		{
+
+		}
 		else
 		{
-			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node);
+			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node,continue_node,break_node);
 			link(pre,it.first);
 			pre=it.second;
 		}

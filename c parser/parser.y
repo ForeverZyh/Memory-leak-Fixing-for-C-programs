@@ -2453,13 +2453,28 @@ iteration_statement
 jump_statement
 	: GOTO IDENTIFIER ';'
 	| CONTINUE ';'
+	{
+		$$=new node();
+		forest.push_back($$);
+		$$->str="CONTINUE";
+	}
 	| BREAK ';'
+	{
+		$$=new node();
+		forest.push_back($$);
+		$$->str="BREAK";
+	}
 	| RETURN ';'
+	{
+		$$=new node();
+		forest.push_back($$);
+		$$->str="RETURN";
+	}
 	| RETURN expression ';'
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="jump_statement";
+		$$->str="RETURN";
 		if ($2){
 			$$->son.push_back($2);
 			$2->fa=$$;}

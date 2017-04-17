@@ -1,1 +1,1 @@
-extern pair<CFGnode*,CFGnode*> create(node* root,CFGnode *return_node=NULL);
+extern pair<CFGnode*,CFGnode*> create(node* root,CFGnode *return_node=NULL,CFGnode *continue_node=NULL,CFGnode* break_node=NULL);
