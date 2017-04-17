@@ -2320,7 +2320,7 @@ selection_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="selection_statement";
+		$$->str="IF ELSE";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}
@@ -2335,7 +2335,7 @@ selection_statement
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="selection_statement";
+		$$->str="IF";
 		if ($3){
 			$$->son.push_back($3);
 			$3->fa=$$;}

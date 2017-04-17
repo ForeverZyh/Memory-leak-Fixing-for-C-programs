@@ -4912,7 +4912,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="selection_statement";
+		(yyval)->str="IF ELSE";
 		if ((yyvsp[-4])){
 			(yyval)->son.push_back((yyvsp[-4]));
 			(yyvsp[-4])->fa=(yyval);}
@@ -4931,7 +4931,7 @@ yyreduce:
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
-		(yyval)->str="selection_statement";
+		(yyval)->str="IF";
 		if ((yyvsp[-2])){
 			(yyval)->son.push_back((yyvsp[-2]));
 			(yyvsp[-2])->fa=(yyval);}
