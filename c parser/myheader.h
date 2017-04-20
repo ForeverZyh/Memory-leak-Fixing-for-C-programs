@@ -62,10 +62,12 @@ struct CFGnode
 {
 	vector<CFGnode*> succ,prev;
 	expr defuse;
+	vector<int> identifier_list;
 	CFGnode():defuse()
 	{
 		succ.clear();
 		prev.clear();
+		identifier_list.clear();
 	}
 	void print()
 	{
@@ -76,6 +78,12 @@ struct CFGnode
 		for(int i=0;i<(int)succ.size();i++)
 			succ[i]->print();
 	}
+};
+struct func
+{
+	pair<CFGnode*,CFGnode*> CFG;
+	int id;
+	vector<int> parms;
 };
 typedef node* myYYSTYPE;
 int hash_string_to_int(const string&);

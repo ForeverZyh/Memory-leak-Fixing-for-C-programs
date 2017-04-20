@@ -3,8 +3,16 @@ int main()
 {
 	unsigned int *x,*y,*z;
 	x=y=z;
+	if (x)
+	{
+		z=y;
+	}
+	else
+	{
+		return 0;
+	}
 }
-56
+125
 translation_unit
  translation_unit
   external_declaration
@@ -25,347 +33,598 @@ translation_unit
    compound_statement
     block_item_list
      block_item_list
-      block_item
-       declaration
-        declaration_specifiers
-         UNSIGNED
+      block_item_list
+       block_item
+        declaration
          declaration_specifiers
-          INT
-        init_declarator_list
+          UNSIGNED
+          declaration_specifiers
+           INT
          init_declarator_list
           init_declarator_list
+           init_declarator_list
+            init_declarator
+             declarator
+              *
+              x
            init_declarator
             declarator
              *
-             x
+             y
           init_declarator
            declarator
             *
-            y
-         init_declarator
-          declarator
-           *
-           z
-     block_item
-      statement
-       expression_statement
-        expression
-         assignment_expression
-          unary_expression
-           postfix_expression
-            x
-          =
+            z
+      block_item
+       statement
+        expression_statement
+         expression
           assignment_expression
            unary_expression
             postfix_expression
-             y
+             x
            =
            assignment_expression
-            conditional_expression
-             logical_or_expression
-              logical_and_expression
-               inclusive_or_expression
-                exclusive_or_expression
-                 and_expression
-                  equality_expression
-                   relational_expression
-                    shift_expression
-                     additive_expression
-                      multiplicative_expression
-                       cast_expression
-                        unary_expression
-                         postfix_expression
-                          z
+            unary_expression
+             postfix_expression
+              y
+            =
+            assignment_expression
+             conditional_expression
+              logical_or_expression
+               logical_and_expression
+                inclusive_or_expression
+                 exclusive_or_expression
+                  and_expression
+                   equality_expression
+                    relational_expression
+                     shift_expression
+                      additive_expression
+                       multiplicative_expression
+                        cast_expression
+                         unary_expression
+                          postfix_expression
+                           z
+     block_item
+      statement
+       IF ELSE
+        expression
+         assignment_expression
+          conditional_expression
+           logical_or_expression
+            logical_and_expression
+             inclusive_or_expression
+              exclusive_or_expression
+               and_expression
+                equality_expression
+                 relational_expression
+                  shift_expression
+                   additive_expression
+                    multiplicative_expression
+                     cast_expression
+                      unary_expression
+                       postfix_expression
+                        x
+        statement
+         compound_statement
+          block_item_list
+           block_item
+            statement
+             expression_statement
+              expression
+               assignment_expression
+                unary_expression
+                 postfix_expression
+                  z
+                =
+                assignment_expression
+                 conditional_expression
+                  logical_or_expression
+                   logical_and_expression
+                    inclusive_or_expression
+                     exclusive_or_expression
+                      and_expression
+                       equality_expression
+                        relational_expression
+                         shift_expression
+                          additive_expression
+                           multiplicative_expression
+                            cast_expression
+                             unary_expression
+                              postfix_expression
+                               y
+          }
+        statement
+         compound_statement
+          block_item_list
+           block_item
+            statement
+             RETURN
+              expression
+               assignment_expression
+                conditional_expression
+                 logical_or_expression
+                  logical_and_expression
+                   inclusive_or_expression
+                    exclusive_or_expression
+                     and_expression
+                      equality_expression
+                       relational_expression
+                        shift_expression
+                         additive_expression
+                          multiplicative_expression
+                           cast_expression
+                            unary_expression
+                             postfix_expression
+                              primary_expression
+                               I_CONSTANT
+          }
     }
-=====6f2f2820=====
+=====1db2e470=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2920
-=====6f2f2920=====
+  To 1db2e5f0
+=====1db2e5f0=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2a20
-=====6f2f2a20=====
+  To 1db2e670
+=====1db2e670=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2b20
-=====6f2f2b20=====
+  To 1db2e570
+=====1db2e570=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2aa0
-=====6f2f2aa0=====
+  To 1db2e810
+=====1db2e810=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f29a0
-=====6f2f29a0=====
+  To 1db2e910
+=====1db2e910=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2cc0
-=====6f2f2cc0=====
+  To 1db2e890
+=====1db2e890=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2dc0
-=====6f2f2dc0=====
+  To 1db2ea10
+=====1db2ea10=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2ec0
-=====6f2f2ec0=====
+  To 1db2ea90
+=====1db2ea90=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2fc0
-=====6f2f2fc0=====
+  To 1db2eb90
+=====1db2eb90=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f3040
-=====6f2f3040=====
+  To 1db2ec90
+=====1db2ec90=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2f40
-=====6f2f2f40=====
+  To 1db2ed90
+=====1db2ed90=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f31c0
-=====6f2f31c0=====
+  To 1db2ef10
+=====1db2ef10=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f32c0
-=====6f2f32c0=====
+  To 1db2ef90
+=====1db2ef90=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f33c0
-=====6f2f33c0=====
+  To 1db2ee90
+=====1db2ee90=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f3440
-=====6f2f3440=====
+  To 1db2f150
+=====1db2f150=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f3340
-=====6f2f3340=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3240
-=====6f2f3240=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3640
-=====6f2f3640=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3740
-=====6f2f3740=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3840
-=====6f2f3840=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3940
-=====6f2f3940=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3a40
-=====6f2f3a40=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f39c0
-=====6f2f39c0=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f38c0
-=====6f2f38c0=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3c00
-=====6f2f3c00=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3d00
-=====6f2f3d00=====
-===def===
-
-===use===
-
-===pure===
-
-  To 6f2f3e00
-=====6f2f3e00=====
+  To 1db2f1d0
+=====1db2f1d0=====
 ===def===
 4 3 
 ===use===
 5 4 
 ===pure===
 (4,5) (3,4) 
-  To 6f2f3d80
-=====6f2f3d80=====
+  To 1db2f0d0
+=====1db2f0d0=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f3c80
-=====6f2f3c80=====
+  To 1db2ee10
+=====1db2ee10=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f37c0
-=====6f2f37c0=====
+  To 1db2ff10
+=====1db2ff10=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f4b40
-=====6f2f4b40=====
+  To 1db2ff90
+=====1db2ff90=====
+===def===
+
+===use===
+3 
+===pure===
+
+  To 1db30110
+  To 1db30720
+  To 1db30010
+=====1db30110=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f4bc0
-=====6f2f4bc0=====
+  To 1db30190
+=====1db30190=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f36c0
-=====6f2f36c0=====
+  To 1db30290
+=====1db30290=====
+===def===
+5 
+===use===
+4 
+===pure===
+(5,4) 
+  To 1db30210
+=====1db30210=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2e40
-=====6f2f2e40=====
+  To 1db304e0
+=====1db304e0=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f2d40
-=====6f2f2d40=====
+  To 1db30560
+=====1db30560=====
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 6f2f28a0
-=====6f2f28a0=====
+  To 1db30090
+=====1db30090=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30010
+=====1db30010=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2fe90
+=====1db2fe90=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2ed10
+=====1db2ed10=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30d20
+=====1db30d20=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30da0
+=====1db30da0=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2ec10
+=====1db2ec10=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e790
+=====1db2e790=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e4f0
+=====1db2e4f0=====
+===def===
+
+===use===
+
+===pure===
+
+=====1db30720=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db307a0
+=====1db307a0=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e4f0
+  To 1db30820
+=====1db2e4f0=====
+===def===
+
+===use===
+
+===pure===
+
+=====1db30820=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30940
+=====1db30940=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db309c0
+=====1db309c0=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db306a0
+=====1db306a0=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30010
+=====1db30010=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2fe90
+=====1db2fe90=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2ed10
+=====1db2ed10=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30d20
+=====1db30d20=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30da0
+=====1db30da0=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2ec10
+=====1db2ec10=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e790
+=====1db2e790=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e4f0
+=====1db2e4f0=====
+===def===
+
+===use===
+
+===pure===
+
+=====1db30010=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2fe90
+=====1db2fe90=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2ed10
+=====1db2ed10=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30d20
+=====1db30d20=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db30da0
+=====1db30da0=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2ec10
+=====1db2ec10=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e790
+=====1db2e790=====
+===def===
+
+===use===
+
+===pure===
+
+  To 1db2e4f0
+=====1db2e4f0=====
 ===def===
 
 ===use===
