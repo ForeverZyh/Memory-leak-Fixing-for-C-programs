@@ -1,5 +1,8 @@
 #include "myheader.h"
 extern map<string,int> string_to_int;
+extern func fun[10000];
+extern int cnt_func;
+
 void link(CFGnode* a,CFGnode* b)
 {
 	a->succ.push_back(b);
@@ -226,11 +229,14 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 			link(pre,dec);
 			pre=dec;
 		}
-		/*else if (root->son[i]->str=="function_definition")
-		{
-		}*/
 		else
 		{
+			if (root->son.size()==1) 
+			{
+				delete begin;
+				delete end;
+				return create(root->son[i],return_node,continue_node,break_node);
+			}
 			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node,continue_node,break_node);
 			link(pre,it.first);
 			pre=it.second;
@@ -238,4 +244,41 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 	}
 	link(pre,end);
 	return make_pair(begin,end);
+}
+
+void function(node* root)
+{
+	if (root->str=="declaration")
+	{
+
+	}
+	else if (root->str=="function_definition")
+	{
+		++cnt_func;
+		if (root->son.size()==3)
+		{
+
+			fun[cnt_func].CFG=create(root->son[2]);
+			CFGnode* tmp=new CFGnode();
+			declaration(root->son[1],tmp);
+			fun[cnt_func].id=tmp->identifier_list[0];
+			delete tmp;
+		}
+		else
+		{
+			fun[cnt_func].CFG=create(root->son[3]);
+			CFGnode* tmp=new CFGnode(),*list=new CFGnode();
+			declaration(root->son[1],tmp);
+			fun[cnt_func].id=tmp->identifier_list[0];
+			declaration(root->son[2],list);
+			fun[cnt_func].parms=list->identifier_list;
+			delete tmp;
+			delete list;
+		}
+	}
+	else
+	{
+		for(int i=0;i<(int)root->son.size();i++)
+			function(root->son[i]);
+	}
 }

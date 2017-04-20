@@ -30,6 +30,8 @@ int sym_table[10000];
 vector<node*> forest;
 int cnt;
 map<string,int> string_to_int;
+func fun[10000];
+int cnt_func=0;
 int total_string=0;
 vector<string> int_to_string;
 int line=0;
@@ -207,8 +209,7 @@ int yywrap(void)        /* called at end of input */
             root=forest[i];
         }
     dfs(root,0);
-    pair<CFGnode*,CFGnode*> it=create(root);
-    it.first->print();
+    function(root);
     return 1;           /* terminate now */
 }
 
