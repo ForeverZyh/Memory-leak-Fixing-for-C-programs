@@ -57,10 +57,41 @@ void expression(node* root,CFGnode* x)
 	x->defuse=dfs_expression(root);
 }
 
-void declaration(node* root,CFGnode* x)
-{
 
+
+/*
+ * return: the number of identifier in this subtree
+ * 
+ */
+int dfs_declaration(node *root, CFGnode *x)
+{
+	int identifier_count = 0;
+	if (root->str == "direct_declarator")
+	{
+		for(int i=0;i<root->son.size();i++)
+		{
+			string &identifier_name = root->son[i]->str;
+			int identifier_number = string_to_int[identifier_name];
+			if (identifier_number)		// found a IDENTIFIER
+			{
+				++ identifier_count;
+				x->identifier_list.push_back(identifier_number);
+			}
+		}
+	}
+	else
+	{
+		for(int i=0;i<root->son.size();i++)
+			identifier_count += dfs_declaration(root->son[i], x);
+	}
+	return identifier_count;
 }
+
+void declaration(node* root, CFGnode* x)
+{
+	dfs_declaration(root, x);
+}
+
 
 /*pair<CFGnode*,CFGnode*> IF(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
