@@ -1,7 +1,7 @@
 int a;
 int main()
 {
-	unsigned int *x,*y,*z;
+	unsigned int *x=&a,*y,*z;
 	x=y=z;
 	if (x)
 	{
@@ -12,7 +12,7 @@ int main()
 		return 0;
 	}
 }
-125
+148
 translation_unit
  translation_unit
   external_declaration
@@ -22,14 +22,16 @@ translation_unit
     init_declarator_list
      init_declarator
       declarator
-       a
+       direct_declarator
+        a
  external_declaration
   function_definition
    declaration_specifiers
     INT
    declarator
     direct_declarator
-     main
+     direct_declarator
+      main
    compound_statement
     block_item_list
      block_item_list
@@ -46,15 +48,38 @@ translation_unit
             init_declarator
              declarator
               *
-              x
+              direct_declarator
+               x
+             initializer1
+              assignment_expression
+               conditional_expression
+                logical_or_expression
+                 logical_and_expression
+                  inclusive_or_expression
+                   exclusive_or_expression
+                    and_expression
+                     equality_expression
+                      relational_expression
+                       shift_expression
+                        additive_expression
+                         multiplicative_expression
+                          cast_expression
+                           unary_expression
+                            &
+                            cast_expression
+                             unary_expression
+                              postfix_expression
+                               a
            init_declarator
             declarator
              *
-             y
+             direct_declarator
+              y
           init_declarator
            declarator
             *
-            z
+            direct_declarator
+             z
       block_item
        statement
         expression_statement
@@ -160,471 +185,290 @@ translation_unit
                                I_CONSTANT
           }
     }
-=====1db2e470=====
+1
+=====7bf44760=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e5f0
-=====1db2e5f0=====
+  To 7bf44910
+=====7bf44910=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e670
-=====1db2e670=====
+  To 7bf44a50
+=====7bf44a50=====
+===dec===
+3 4 5 
+===def===
+3 
+===use===
+1 
+===pure===
+(3,1) 
+  To 7bf449b0
+=====7bf449b0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e570
-=====1db2e570=====
+  To 7bf45210
+=====7bf45210=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e810
-=====1db2e810=====
-===def===
+  To 7bf45530
+=====7bf45530=====
+===dec===
 
-===use===
-
-===pure===
-
-  To 1db2e910
-=====1db2e910=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2e890
-=====1db2e890=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ea10
-=====1db2ea10=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ea90
-=====1db2ea90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2eb90
-=====1db2eb90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ec90
-=====1db2ec90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ed90
-=====1db2ed90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ef10
-=====1db2ef10=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ef90
-=====1db2ef90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ee90
-=====1db2ee90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2f150
-=====1db2f150=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2f1d0
-=====1db2f1d0=====
 ===def===
 4 3 
 ===use===
-5 4 
+5 
 ===pure===
 (4,5) (3,4) 
-  To 1db2f0d0
-=====1db2f0d0=====
+  To 7bf45490
+=====7bf45490=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2ee10
-=====1db2ee10=====
+  To 7bf45a20
+=====7bf45a20=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2ff10
-=====1db2ff10=====
-===def===
+  To 7bf45b60
+=====7bf45b60=====
+===dec===
 
-===use===
-
-===pure===
-
-  To 1db2ff90
-=====1db2ff90=====
 ===def===
 
 ===use===
 3 
 ===pure===
 
-  To 1db30110
-  To 1db30720
-  To 1db30010
-=====1db30110=====
+  To 7bf45ca0
+  To 7bf463d0
+  To 7bf45c00
+=====7bf45ca0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30190
-=====1db30190=====
+  To 7bf45de0
+=====7bf45de0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30290
-=====1db30290=====
+  To 7bf45f20
+=====7bf45f20=====
+===dec===
+
 ===def===
 5 
 ===use===
 4 
 ===pure===
 (5,4) 
-  To 1db30210
-=====1db30210=====
+  To 7bf45e80
+=====7bf45e80=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db304e0
-=====1db304e0=====
+  To 7bf461f0
+=====7bf461f0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30560
-=====1db30560=====
+  To 7bf46290
+=====7bf46290=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30090
-=====1db30090=====
+  To 7bf45d40
+=====7bf45d40=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30010
-=====1db30010=====
+  To 7bf45c00
+=====7bf45c00=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2fe90
-=====1db2fe90=====
+  To 7bf45ac0
+=====7bf45ac0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2ed10
-=====1db2ed10=====
+  To 7bf469f0
+=====7bf469f0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30d20
-=====1db30d20=====
+  To 7bf46a90
+=====7bf46a90=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30da0
-=====1db30da0=====
+  To 7bf44800
+=====7bf44800=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2ec10
-=====1db2ec10=====
+=====7bf463d0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e790
-=====1db2e790=====
+  To 7bf46510
+=====7bf46510=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e4f0
-=====1db2e4f0=====
+  To 7bf44800
+=====7bf44800=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-=====1db30720=====
+=====7bf45c00=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db307a0
-=====1db307a0=====
+  To 7bf45ac0
+=====7bf45ac0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db2e4f0
-  To 1db30820
-=====1db2e4f0=====
+  To 7bf469f0
+=====7bf469f0=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-=====1db30820=====
+  To 7bf46a90
+=====7bf46a90=====
+===dec===
+
 ===def===
 
 ===use===
 
 ===pure===
 
-  To 1db30940
-=====1db30940=====
-===def===
+  To 7bf44800
+=====7bf44800=====
+===dec===
 
-===use===
-
-===pure===
-
-  To 1db309c0
-=====1db309c0=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db306a0
-=====1db306a0=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db30010
-=====1db30010=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2fe90
-=====1db2fe90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ed10
-=====1db2ed10=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db30d20
-=====1db30d20=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db30da0
-=====1db30da0=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ec10
-=====1db2ec10=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2e790
-=====1db2e790=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2e4f0
-=====1db2e4f0=====
-===def===
-
-===use===
-
-===pure===
-
-=====1db30010=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2fe90
-=====1db2fe90=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ed10
-=====1db2ed10=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db30d20
-=====1db30d20=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db30da0
-=====1db30da0=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2ec10
-=====1db2ec10=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2e790
-=====1db2e790=====
-===def===
-
-===use===
-
-===pure===
-
-  To 1db2e4f0
-=====1db2e4f0=====
 ===def===
 
 ===use===

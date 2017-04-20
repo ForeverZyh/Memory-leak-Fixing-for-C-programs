@@ -210,6 +210,11 @@ int yywrap(void)        /* called at end of input */
         }
     dfs(root,0);
     function(root);
+    printf("%d\n",cnt_func);
+    for(int i=1;i<=cnt_func;i++)
+    {
+        fun[i].CFG.first->print();
+    }
     return 1;           /* terminate now */
 }
 

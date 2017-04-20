@@ -1437,6 +1437,14 @@ declarator
 
 direct_declarator
 	: IDENTIFIER
+	{
+		$$=new node();
+		forest.push_back($$);
+		$$->str="direct_declarator";
+		if ($1){
+			$$->son.push_back($1);
+			$1->fa=$$;}
+	}
 	| '(' declarator ')'
 	{
 		$$=new node();
@@ -2032,7 +2040,7 @@ initializer
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="initializer";
+		$$->str="initializer1";
 		if ($1){
 			$$->son.push_back($1);
 			$1->fa=$$;}

@@ -31,7 +31,7 @@ expr dfs_expression(node *root)
 		{
 			res.pure.push_back(make_pair(res1.def[0],res.use[0]));
 		}
-		res.use.insert(res.use.end(),res.def.begin(),res.def.end());
+		//res.use.insert(res.use.end(),res.def.begin(),res.def.end());
 		res.merge(res1);
 		return res;
 	}
@@ -66,28 +66,53 @@ void expression(node* root,CFGnode* x)
  * return: the number of identifier in this subtree
  * 
  */
-int dfs_declaration(node *root, CFGnode *x)
+void dfs_declaration(node *root, CFGnode *x)
 {
-	int identifier_count = 0;
-	if (root->str == "direct_declarator")
+	if (root->str=="init_declarator")
 	{
-		for(int i=0;i<root->son.size();i++)
+		if (root->son.size()==2)
 		{
-			string &identifier_name = root->son[i]->str;
-			int identifier_number = string_to_int[identifier_name];
-			if (identifier_number)		// found a IDENTIFIER
+			dfs_declaration(root->son[0],x);
+			if (root->son[1]->str=="initializer1") 
 			{
-				++ identifier_count;
-				x->identifier_list.push_back(identifier_number);
+				expr res=dfs_expression(root->son[1]->son[0]);
+				int id=x->identifier_list.back();
+				expr res1;
+				res1.def.push_back(id);
+				if (res.def.size()==1)
+				{
+					res.pure.push_back(make_pair(res1.def[0],res.def[0]));
+				}
+				else if (res.def.size()==0&&res.use.size()==1)
+				{
+					res.pure.push_back(make_pair(res1.def[0],res.use[0]));
+				}
+				//res.use.insert(res.use.end(),res.def.begin(),res.def.end());
+				res.merge(res1);
+				x->defuse=res;
 			}
 		}
+		else dfs_declaration(root->son[0], x);
 	}
 	else
 	{
 		for(int i=0;i<root->son.size();i++)
-			identifier_count += dfs_declaration(root->son[i], x);
+		{
+			if (root->str == "direct_declarator")
+			{
+				for(int i=0;i<root->son.size();i++)
+				{
+					string &identifier_name = root->son[i]->str;
+					int identifier_number = string_to_int[identifier_name];
+					if (identifier_number)		// found a IDENTIFIER
+					{
+						x->identifier_list.push_back(identifier_number);
+					}
+				}
+			}
+			dfs_declaration(root->son[i], x);
+		}
 	}
-	return identifier_count;
 }
 
 void declaration(node* root, CFGnode* x)
@@ -95,31 +120,24 @@ void declaration(node* root, CFGnode* x)
 	dfs_declaration(root, x);
 }
 
-
-/*pair<CFGnode*,CFGnode*> IF(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
+void dfs_block_item_list(node*root,vector<node*> *list)
 {
-
+	for(int i=0;i<(int)root->son.size();i++)
+	{
+		if (root->son[i]->str=="block_item")
+		{
+			list->push_back(root->son[i]);
+		}
+		else dfs_block_item_list(root->son[i],list);
+	}
 }
 
-pair<CFGnode*,CFGnode*> WHILE(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
-{
-
-}
-
-pair<CFGnode*,CFGnode*> DO_WHILE(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
-{
-
-}
-
-pair<CFGnode*,CFGnode*> FOR(node* root,CFGnode* return_node,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
-{
-
-}*/
 
 pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *continue_node=NULL,CFGnode* break_node=NULL)
 {
 	CFGnode* begin=new CFGnode(),*pre=begin,*end=new CFGnode();
 	if (!return_node) return_node=end;
+	bool flag=true;
 	for(int i=0;i<root->son.size();i++)
 	{
 		if (root->son[i]->str.find("expression")!=-1) /* maybe use substr */
@@ -132,17 +150,17 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		else if (root->son[i]->str=="CONTINUE")
 		{
 			link(pre,continue_node);
-			break;
+			flag=false;
 		}
 		else if (root->son[i]->str=="BREAK")
 		{
 			link(pre,break_node);
-			break;
+			flag=false;
 		}
 		else if (root->son[i]->str=="RETURN")
 		{
 			link(pre,return_node);
-			break;
+			flag=false;
 		}
 		else if (root->son[i]->str=="WHILE")
 		{
@@ -260,6 +278,18 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 			link(pre,dec);
 			pre=dec;
 		}
+		else if (root->son[i]->str=="block_item_list")
+		{
+			vector<node*> list;
+			list.clear();
+			dfs_block_item_list(root,&list);
+			for(int i=0;i<(int)list.size();i++)
+			{
+				pair<CFGnode*,CFGnode*> it=create(list[i],return_node,continue_node,break_node);
+				link(pre,it.first);
+				pre=it.second;
+			}
+		}
 		else
 		{
 			if (root->son.size()==1) 
@@ -268,12 +298,13 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 				delete end;
 				return create(root->son[i],return_node,continue_node,break_node);
 			}
+			//printf("unhandled %s\n",root->str.c_str());
 			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node,continue_node,break_node);
 			link(pre,it.first);
 			pre=it.second;
 		}
 	}
-	link(pre,end);
+	if (flag) link(pre,end);
 	return make_pair(begin,end);
 }
 
@@ -281,7 +312,8 @@ void function(node* root)
 {
 	if (root->str=="declaration")
 	{
-
+		CFGnode* dec=new CFGnode();
+		declaration(root,dec);
 	}
 	else if (root->str=="function_definition")
 	{

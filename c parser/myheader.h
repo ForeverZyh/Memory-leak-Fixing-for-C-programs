@@ -72,6 +72,10 @@ struct CFGnode
 	void print()
 	{
 		printf("=====%x=====\n",this);
+		printf("===dec===\n");
+		for(int i=0;i<(int)identifier_list.size();i++)
+			printf("%d ",identifier_list[i]);
+		printf("\n");
 		defuse.print();
 		for(int i=0;i<(int)succ.size();i++)
 			printf("  To %x\n",succ[i]);

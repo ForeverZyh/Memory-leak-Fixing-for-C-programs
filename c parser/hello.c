@@ -1,11 +1,11 @@
 int a;
 int main()
 {
-	unsigned int *x,*y,*z;
+	unsigned int *x=&a,*y,*z;
 	x=y=z;
 	if (x)
 	{
-		z=y;
+		z=malloc(sizeof(unsigned int));
 	}
 	else
 	{
