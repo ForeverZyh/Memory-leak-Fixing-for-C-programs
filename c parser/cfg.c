@@ -98,14 +98,17 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		else if (root->son[i]->str=="CONTINUE")
 		{
 			link(pre,continue_node);
+			break;
 		}
 		else if (root->son[i]->str=="BREAK")
 		{
 			link(pre,break_node);
+			break;
 		}
 		else if (root->son[i]->str=="RETURN")
 		{
 			link(pre,return_node);
+			break;
 		}
 		else if (root->son[i]->str=="WHILE")
 		{
@@ -223,10 +226,9 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 			link(pre,dec);
 			pre=dec;
 		}
-		else if (root->son[i]->str=="function_definition")
+		/*else if (root->son[i]->str=="function_definition")
 		{
-
-		}
+		}*/
 		else
 		{
 			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node,continue_node,break_node);

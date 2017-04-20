@@ -155,8 +155,8 @@ void count();
 "=="					{ count(); return EQ_OP; }
 "!="					{ count(); return NE_OP; }
 ";"					{ count(); return ';'; }
-("{"|"<%")				{ count(); return '{'; }
-("}"|"%>")				{ count(); return '}'; }
+("{"|"<%")				{ count(); yylval=new node("{"); return '{'; }
+("}"|"%>")				{ count(); yylval=new node("}"); return '}'; }
 ","					{ count(); return ','; }
 ":"					{ count(); return ':'; }
 "="					{ count(); return '='; }
@@ -207,7 +207,8 @@ int yywrap(void)        /* called at end of input */
             root=forest[i];
         }
     dfs(root,0);
-    create(root);
+    pair<CFGnode*,CFGnode*> it=create(root);
+    it.first->print();
     return 1;           /* terminate now */
 }
 

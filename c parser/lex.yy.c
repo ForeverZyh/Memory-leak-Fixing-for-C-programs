@@ -1482,12 +1482,12 @@ YY_RULE_SETUP
 case 83:
 YY_RULE_SETUP
 #line 158 "parser.l"
-{ count(); return '{'; }
+{ count(); yylval=new node("{"); return '{'; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 159 "parser.l"
-{ count(); return '}'; }
+{ count(); yylval=new node("}"); return '}'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
@@ -2638,7 +2638,8 @@ int yywrap(void)        /* called at end of input */
             root=forest[i];
         }
     dfs(root,0);
-    create(root);
+    pair<CFGnode*,CFGnode*> it=create(root);
+    it.first->print();
     return 1;           /* terminate now */
 }
 

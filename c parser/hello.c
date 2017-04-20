@@ -1,13 +1,6 @@
-//this is a comment
+int a;
 int main()
 {
-	unsigned int *x;
-	*x=1;
-	unsigned int *p,*q=x;
-	{
-		int t=*x,p;
-		p=x+1;
-	}
-	printf("%d Hello world!\n",*x);
-	return 0;
+	unsigned int *x,*y,*z;
+	x=y=z;
 }

@@ -42,6 +42,21 @@ struct expr
 		use.insert(use.end(),it.use.begin(),it.use.end());
 		pure.insert(pure.end(),it.pure.begin(),it.pure.end());
 	}
+	void print()
+	{
+		printf("===def===\n");
+		for(int i=0;i<def.size();i++)
+			printf("%d ",def[i].id);
+		printf("\n");
+		printf("===use===\n");
+		for(int i=0;i<use.size();i++)
+			printf("%d ",use[i].id);
+		printf("\n");
+		printf("===pure===\n");
+		for(int i=0;i<pure.size();i++)
+			printf("(%d,%d) ",pure[i].first.id,pure[i].second.id);
+		printf("\n");
+	}
 };
 struct CFGnode
 {
@@ -51,6 +66,15 @@ struct CFGnode
 	{
 		succ.clear();
 		prev.clear();
+	}
+	void print()
+	{
+		printf("=====%x=====\n",this);
+		defuse.print();
+		for(int i=0;i<(int)succ.size();i++)
+			printf("  To %x\n",succ[i]);
+		for(int i=0;i<(int)succ.size();i++)
+			succ[i]->print();
 	}
 };
 typedef node* myYYSTYPE;
