@@ -63,8 +63,10 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
+	bool isRrac;
 	CFGnode():defuse()
 	{
+		isRrac=false;
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
@@ -72,6 +74,7 @@ struct CFGnode
 	void print()
 	{
 		printf("=====%x=====\n",this);
+		if (isRrac) printf("!!}!!\n");
 		printf("===dec===\n");
 		for(int i=0;i<(int)identifier_list.size();i++)
 			printf("%d ",identifier_list[i]);

@@ -266,7 +266,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 			link(pre,expr);
 			link(expr,it.first);
 			link(expr,branch.first);
-			link(expr,jump_end);
+			//link(expr,jump_end);
 			link(it.second,jump_end);
 			link(branch.second,jump_end);
 			pre=jump_end;
@@ -299,9 +299,10 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 				return create(root->son[i],return_node,continue_node,break_node);
 			}
 			//printf("unhandled %s\n",root->str.c_str());
-			pair<CFGnode*,CFGnode*> it=create(root->son[i],return_node,continue_node,break_node);
-			link(pre,it.first);
-			pre=it.second;
+			else // must be compound_statement
+			{
+				end->isRrac=true;
+			}
 		}
 	}
 	if (flag) link(pre,end);

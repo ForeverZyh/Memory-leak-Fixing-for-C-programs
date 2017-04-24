@@ -5,14 +5,14 @@ int main()
 	x=y=z;
 	if (x)
 	{
-		z=y;
+		z=malloc(sizeof(unsigned int));
 	}
 	else
 	{
 		return 0;
 	}
 }
-148
+167
 translation_unit
  translation_unit
   external_declaration
@@ -157,7 +157,28 @@ translation_unit
                             cast_expression
                              unary_expression
                               postfix_expression
-                               y
+                               postfix_expression
+                                malloc
+                               argument_expression_list
+                                assignment_expression
+                                 conditional_expression
+                                  logical_or_expression
+                                   logical_and_expression
+                                    inclusive_or_expression
+                                     exclusive_or_expression
+                                      and_expression
+                                       equality_expression
+                                        relational_expression
+                                         shift_expression
+                                          additive_expression
+                                           multiplicative_expression
+                                            cast_expression
+                                             unary_expression
+                                              type_name
+                                               specifier_qualifier_list
+                                                UNSIGNED
+                                                specifier_qualifier_list
+                                                 INT
           }
         statement
          compound_statement
@@ -186,7 +207,7 @@ translation_unit
           }
     }
 1
-=====7bf44760=====
+=====edb053f0=====
 ===dec===
 
 ===def===
@@ -195,8 +216,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf44910
-=====7bf44910=====
+  To edb055a0
+=====edb055a0=====
 ===dec===
 
 ===def===
@@ -205,8 +226,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf44a50
-=====7bf44a50=====
+  To edb056e0
+=====edb056e0=====
 ===dec===
 3 4 5 
 ===def===
@@ -215,8 +236,8 @@ translation_unit
 1 
 ===pure===
 (3,1) 
-  To 7bf449b0
-=====7bf449b0=====
+  To edb05640
+=====edb05640=====
 ===dec===
 
 ===def===
@@ -225,8 +246,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf45210
-=====7bf45210=====
+  To edb05ea0
+=====edb05ea0=====
 ===dec===
 
 ===def===
@@ -235,8 +256,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf45530
-=====7bf45530=====
+  To edb061c0
+=====edb061c0=====
 ===dec===
 
 ===def===
@@ -245,8 +266,8 @@ translation_unit
 5 
 ===pure===
 (4,5) (3,4) 
-  To 7bf45490
-=====7bf45490=====
+  To edb06120
+=====edb06120=====
 ===dec===
 
 ===def===
@@ -255,8 +276,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf45a20
-=====7bf45a20=====
+  To edb066b0
+=====edb066b0=====
 ===dec===
 
 ===def===
@@ -265,8 +286,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf45b60
-=====7bf45b60=====
+  To edb067f0
+=====edb067f0=====
 ===dec===
 
 ===def===
@@ -275,10 +296,9 @@ translation_unit
 3 
 ===pure===
 
-  To 7bf45ca0
-  To 7bf463d0
-  To 7bf45c00
-=====7bf45ca0=====
+  To edb06930
+  To edb07090
+=====edb06930=====
 ===dec===
 
 ===def===
@@ -287,8 +307,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf45de0
-=====7bf45de0=====
+  To edb06a70
+=====edb06a70=====
 ===dec===
 
 ===def===
@@ -297,18 +317,18 @@ translation_unit
 
 ===pure===
 
-  To 7bf45f20
-=====7bf45f20=====
+  To edb06bb0
+=====edb06bb0=====
 ===dec===
 
 ===def===
 5 
 ===use===
-4 
+6 
 ===pure===
-(5,4) 
-  To 7bf45e80
-=====7bf45e80=====
+(5,6) 
+  To edb06b10
+=====edb06b10=====
 ===dec===
 
 ===def===
@@ -317,8 +337,9 @@ translation_unit
 
 ===pure===
 
-  To 7bf461f0
-=====7bf461f0=====
+  To edb069d0
+=====edb069d0=====
+!!}!!
 ===dec===
 
 ===def===
@@ -327,8 +348,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf46290
-=====7bf46290=====
+  To edb06890
+=====edb06890=====
 ===dec===
 
 ===def===
@@ -337,8 +358,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf45d40
-=====7bf45d40=====
+  To edb06750
+=====edb06750=====
 ===dec===
 
 ===def===
@@ -347,8 +368,9 @@ translation_unit
 
 ===pure===
 
-  To 7bf45c00
-=====7bf45c00=====
+  To edb05490
+=====edb05490=====
+!!}!!
 ===dec===
 
 ===def===
@@ -357,8 +379,7 @@ translation_unit
 
 ===pure===
 
-  To 7bf45ac0
-=====7bf45ac0=====
+=====edb07090=====
 ===dec===
 
 ===def===
@@ -367,8 +388,8 @@ translation_unit
 
 ===pure===
 
-  To 7bf469f0
-=====7bf469f0=====
+  To edb071d0
+=====edb071d0=====
 ===dec===
 
 ===def===
@@ -377,96 +398,9 @@ translation_unit
 
 ===pure===
 
-  To 7bf46a90
-=====7bf46a90=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf44800
-=====7bf44800=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-=====7bf463d0=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf46510
-=====7bf46510=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf44800
-=====7bf44800=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-=====7bf45c00=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf45ac0
-=====7bf45ac0=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf469f0
-=====7bf469f0=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf46a90
-=====7bf46a90=====
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To 7bf44800
-=====7bf44800=====
+  To edb05490
+=====edb05490=====
+!!}!!
 ===dec===
 
 ===def===

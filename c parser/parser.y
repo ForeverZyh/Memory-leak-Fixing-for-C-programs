@@ -2251,7 +2251,7 @@ labeled_statement
 
 compound_statement
 	: '{' '}'
-	| '{'  block_item_list '}'
+	| '{' block_item_list '}'
 	{
 		$$=new node();
 		forest.push_back($$);
