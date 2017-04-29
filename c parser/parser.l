@@ -35,6 +35,7 @@ int cnt_func=0;
 int total_string=0;
 vector<string> int_to_string;
 int line=0;
+int malloc_cnt=0;
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -135,16 +136,16 @@ void count();
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ count(); yylval=new node("STRING_LITERAL"); return STRING_LITERAL; }
 
 "..."					{ count(); return ELLIPSIS; }
-">>="					{ count(); return RIGHT_ASSIGN; }
-"<<="					{ count(); return LEFT_ASSIGN; }
-"+="					{ count(); return ADD_ASSIGN; }
-"-="					{ count(); return SUB_ASSIGN; }
-"*="					{ count(); return MUL_ASSIGN; }
-"/="					{ count(); return DIV_ASSIGN; }
-"%="					{ count(); return MOD_ASSIGN; }
-"&="					{ count(); return AND_ASSIGN; }
-"^="					{ count(); return XOR_ASSIGN; }
-"|="					{ count(); return OR_ASSIGN; }
+">>="					{ count(); yylval=new node(">>="); return RIGHT_ASSIGN; }
+"<<="					{ count(); yylval=new node("<<="); return LEFT_ASSIGN; }
+"+="					{ count(); yylval=new node("+="); return ADD_ASSIGN; }
+"-="					{ count(); yylval=new node("-="); return SUB_ASSIGN; }
+"*="					{ count(); yylval=new node("*="); return MUL_ASSIGN; }
+"/="					{ count(); yylval=new node("/="); return DIV_ASSIGN; }
+"%="					{ count(); yylval=new node("%="); return MOD_ASSIGN; }
+"&="					{ count(); yylval=new node("&="); return AND_ASSIGN; }
+"^="					{ count(); yylval=new node("^="); return XOR_ASSIGN; }
+"|="					{ count(); yylval=new node("|="); return OR_ASSIGN; }
 ">>"					{ count(); return RIGHT_OP; }
 "<<"					{ count(); return LEFT_OP; }
 "++"					{ count(); return INC_OP; }
@@ -209,6 +210,7 @@ int yywrap(void)        /* called at end of input */
             root=forest[i];
         }
     dfs(root,0);
+    CFGnode::rac_cnt=0;
     function(root);
     printf("%d\n",cnt_func);
     for(int i=1;i<=cnt_func;i++)

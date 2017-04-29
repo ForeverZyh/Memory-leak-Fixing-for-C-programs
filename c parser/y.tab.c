@@ -616,10 +616,10 @@ static const yytype_uint16 yyrline[] =
     1870,  1879,  1888,  1897,  1906,  1921,  1933,  1948,  1963,  1975,
     1987,  1988,  1997,  2006,  2021,  2030,  2039,  2051,  2063,  2072,
     2087,  2102,  2114,  2123,  2138,  2147,  2151,  2163,  2172,  2181,
-    2190,  2199,  2208,  2220,  2229,  2241,  2253,  2254,  2269,  2278,
-    2293,  2302,  2314,  2315,  2327,  2342,  2354,  2369,  2381,  2393,
-    2408,  2426,  2441,  2462,  2463,  2469,  2475,  2481,  2493,  2502,
-    2517,  2526,  2538,  2556,  2574,  2583
+    2190,  2199,  2208,  2220,  2229,  2241,  2253,  2254,  2266,  2275,
+    2290,  2299,  2311,  2312,  2324,  2339,  2351,  2366,  2378,  2390,
+    2405,  2423,  2438,  2459,  2460,  2466,  2472,  2478,  2490,  2499,
+    2514,  2523,  2535,  2553,  2571,  2580
 };
 #endif
 
@@ -4845,15 +4845,12 @@ yyreduce:
 		if ((yyvsp[-1])){
 			(yyval)->son.push_back((yyvsp[-1]));
 			(yyvsp[-1])->fa=(yyval);}
-		if ((yyvsp[0])){
-			(yyval)->son.push_back((yyvsp[0]));
-			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4853 "y.tab.c" /* yacc.c:1646  */
+#line 4850 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 248:
-#line 2270 "parser.y" /* yacc.c:1646  */
+#line 2267 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4862,11 +4859,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4866 "y.tab.c" /* yacc.c:1646  */
+#line 4863 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 249:
-#line 2279 "parser.y" /* yacc.c:1646  */
+#line 2276 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4878,11 +4875,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4882 "y.tab.c" /* yacc.c:1646  */
+#line 4879 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 250:
-#line 2294 "parser.y" /* yacc.c:1646  */
+#line 2291 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4891,11 +4888,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4895 "y.tab.c" /* yacc.c:1646  */
+#line 4892 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 251:
-#line 2303 "parser.y" /* yacc.c:1646  */
+#line 2300 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4904,11 +4901,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4908 "y.tab.c" /* yacc.c:1646  */
+#line 4905 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 253:
-#line 2316 "parser.y" /* yacc.c:1646  */
+#line 2313 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4917,11 +4914,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[-1]));
 			(yyvsp[-1])->fa=(yyval);}
 	}
-#line 4921 "y.tab.c" /* yacc.c:1646  */
+#line 4918 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 254:
-#line 2328 "parser.y" /* yacc.c:1646  */
+#line 2325 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4936,11 +4933,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4940 "y.tab.c" /* yacc.c:1646  */
+#line 4937 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 255:
-#line 2343 "parser.y" /* yacc.c:1646  */
+#line 2340 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4952,11 +4949,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4956 "y.tab.c" /* yacc.c:1646  */
+#line 4953 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 256:
-#line 2355 "parser.y" /* yacc.c:1646  */
+#line 2352 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4968,11 +4965,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4972 "y.tab.c" /* yacc.c:1646  */
+#line 4969 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 257:
-#line 2370 "parser.y" /* yacc.c:1646  */
+#line 2367 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -4984,11 +4981,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 4988 "y.tab.c" /* yacc.c:1646  */
+#line 4985 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 258:
-#line 2382 "parser.y" /* yacc.c:1646  */
+#line 2379 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5000,11 +4997,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[-2]));
 			(yyvsp[-2])->fa=(yyval);}
 	}
-#line 5004 "y.tab.c" /* yacc.c:1646  */
+#line 5001 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 259:
-#line 2394 "parser.y" /* yacc.c:1646  */
+#line 2391 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5019,11 +5016,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5023 "y.tab.c" /* yacc.c:1646  */
+#line 5020 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 260:
-#line 2409 "parser.y" /* yacc.c:1646  */
+#line 2406 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5041,11 +5038,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5045 "y.tab.c" /* yacc.c:1646  */
+#line 5042 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 261:
-#line 2427 "parser.y" /* yacc.c:1646  */
+#line 2424 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5060,11 +5057,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5064 "y.tab.c" /* yacc.c:1646  */
+#line 5061 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 262:
-#line 2442 "parser.y" /* yacc.c:1646  */
+#line 2439 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5082,41 +5079,41 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5086 "y.tab.c" /* yacc.c:1646  */
+#line 5083 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 264:
-#line 2464 "parser.y" /* yacc.c:1646  */
+#line 2461 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
 		(yyval)->str="CONTINUE";
 	}
-#line 5096 "y.tab.c" /* yacc.c:1646  */
+#line 5093 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 265:
-#line 2470 "parser.y" /* yacc.c:1646  */
+#line 2467 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
 		(yyval)->str="BREAK";
 	}
-#line 5106 "y.tab.c" /* yacc.c:1646  */
+#line 5103 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 266:
-#line 2476 "parser.y" /* yacc.c:1646  */
+#line 2473 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
 		(yyval)->str="RETURN";
 	}
-#line 5116 "y.tab.c" /* yacc.c:1646  */
+#line 5113 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 267:
-#line 2482 "parser.y" /* yacc.c:1646  */
+#line 2479 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5125,11 +5122,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[-1]));
 			(yyvsp[-1])->fa=(yyval);}
 	}
-#line 5129 "y.tab.c" /* yacc.c:1646  */
+#line 5126 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 268:
-#line 2494 "parser.y" /* yacc.c:1646  */
+#line 2491 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5138,11 +5135,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5142 "y.tab.c" /* yacc.c:1646  */
+#line 5139 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 269:
-#line 2503 "parser.y" /* yacc.c:1646  */
+#line 2500 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5154,11 +5151,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5158 "y.tab.c" /* yacc.c:1646  */
+#line 5155 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 270:
-#line 2518 "parser.y" /* yacc.c:1646  */
+#line 2515 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5167,11 +5164,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5171 "y.tab.c" /* yacc.c:1646  */
+#line 5168 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 271:
-#line 2527 "parser.y" /* yacc.c:1646  */
+#line 2524 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5180,11 +5177,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5184 "y.tab.c" /* yacc.c:1646  */
+#line 5181 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 272:
-#line 2539 "parser.y" /* yacc.c:1646  */
+#line 2536 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5202,11 +5199,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5206 "y.tab.c" /* yacc.c:1646  */
+#line 5203 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 273:
-#line 2557 "parser.y" /* yacc.c:1646  */
+#line 2554 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5221,11 +5218,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5225 "y.tab.c" /* yacc.c:1646  */
+#line 5222 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 274:
-#line 2575 "parser.y" /* yacc.c:1646  */
+#line 2572 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5234,11 +5231,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5238 "y.tab.c" /* yacc.c:1646  */
+#line 5235 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 275:
-#line 2584 "parser.y" /* yacc.c:1646  */
+#line 2581 "parser.y" /* yacc.c:1646  */
     {
 		(yyval)=new node();
 		forest.push_back((yyval));
@@ -5250,11 +5247,11 @@ yyreduce:
 			(yyval)->son.push_back((yyvsp[0]));
 			(yyvsp[0])->fa=(yyval);}
 	}
-#line 5254 "y.tab.c" /* yacc.c:1646  */
+#line 5251 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 5258 "y.tab.c" /* yacc.c:1646  */
+#line 5255 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -5482,5 +5479,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 2598 "parser.y" /* yacc.c:1906  */
+#line 2595 "parser.y" /* yacc.c:1906  */
 

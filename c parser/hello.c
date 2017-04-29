@@ -1,14 +1,14 @@
-int a;
+int *x;
 int main()
 {
-	unsigned int *x=&a,*y,*z;
-	x=y=z;
-	if (x)
-	{
-		z=malloc(sizeof(unsigned int));
-	}
+	int *y=malloc(sizeof(int));
+	x=malloc(sizeof(int));
+	int a=1;
+	*y=2;
+	if (*y>a) x=y;
 	else
 	{
-		return 0;
+		a++;
+		y=malloc(sizeof(int));
 	}
 }

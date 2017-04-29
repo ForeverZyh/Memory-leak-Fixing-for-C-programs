@@ -2259,9 +2259,6 @@ compound_statement
 		if ($2){
 			$$->son.push_back($2);
 			$2->fa=$$;}
-		if ($3){
-			$$->son.push_back($3);
-			$3->fa=$$;}
 	}
 	;
 

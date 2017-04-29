@@ -5,6 +5,7 @@
 #include <map>
 #include <iostream>
 #include <utility>
+#include <stack>
 using namespace std;
 struct node
 {
@@ -63,18 +64,32 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
-	bool isRrac;
+	int isRrac,isLrac;
+	bool vis;
+	static int rac_cnt;
 	CFGnode():defuse()
 	{
-		isRrac=false;
+		isRrac=isLrac=0;
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
+		vis=false;
+	}
+	void addL(int id)
+	{
+		isLrac=id;
+	}
+	void addR(int id)
+	{
+		isRrac=id;
 	}
 	void print()
 	{
+		if (vis) return;
+		vis=true;
 		printf("=====%x=====\n",this);
-		if (isRrac) printf("!!}!!\n");
+		if (isRrac) printf("!!Right:%d!!\n",isRrac);
+		if (isLrac) printf("!!Left:%d!!\n",isLrac);
 		printf("===dec===\n");
 		for(int i=0;i<(int)identifier_list.size();i++)
 			printf("%d ",identifier_list[i]);
