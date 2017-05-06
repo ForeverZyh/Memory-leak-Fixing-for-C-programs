@@ -26,16 +26,17 @@ WS  [ \t\v\n\f]
 #define YYSTYPE myYYSTYPE
 #include "y.tab.h"
 #include "cfg.h"
-int sym_table[10000];
+#include "point_analysis.h"
+int sym_table[MAXN];
 vector<node*> forest;
 int cnt;
 map<string,int> string_to_int;
-func fun[10000];
-int cnt_func=0;
+vector<func> fun;
 int total_string=0;
 vector<string> int_to_string;
-int line=0;
+int line=1;
 int malloc_cnt=0;
+vector<CFGnode*> ext_dec;
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -211,12 +212,32 @@ int yywrap(void)        /* called at end of input */
         }
     dfs(root,0);
     CFGnode::rac_cnt=0;
+    CFGnode::flag=1;
     function(root);
-    printf("%d\n",cnt_func);
-    for(int i=1;i<=cnt_func;i++)
+
+    printf("%d\n",fun.size());
+    for(int i=0;i<fun.size();i++)
     {
         fun[i].CFG.first->print();
     }
+
+    for(int i=0;i<fun.size();i++)
+        if (int_to_string[fun[i].id]=="main")
+        {
+            CFGnode::flag++;
+            if (fun[i].parms) ext_dec.push_back(fun[i].parms);
+            for(int j=1;j<ext_dec.size();j++)
+            {
+                link(ext_dec[j-1],ext_dec[j]);
+            }
+            if (ext_dec.size()) 
+            {
+                link(ext_dec[ext_dec.size()-1],fun[i].CFG.first);
+                point_analysis(ext_dec[0]);
+            }
+            else
+                point_analysis(fun[i].CFG.first);
+        }
     return 1;           /* terminate now */
 }
 

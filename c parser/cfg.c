@@ -1,10 +1,12 @@
 #include "myheader.h"
+#define MAGIC_NUMBER 999999
 extern map<string,int> string_to_int;
-extern func fun[10000];
-extern int cnt_func;
+extern vector<func> fun;
 extern int CFGnode::rac_cnt;
+extern int CFGnode::flag;
 stack<int> rac;
 extern int malloc_cnt;
+extern vector<CFGnode*> ext_dec;
 
 void link(CFGnode* a,CFGnode* b)
 {
@@ -41,17 +43,26 @@ expr dfs_expression(node *root)
 		res.merge(res1);
 		return res;
 	}
+	else if (root->str=="function")
+	{
+		expr res;
+		int t=-MAGIC_NUMBER;
+		if (root->son[0]->son[0]->str=="malloc")
+		{
+			++malloc_cnt;
+			t=-malloc_cnt;
+		}
+		pointer po(t);
+		po.unary.push_back(1);
+		res.use.push_back(po);
+		return res;
+	}
 	else 
 	{
 		int t=string_to_int[root->str];
 		if (t) 
 		{
 			expr res;
-			if (root->str=="malloc")
-			{
-				++malloc_cnt;
-				t=-malloc_cnt;
-			}
 			res.use.push_back(pointer(t));
 			return res;
 		}
@@ -350,30 +361,31 @@ void function(node* root)
 	{
 		CFGnode* dec=new CFGnode();
 		declaration(root,dec);
+		ext_dec.push_back(dec);
 	}
 	else if (root->str=="function_definition")
 	{
-		++cnt_func;
+		func f;
 		if (root->son.size()==3)
 		{
 
-			fun[cnt_func].CFG=create(root->son[2]);
+			f.CFG=create(root->son[2]);
 			CFGnode* tmp=new CFGnode();
 			declaration(root->son[1],tmp);
-			fun[cnt_func].id=tmp->identifier_list[0];
+			f.id=tmp->identifier_list[0];
 			delete tmp;
 		}
 		else
 		{
-			fun[cnt_func].CFG=create(root->son[3]);
+			f.CFG=create(root->son[3]);
 			CFGnode* tmp=new CFGnode(),*list=new CFGnode();
 			declaration(root->son[1],tmp);
-			fun[cnt_func].id=tmp->identifier_list[0];
+			f.id=tmp->identifier_list[0];
 			declaration(root->son[2],list);
-			fun[cnt_func].parms=list->identifier_list;
+			f.parms=list;
 			delete tmp;
-			delete list;
 		}
+		fun.push_back(f);
 	}
 	else
 	{

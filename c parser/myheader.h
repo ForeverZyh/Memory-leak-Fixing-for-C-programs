@@ -6,6 +6,9 @@
 #include <iostream>
 #include <utility>
 #include <stack>
+#include <queue>
+#include <unordered_set>
+#define MAXN 10000
 using namespace std;
 struct node
 {
@@ -59,30 +62,53 @@ struct expr
 		printf("\n");
 	}
 };
+struct G1
+{
+	struct ele
+	{
+		int fa;
+		unordered_set<int> p;
+	}f[MAXN];
+	bool isUpdate;
+	int find(int x){return (f[x].fa==x)?x:f[x].fa=find(f[x].fa);}
+	void Union(int x,int y)
+	{
+		int u=find(x),v=find(y);
+		if (u!=v)
+		{
+			isUpdate=true;
+			f[v].fa=u;
+			f[u].p.insert(f[v].p.begin(),f[v].p.end());
+		}
+	}
+	G1()
+	{
+		isUpdate=false;
+	}
+};
 struct CFGnode
 {
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
-	int isRrac,isLrac,ln;
-	bool vis;
+	int isRrac,isLrac,ln,vis;
+	G1 g1;
 	static int rac_cnt;
-	CFGnode():defuse()
+	static int flag;
+	CFGnode():defuse(),g1()
 	{
-		isRrac=isLrac=ln=0;
+		isRrac=isLrac=ln=vis=0;
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
-		vis=false;
 	}
-	CFGnode(int line):defuse()
+	CFGnode(int line):defuse(),g1()
 	{
-		isRrac=isLrac=0;
+		isRrac=isLrac=vis=0;
 		ln=line;
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
-		vis=false;
 	}
 	void addL(int id)
 	{
@@ -94,8 +120,8 @@ struct CFGnode
 	}
 	void print()
 	{
-		if (vis) return;
-		vis=true;
+		if (vis==flag) return;
+		vis=flag;
 		printf("=====%x=====\n",this);
 		if (isRrac) printf("!!Right:%d!!\n",isRrac);
 		if (isLrac) printf("!!Left:%d!!\n",isLrac);
@@ -115,7 +141,7 @@ struct func
 {
 	pair<CFGnode*,CFGnode*> CFG;
 	int id;
-	vector<int> parms;
+	CFGnode* parms;
 };
 typedef node* myYYSTYPE;
 int hash_string_to_int(const string&);

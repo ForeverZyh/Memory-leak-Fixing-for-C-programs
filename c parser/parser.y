@@ -187,7 +187,7 @@ postfix_expression
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="postfix_expression";
+		$$->str="function";
 		if ($1){
 			$$->son.push_back($1);
 			$1->fa=$$;}
@@ -196,7 +196,7 @@ postfix_expression
 	{
 		$$=new node();
 		forest.push_back($$);
-		$$->str="postfix_expression";
+		$$->str="function";
 		if ($1){
 			$$->son.push_back($1);
 			$1->fa=$$;}

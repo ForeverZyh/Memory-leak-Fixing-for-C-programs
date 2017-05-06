@@ -5,10 +5,11 @@ int main()
 	x=malloc(sizeof(int));
 	int a=1;
 	*y=2;
-	if (*y>a) x=y;
+	if (*y>a) 
+		x=y;
 	else
 	{
 		a++;
-		y=malloc(sizeof(int));
+		y=malloc(sizeof(a));
 	}
 }
