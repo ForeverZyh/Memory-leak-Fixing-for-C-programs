@@ -2,6 +2,7 @@
 queue<CFGnode*> h;
 static int Next[MAXN];
 extern int environment_identifiers::unique_identifier_count;
+extern map<pair<int, int>, int> environment_identifiers::added;
 void dfs_add(CFGnode* u)
 {
 	u->vis=u->flag;
