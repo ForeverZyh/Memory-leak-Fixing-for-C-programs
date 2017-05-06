@@ -103,9 +103,14 @@ int hash_string_to_int(const string&);
  * maintain identifiers in nested environments.
  *
  * Author : Yicheng Lee
+ *
+ * rule: for every line, two definitions of identifier must have different identifier name.
  */
 namespace environment_identifiers
 {
+	#define PII pair<int, int>
+	#define c0 first
+	#define c1 second
 	const int IDENTIFIER_NUMBER_LIMIT = 1000010;
 	
 	vector<int> identifier_list[IDENTIFIER_NUMBER_LIMIT];
@@ -121,9 +126,7 @@ namespace environment_identifiers
 
 	int unique_identifier_count;
 
-	map<pair<int, int>, int> MAP;
-
-	int added[IDENTIFIER_NUMBER_LIMIT];
+	map<pair<int, int>, int> added;
 
 	void init()
 	{
@@ -134,9 +137,9 @@ namespace environment_identifiers
 		unique_identifier_count = 0;
 
 		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
-			added[i] = 0;
-		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
 			identifier_list[i].clear();
+
+		added.clear();
 	}
 	int get_unique_identifier_count()
 	{
@@ -150,10 +153,10 @@ namespace environment_identifiers
 	{
 		int unique_identifier_num;
 		
-		if (!added[line_no])
-			added[line_no] = ++unique_identifier_count;
+		if (!added[PII(identifier_num, line_no)])
+			added[PII(identifier_num, line_no)] = ++unique_identifier_count;
 		
-		unique_identifier_num = added[line_no];
+		unique_identifier_num = added[PII(identifier_num, line_no)];
 
 		identifier_list[identifier_num].push_back(unique_identifier_num);
 		return unique_identifier_num;
