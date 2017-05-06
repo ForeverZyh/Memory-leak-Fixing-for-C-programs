@@ -11,6 +11,7 @@
 #include <unordered_set>
 #define MAXN 10000
 using namespace std;
+struct environment_identifiers;
 struct node
 {
 	string str;
@@ -29,6 +30,10 @@ struct pointer
 		id=0;unary.clear();
 	}
 	pointer(int x)
+	{
+		id=x;unary.clear();
+	}
+	void init(int x)
 	{
 		id=x;unary.clear();
 	}
@@ -63,13 +68,105 @@ struct expr
 		printf("\n");
 	}
 };
+/*
+ *
+ * maintain identifiers in nested environments.
+ *
+ * Author : Yicheng Lee
+ */
+struct environment_identifiers
+{
+	#define IDENTIFIER_NUMBER_LIMIT MAXN
+	
+	vector<int> identifier_list[IDENTIFIER_NUMBER_LIMIT];
+	
+	/*
+	 * number in identifier_stack:
+	 *
+	 * -> positive : = identifier_number
+	 * -> negative : = -bracket_number
+	 *
+	 */
+	int identifier_stack[IDENTIFIER_NUMBER_LIMIT], identifier_stack_top;
+
+	static int unique_identifier_count;
+
+	static map<pair<int, int>, int> MAP;
+
+	int added[IDENTIFIER_NUMBER_LIMIT];
+
+	void init()
+	{
+		identifier_stack_top = 0;
+		/*
+		 * to do : add some initial global identifier.
+		 */
+		unique_identifier_count = 0;
+
+		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
+			added[i] = 0;
+		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
+			identifier_list[i].clear();
+	}
+	static int get_unique_identifier_count()
+	{
+		return unique_identifier_count;
+	}
+	static int plus1_unique_identifier_count()
+	{
+		return ++unique_identifier_count;
+	}
+	int add(int identifier_num, int line_no)
+	{
+		int unique_identifier_num;
+		
+		if (!added[line_no])
+			added[line_no] = ++unique_identifier_count;
+		
+		unique_identifier_num = added[line_no];
+
+		identifier_list[identifier_num].push_back(unique_identifier_num);
+		return unique_identifier_num;
+	}
+	int get(int identifier_num)
+	{
+		if (identifier_num<0) return identifier_num;
+		if (identifier_list[identifier_num].empty())
+		{
+			fprintf(stderr, "%s %d\n", "No such identifier :  required identifier num =", identifier_num);
+			return -1;
+		}
+		return identifier_list[identifier_num].back();
+	}
+	void left_bracket(int bracket_num)
+	{
+		identifier_stack[++identifier_stack_top] = -bracket_num;
+	}
+	void right_bracket(int bracket_num)
+	{
+		while (identifier_stack[identifier_stack_top] != -bracket_num)
+		{
+			int identifier_num = identifier_stack[identifier_stack_top];
+			identifier_list[identifier_num].pop_back();
+			--identifier_stack_top;
+		}
+		--identifier_stack_top;
+	}
+};
+
 struct G1
 {
 	struct ele
 	{
 		int fa;
 		unordered_set<int> p;
-	}f[MAXN];
+		ele(int x)
+		{
+			fa=x;
+			p.clear();
+		}
+	};
+	vector<ele> f;
 	bool isUpdate;
 	int find(int x){return (f[x].fa==x)?x:f[x].fa=find(f[x].fa);}
 	void Union(int x,int y)
@@ -84,7 +181,34 @@ struct G1
 	}
 	G1()
 	{
+		f.clear();
 		isUpdate=false;
+	}
+	void init(int len)
+	{
+		if (f.size()<=len) isUpdate=true;
+		for(int i=f.size();i<=len;i++)
+		{
+			f.push_back(ele(i));
+		}
+	}
+	void print()
+	{
+		for(int i=1;i<f.size();i++)
+		{
+			int t=find(f[i].fa);
+			printf("  %d:",i);
+			auto it=f[t].p.begin();
+			for(;it!=f[t].p.end();it++)
+				printf(" %d",*it);
+			printf("\n");
+		}
+	}
+	void merge(int x,const unordered_set<int>&q)
+	{
+		int pre=f[x].p.size();
+		f[x].p.insert(q.begin(),q.end());
+		if (pre!=f[x].p.size()) isUpdate=true;
 	}
 };
 struct CFGnode
@@ -96,8 +220,10 @@ struct CFGnode
 	G1 g1;
 	static int rac_cnt;
 	static int flag;
+	environment_identifiers env;
 	CFGnode():defuse(),g1()
 	{
+		env.init();
 		isRrac=isLrac=ln=vis=0;
 		succ.clear();
 		prev.clear();
@@ -105,6 +231,7 @@ struct CFGnode
 	}
 	CFGnode(int line):defuse(),g1()
 	{
+		env.init();
 		isRrac=isLrac=vis=0;
 		ln=line;
 		succ.clear();
@@ -127,6 +254,8 @@ struct CFGnode
 		if (isRrac) printf("!!Right:%d!!\n",isRrac);
 		if (isLrac) printf("!!Left:%d!!\n",isLrac);
 		printf("line=%d\n",ln);
+		printf("===G1===\n");
+		g1.print();
 		printf("===dec===\n");
 		for(int i=0;i<(int)identifier_list.size();i++)
 			printf("%d ",identifier_list[i]);
@@ -143,93 +272,12 @@ struct func
 	pair<CFGnode*,CFGnode*> CFG;
 	int id;
 	CFGnode* parms;
+	func()
+	{
+		//CFG=make_pair(NULL,NULL);
+		id=0;
+		parms=NULL;
+	}
 };
 typedef node* myYYSTYPE;
 int hash_string_to_int(const string&);
-
-
-
-/*
- *
- * maintain identifiers in nested environments.
- *
- * Author : Yicheng Lee
- */
-namespace environment_identifiers
-{
-	const int IDENTIFIER_NUMBER_LIMIT = 1000010;
-	
-	vector<int> identifier_list[IDENTIFIER_NUMBER_LIMIT];
-	
-	/*
-	 * number in identifier_stack:
-	 *
-	 * -> positive : = identifier_number
-	 * -> negative : = -bracket_number
-	 *
-	 */
-	int identifier_stack[IDENTIFIER_NUMBER_LIMIT], identifier_stack_top;
-
-	int unique_identifier_count;
-
-	map<pair<int, int>, int> MAP;
-
-	int added[IDENTIFIER_NUMBER_LIMIT];
-
-	void init()
-	{
-		identifier_stack_top = 0;
-		/*
-		 * to do : add some initial global identifier.
-		 */
-		unique_identifier_count = 0;
-
-		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
-			added[i] = 0;
-		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
-			identifier_list[i].clear();
-	}
-	int get_unique_identifier_count()
-	{
-		return unique_identifier_count;
-	}
-	int plus1_unique_identifier_count()
-	{
-		return ++unique_identifier_count;
-	}
-	int add(int identifier_num, int line_no)
-	{
-		int unique_identifier_num;
-		
-		if (!added[line_no])
-			added[line_no] = ++unique_identifier_count;
-		
-		unique_identifier_num = added[line_no];
-
-		identifier_list[identifier_num].push_back(unique_identifier_num);
-		return unique_identifier_num;
-	}
-	int get(int identifier_num)
-	{
-		if (identifier_list[identifier_num].empty())
-		{
-			fprintf(stderr, "%s %d\n", "No such identifier :  required identifier num =", identifier_num);
-			return -1;
-		}
-		return identifier_list[identifier_num].back();
-	}
-	void left_bracket(int bracket_num)
-	{
-		identifier_stack[++identifier_stack_top] = -bracket_num;
-	}
-	void right_bracket(int bracket_num)
-	{
-		while (identifier_stack[identifier_stack_top] != -bracket_num)
-		{
-			int identifier_num = identifier_stack[identifier_stack_top];
-			identifier_list[identifier_num].pop_back();
-			--identifier_stack_top;
-		}
-		--identifier_stack_top;
-	}
-}

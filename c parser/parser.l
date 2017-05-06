@@ -213,6 +213,7 @@ int yywrap(void)        /* called at end of input */
     dfs(root,0);
     CFGnode::rac_cnt=0;
     CFGnode::flag=1;
+    ext_dec.clear();
     function(root);
 
     printf("%d\n",fun.size());
@@ -237,7 +238,11 @@ int yywrap(void)        /* called at end of input */
             }
             else
                 point_analysis(fun[i].CFG.first);
+            CFGnode::flag++;
+            printf("\n===================================\n");
+            fun[i].CFG.first->print();
         }
+
     return 1;           /* terminate now */
 }
 

@@ -19,7 +19,9 @@ expr dfs_expression(node *root)
 	if (root->str=="unary_expression"&&(root->son[0]->str=="*"||root->son[0]->str=="&"))
 	{
 		expr res=dfs_expression(root->son[1]);
-		res.use[0].unary.push_back(root->son[0]->str=="&");
+		int mk=root->son[0]->str=="&";
+		if (res.use[0].unary.size()&&res.use[0].unary.back()!=mk) res.use[0].unary.pop_back();
+		else res.use[0].unary.push_back(mk);
 		return res;
 	}
 	else if (root->str=="assignment_expression"&&root->son.size()==3)
@@ -45,17 +47,29 @@ expr dfs_expression(node *root)
 	}
 	else if (root->str=="function")
 	{
-		expr res;
-		int t=-MAGIC_NUMBER;
 		if (root->son[0]->son[0]->str=="malloc")
 		{
+			expr res;
 			++malloc_cnt;
-			t=-malloc_cnt;
+			pointer po(-malloc_cnt);
+			po.unary.push_back(1);
+			res.use.push_back(po);
+			return res;
 		}
-		pointer po(t);
-		po.unary.push_back(1);
-		res.use.push_back(po);
-		return res;
+		else if (root->son[0]->son[0]->str=="free")
+		{
+			expr res=dfs_expression(root->son[1]);
+			res.def=res.use;
+			pointer po(-MAGIC_NUMBER);
+			po.unary.push_back(1);
+			res.pure.push_back(make_pair(res.def[0],po));
+			return res;
+		}
+		else
+		{
+			expr res;
+			return res;
+		}
 	}
 	else 
 	{

@@ -11,5 +11,6 @@ int main()
 	{
 		a++;
 		y=malloc(sizeof(a));
+		free(y);
 	}
 }
