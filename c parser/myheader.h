@@ -64,12 +64,21 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
-	int isRrac,isLrac;
+	int isRrac,isLrac,ln;
 	bool vis;
 	static int rac_cnt;
 	CFGnode():defuse()
 	{
+		isRrac=isLrac=ln=0;
+		succ.clear();
+		prev.clear();
+		identifier_list.clear();
+		vis=false;
+	}
+	CFGnode(int line):defuse()
+	{
 		isRrac=isLrac=0;
+		ln=line;
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
@@ -90,6 +99,7 @@ struct CFGnode
 		printf("=====%x=====\n",this);
 		if (isRrac) printf("!!Right:%d!!\n",isRrac);
 		if (isLrac) printf("!!Left:%d!!\n",isLrac);
+		printf("line=%d\n",ln);
 		printf("===dec===\n");
 		for(int i=0;i<(int)identifier_list.size();i++)
 			printf("%d ",identifier_list[i]);

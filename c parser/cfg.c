@@ -166,8 +166,8 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 	{
 		if (root->son[i]->str.find("expression")!=-1) /* maybe use substr */
 		{
-			CFGnode* newnode=new CFGnode();
-			expression(root,newnode);
+			CFGnode* newnode=new CFGnode(root->son[i]->ln);
+			expression(root->son[i],newnode);
 			link(pre,newnode);
 			pre=newnode;
 		}
@@ -190,7 +190,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="WHILE")
 		{
-			CFGnode* expr=new CFGnode(),*jump_end=new CFGnode();
+			CFGnode* expr=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode();
 			expression(root->son[i]->son[0],expr);
 			link(pre,expr);
 			link(expr,jump_end);
@@ -202,7 +202,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="DO WHILE")
 		{
-			CFGnode* expr=new CFGnode(),*jump_end=new CFGnode();
+			CFGnode* expr=new CFGnode(root->son[i]->son[1]->ln),*jump_end=new CFGnode();
 			expression(root->son[i]->son[1],expr);
 			if (root->son[i]->son[0]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
 			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[0],return_node,expr,jump_end);
@@ -216,7 +216,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		{
 			if (root->son[i]->son.size()==3)  /*FOR(d;x;)*/
 			{
-				CFGnode *dec=new CFGnode(),*jump_end=new CFGnode(),*expr=new CFGnode();
+				CFGnode *dec=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln);
 				dec->addL(++CFGnode::rac_cnt);
 				jump_end->addR(CFGnode::rac_cnt);
 				declaration(root->son[i]->son[0],dec);
@@ -232,7 +232,8 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 			}
 			else	/*FOR(d;x;x)*/
 			{
-				CFGnode *dec=new CFGnode(),*jump_end=new CFGnode(),*expr=new CFGnode(),*rep=new CFGnode();
+				CFGnode *dec=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln)
+					,*rep=new CFGnode(root->son[i]->son[2]->ln);
 				dec->addL(++CFGnode::rac_cnt);
 				jump_end->addR(CFGnode::rac_cnt);
 				declaration(root->son[i]->son[0],dec);
@@ -253,7 +254,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		{
 			if (root->son[i]->son.size()==3)  /*FOR(x;x;)*/
 			{
-				CFGnode *init=new CFGnode(),*jump_end=new CFGnode(),*expr=new CFGnode();
+				CFGnode *init=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln);
 				expression(root->son[i]->son[0],init);
 				expression(root->son[i]->son[1],expr);
 				link(pre,init);
@@ -267,7 +268,8 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 			}
 			else	/*FOR(x;x;x)*/
 			{
-				CFGnode *init=new CFGnode(),*jump_end=new CFGnode(),*expr=new CFGnode(),*rep=new CFGnode();
+				CFGnode *init=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln)
+					,*rep=new CFGnode(root->son[i]->son[2]->ln);
 				expression(root->son[i]->son[0],init);
 				expression(root->son[i]->son[1],expr);
 				expression(root->son[i]->son[2],rep);
@@ -284,7 +286,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="IF")
 		{
-			CFGnode *expr=new CFGnode(),*jump_end=new CFGnode();
+			CFGnode *expr=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode();
 			expression(root->son[i]->son[0],expr);
 			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[1],return_node,continue_node,break_node);
 			link(pre,expr);
@@ -295,7 +297,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="IF ELSE")
 		{
-			CFGnode *expr=new CFGnode(),*jump_end=new CFGnode();
+			CFGnode *expr=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode();
 			expression(root->son[i]->son[0],expr);
 			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[1],return_node,continue_node,break_node);
 			pair<CFGnode*,CFGnode*> branch=create(root->son[i]->son[2],return_node,continue_node,break_node);
@@ -309,7 +311,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="declaration")
 		{
-			CFGnode *dec=new CFGnode();
+			CFGnode *dec=new CFGnode(root->son[i]->ln);
 			declaration(root->son[i],dec);
 			link(pre,dec);
 			pre=dec;
