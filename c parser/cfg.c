@@ -1,5 +1,4 @@
 #include "myheader.h"
-#define MAGIC_NUMBER 999999
 extern map<string,int> string_to_int;
 extern vector<func> fun;
 extern int CFGnode::rac_cnt;

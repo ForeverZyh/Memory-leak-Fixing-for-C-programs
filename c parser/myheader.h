@@ -10,6 +10,7 @@
 #include <queue>
 #include <unordered_set>
 #define MAXN 10000
+#define MAGIC_NUMBER 999999
 using namespace std;
 struct environment_identifiers;
 struct node

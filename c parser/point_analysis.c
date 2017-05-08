@@ -27,12 +27,13 @@ int find_next(CFGnode*u,int id)
 	{
 		Next[id]=u->env.plus1_unique_identifier_count();
 		u->g1.isUpdate=true;
+		printf("=========Next[%d]->%d==========\n",id,Next[id]);
 	}
 	return Next[id];
 }
 void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 {
-	if (pure.first.unary.size()+pure.first.unary.size()<2)
+	if (pure.first.unary.size()+pure.second.unary.size()<2)
 	{
 		if (pure.first.unary.size()==1)
 		{
