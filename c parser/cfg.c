@@ -5,12 +5,53 @@ extern int CFGnode::rac_cnt;
 extern int CFGnode::flag;
 stack<int> rac;
 extern int malloc_cnt;
-extern vector<CFGnode*> ext_dec;
+extern int total_string;
+extern vector<pair<CFGnode*,CFGnode*> > ext_dec;
+extern vector<string> int_to_string;
+static CFGnode *begin_exp,*prev_exp,*begin_dec,*prev_dec;
+static int prev_id;
 
 void link(CFGnode* a,CFGnode* b)
 {
 	a->succ.push_back(b);
 	b->prev.push_back(a);
+}
+pair<CFGnode*,CFGnode*> Expression(node*);
+pair<CFGnode*,CFGnode*> Declaration(node*);
+expr dfs_expression(node*);
+CFGnode* expression(node*);
+
+void dfs_function_call(node*root, vector<pointer>* a)
+{
+	int t=0;
+	if (root->son.size()>1) 
+	{
+		t++;
+		dfs_function_call(root->son[0],a);
+	}
+	CFGnode* tmp=expression(root->son[t]);
+	if (tmp->defuse.def.size()==1) a->push_back(tmp->defuse.def[0]);
+	else if (tmp->defuse.def.size()==0&&tmp->defuse.use.size()==1) a->push_back(tmp->defuse.use[0]);
+	else a->push_back(pointer(0));
+}
+int get_func(int name)
+{
+	for(int i=0;i<fun.size();i++)
+		if (fun[i].id==name) return i;
+}
+void function_call(int name,int id,node* root)
+{
+	vector<pointer> list;list.clear();
+	dfs_function_call(root,&list);
+	CFGnode* res=new CFGnode(root->ln);
+	res->defuse.use=list;
+	res->defuse.def.push_back(pointer(id));
+	res->identifier_list.push_back(id);
+	res->tag=get_func(name);
+	CFGnode* next=new CFGnode(root->ln);
+	link(prev_exp,res);
+	link(res,next);
+	prev_exp=next;
 }
 
 expr dfs_expression(node *root)
@@ -64,9 +105,12 @@ expr dfs_expression(node *root)
 			res.pure.push_back(make_pair(res.def[0],po));
 			return res;
 		}
-		else
+		else //foo(list,...)
 		{
 			expr res;
+			int tmp=++total_string;
+			function_call(string_to_int[root->son[0]->son[0]->str],tmp,(root->son.size()>1)?root->son[1]:NULL);
+			res.use.push_back(pointer(tmp));
 			return res;
 		}
 	}
@@ -96,44 +140,69 @@ expr dfs_expression(node *root)
 	return expr();
 }
 
-void expression(node* root,CFGnode* x)
+CFGnode* expression(node* root)
 {
-	x->defuse=dfs_expression(root);
+	CFGnode *res=new CFGnode(root->ln);
+	res->defuse=dfs_expression(root);
+	if (prev_exp) link(prev_exp,res);
+	else begin_exp=res;
+	prev_exp=res;
+	return res;
+}
+
+pair<CFGnode*,CFGnode*> Expression(node* root)
+{
+	prev_exp=begin_exp=NULL;
+	expression(root);
+	return make_pair(begin_exp,prev_exp);
 }
 
 
-
+void add_declaration(CFGnode* node)
+{
+	if (prev_dec) link(prev_dec,node);
+	else begin_dec=node;
+	prev_dec=node;
+}
+void add_declaration(pair<CFGnode*,CFGnode*> e)
+{
+	if (prev_dec) link(prev_dec,e.first);
+	else begin_dec=e.first;
+	prev_dec=e.second;
+}
 /*
  * return: the number of identifier in this subtree
  * 
  */
-void dfs_declaration(node *root, CFGnode *x)
+void dfs_declaration(node *root)
 {
 	if (root->str=="init_declarator")
 	{
 		if (root->son.size()==2)
 		{
-			dfs_declaration(root->son[0],x);
+			dfs_declaration(root->son[0]);
 			if (root->son[1]->str=="initializer1") 
 			{
-				expr res=dfs_expression(root->son[1]->son[0]);
-				int id=x->identifier_list.back();
-				expr res1;
-				res1.def.push_back(id);
-				if (res.def.size()==1)
+				pair<CFGnode*,CFGnode*> expr=Expression(root->son[1]->son[0]);
+				int id=prev_id;
+				CFGnode* tmp=new CFGnode(root->ln);
+				if (expr.second->defuse.def.size()==1) 
 				{
-					res.pure.push_back(make_pair(res1.def[0],res.def[0]));
+					tmp->defuse.def.push_back(pointer(id));
+					tmp->defuse.use=expr.second->defuse.def;		
+					tmp->defuse.pure.push_back(make_pair(pointer(id),expr.second->defuse.def[0]));
 				}
-				else if (res.def.size()==0&&res.use.size()==1)
+				if (expr.second->defuse.use.size()==1&&expr.second->defuse.def.size()==0)
 				{
-					res.pure.push_back(make_pair(res1.def[0],res.use[0]));
+					tmp->defuse.def.push_back(pointer(id));
+					tmp->defuse.use=expr.second->defuse.use;
+					tmp->defuse.pure.push_back(make_pair(pointer(id),expr.second->defuse.use[0]));
 				}
-				//res.use.insert(res.use.end(),res.def.begin(),res.def.end());
-				res.merge(res1);
-				x->defuse=res;
+				add_declaration(expr);
+				add_declaration(tmp);
 			}
 		}
-		else dfs_declaration(root->son[0], x);
+		else dfs_declaration(root->son[0]);
 	}
 	else
 	{
@@ -147,18 +216,23 @@ void dfs_declaration(node *root, CFGnode *x)
 					int identifier_number = string_to_int[identifier_name];
 					if (identifier_number)		// found a IDENTIFIER
 					{
-						x->identifier_list.push_back(identifier_number);
+						CFGnode *res=new CFGnode(root->ln);
+						res->identifier_list.push_back(identifier_number);
+						prev_id=identifier_number;
+						add_declaration(res);
 					}
 				}
 			}
-			dfs_declaration(root->son[i], x);
+			dfs_declaration(root->son[i]);
 		}
 	}
 }
 
-void declaration(node* root, CFGnode* x)
+pair<CFGnode*,CFGnode*> Declaration(node* root)
 {
-	dfs_declaration(root, x);
+	prev_dec=begin_dec=NULL;
+	dfs_declaration(root);
+	return make_pair(begin_dec,prev_dec);
 }
 
 void dfs_block_item_list(node*root,vector<node*> *list)
@@ -190,10 +264,9 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 	{
 		if (root->son[i]->str.find("expression")!=-1) /* maybe use substr */
 		{
-			CFGnode* newnode=new CFGnode(root->son[i]->ln);
-			expression(root->son[i],newnode);
-			link(pre,newnode);
-			pre=newnode;
+			pair<CFGnode*,CFGnode*> it=Expression(root->son[i]);
+			link(pre,it.first);
+			pre=it.second;
 		}
 		else if (root->son[i]->str=="CONTINUE")
 		{
@@ -214,63 +287,62 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="WHILE")
 		{
-			CFGnode* expr=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode();
-			expression(root->son[i]->son[0],expr);
-			link(pre,expr);
-			link(expr,jump_end);
+			CFGnode* jump_end=new CFGnode();
+			pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[0]);
+			link(pre,expr.first);
+			link(expr.second,jump_end);
 			if (root->son[i]->son[1]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
-			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[1],return_node,expr,jump_end);
-			link(expr,it.first);
-			link(it.second,expr);
+			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[1],return_node,expr.first,jump_end);
+			link(expr.second,it.first);
+			link(it.second,expr.first);
 			pre=jump_end;
 		}
 		else if (root->son[i]->str=="DO WHILE")
 		{
-			CFGnode* expr=new CFGnode(root->son[i]->son[1]->ln),*jump_end=new CFGnode();
-			expression(root->son[i]->son[1],expr);
+			CFGnode* jump_end=new CFGnode();
+			pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[1]);
 			if (root->son[i]->son[0]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
-			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[0],return_node,expr,jump_end);
+			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[0],return_node,expr.first,jump_end);
 			link(pre,it.first);
-			link(it.second,expr);
-			link(expr,it.first);
-			link(expr,jump_end);
+			link(it.second,expr.first);
+			link(expr.second,it.first);
+			link(expr.second,jump_end);
 			pre=jump_end;
 		}
 		else if (root->son[i]->str.find("FOR(d;")!=-1)
 		{
 			if (root->son[i]->son.size()==3)  /*FOR(d;x;)*/
 			{
-				CFGnode *dec=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln);
-				dec->addL(++CFGnode::rac_cnt);
+				CFGnode *jump_end=new CFGnode();
+				pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[1]);
+				pair<CFGnode*,CFGnode*> dec=Declaration(root->son[i]->son[0]);
+				dec.first->addL(++CFGnode::rac_cnt);
 				jump_end->addR(CFGnode::rac_cnt);
-				declaration(root->son[i]->son[0],dec);
-				expression(root->son[i]->son[1],expr);
-				link(pre,dec);
-				link(dec,expr);
-				link(expr,jump_end);
+				link(pre,dec.first);
+				link(dec.second,expr.first);
+				link(expr.second,jump_end);
 				if (root->son[i]->son[2]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
-				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[2],return_node,expr,jump_end);
-				link(expr,it.first);
-				link(it.second,expr);
+				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[2],return_node,expr.first,jump_end);
+				link(expr.second,it.first);
+				link(it.second,expr.first);
 				pre=jump_end;
 			}
 			else	/*FOR(d;x;x)*/
 			{
-				CFGnode *dec=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln)
-					,*rep=new CFGnode(root->son[i]->son[2]->ln);
-				dec->addL(++CFGnode::rac_cnt);
+				CFGnode *jump_end=new CFGnode();
+				pair<CFGnode*,CFGnode*> dec=Declaration(root->son[i]->son[0]);
+				dec.first->addL(++CFGnode::rac_cnt);
 				jump_end->addR(CFGnode::rac_cnt);
-				declaration(root->son[i]->son[0],dec);
-				expression(root->son[i]->son[1],expr);
-				expression(root->son[i]->son[2],rep);
-				link(pre,dec);
-				link(dec,expr);
-				link(expr,jump_end);
+				pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[1]);
+				pair<CFGnode*,CFGnode*> rep=Expression(root->son[i]->son[2]);
+				link(pre,dec.first);
+				link(dec.second,expr.first);
+				link(expr.second,jump_end);
 				if (root->son[i]->son[3]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
-				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[3],return_node,expr,jump_end);
-				link(expr,it.first);
-				link(it.second,rep);
-				link(rep,expr);
+				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[3],return_node,rep.first,jump_end);
+				link(expr.second,it.first);
+				link(it.second,rep.first);
+				link(rep.second,expr.first);
 				pre=jump_end;
 			}
 		}
@@ -278,56 +350,55 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		{
 			if (root->son[i]->son.size()==3)  /*FOR(x;x;)*/
 			{
-				CFGnode *init=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln);
-				expression(root->son[i]->son[0],init);
-				expression(root->son[i]->son[1],expr);
-				link(pre,init);
-				link(init,expr);
-				link(expr,jump_end);
+				CFGnode *jump_end=new CFGnode();
+				pair<CFGnode*,CFGnode*> init=Expression(root->son[i]->son[0]);
+				pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[1]);
+				link(pre,init.first);
+				link(init.second,expr.first);
+				link(expr.second,jump_end);
 				if (root->son[i]->son[2]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
-				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[2],return_node,expr,jump_end);
-				link(expr,it.first);
-				link(it.second,expr);
+				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[2],return_node,expr.first,jump_end);
+				link(expr.second,it.first);
+				link(it.second,expr.first);
 				pre=jump_end;
 			}
 			else	/*FOR(x;x;x)*/
 			{
-				CFGnode *init=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode(),*expr=new CFGnode(root->son[i]->son[1]->ln)
-					,*rep=new CFGnode(root->son[i]->son[2]->ln);
-				expression(root->son[i]->son[0],init);
-				expression(root->son[i]->son[1],expr);
-				expression(root->son[i]->son[2],rep);
-				link(pre,init);
-				link(init,expr);
-				link(expr,jump_end);
+				CFGnode *jump_end=new CFGnode();
+				pair<CFGnode*,CFGnode*> init=Expression(root->son[i]->son[0]);
+				pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[1]);
+				pair<CFGnode*,CFGnode*> rep=Expression(root->son[i]->son[2]);
+				link(pre,init.first);
+				link(init.second,expr.first);
+				link(expr.second,jump_end);
 				if (root->son[i]->son[3]->son[0]->str=="compound_statement") rac.push(CFGnode::rac_cnt+1);
-				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[3],return_node,expr,jump_end);
-				link(expr,it.first);
-				link(it.second,rep);
-				link(rep,expr);
+				pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[3],return_node,rep.first,jump_end);
+				link(expr.second,it.first);
+				link(it.second,rep.first);
+				link(rep.second,expr.first);
 				pre=jump_end;
 			}
 		}
 		else if (root->son[i]->str=="IF")
 		{
-			CFGnode *expr=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode();
-			expression(root->son[i]->son[0],expr);
+			CFGnode *jump_end=new CFGnode();
+			pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[0]);
 			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[1],return_node,continue_node,break_node);
-			link(pre,expr);
-			link(expr,it.first);
-			link(expr,jump_end);
+			link(pre,expr.first);
+			link(expr.second,it.first);
+			link(expr.second,jump_end);
 			link(it.second,jump_end);
 			pre=jump_end;
 		}
 		else if (root->son[i]->str=="IF ELSE")
 		{
-			CFGnode *expr=new CFGnode(root->son[i]->son[0]->ln),*jump_end=new CFGnode();
-			expression(root->son[i]->son[0],expr);
+			CFGnode *jump_end=new CFGnode();
+			pair<CFGnode*,CFGnode*> expr=Expression(root->son[i]->son[0]);
 			pair<CFGnode*,CFGnode*> it=create(root->son[i]->son[1],return_node,continue_node,break_node);
 			pair<CFGnode*,CFGnode*> branch=create(root->son[i]->son[2],return_node,continue_node,break_node);
-			link(pre,expr);
-			link(expr,it.first);
-			link(expr,branch.first);
+			link(pre,expr.first);
+			link(expr.second,it.first);
+			link(expr.second,branch.first);
 			//link(expr,jump_end);
 			link(it.second,jump_end);
 			link(branch.second,jump_end);
@@ -335,10 +406,9 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="declaration")
 		{
-			CFGnode *dec=new CFGnode(root->son[i]->ln);
-			declaration(root->son[i],dec);
-			link(pre,dec);
-			pre=dec;
+			pair<CFGnode*,CFGnode*> dec=Declaration(root->son[i]);
+			link(pre,dec.first);
+			pre=dec.second;
 		}
 		else if (root->son[i]->str=="block_item_list")
 		{
@@ -368,12 +438,21 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 	return make_pair(begin,end);
 }
 
+void get_parms(pair<CFGnode*,CFGnode*> list,vector<int>* a)
+{
+	for(auto it=list.first;;it=it->succ[0])
+	{
+		int t;
+		if (it->identifier_list.size()&&(int_to_string[t=it->identifier_list[0]]!="")) a->push_back(t);
+		if (it==list.second) break;
+	}
+}
+
 void function(node* root)
 {
 	if (root->str=="declaration")
 	{
-		CFGnode* dec=new CFGnode();
-		declaration(root,dec);
+		pair<CFGnode*,CFGnode*> dec=Declaration(root);
 		ext_dec.push_back(dec);
 	}
 	else if (root->str=="function_definition")
@@ -381,21 +460,19 @@ void function(node* root)
 		func f;
 		if (root->son.size()==3)
 		{
-
 			f.CFG=create(root->son[2]);
-			CFGnode* tmp=new CFGnode();
-			declaration(root->son[1],tmp);
+			CFGnode* tmp=Declaration(root->son[1]).first;
 			f.id=tmp->identifier_list[0];
 			delete tmp;
 		}
 		else
 		{
 			f.CFG=create(root->son[3]);
-			CFGnode* tmp=new CFGnode(),*list=new CFGnode();
-			declaration(root->son[1],tmp);
+			CFGnode* tmp=Declaration(root->son[1]).first;
+			pair<CFGnode*,CFGnode*> list=Declaration(root->son[2]);
 			f.id=tmp->identifier_list[0];
-			declaration(root->son[2],list);
-			f.parms=list;
+			get_parms(list,&f.parms);
+			f.init=list;
 			delete tmp;
 		}
 		fun.push_back(f);

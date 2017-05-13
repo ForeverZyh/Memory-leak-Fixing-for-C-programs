@@ -36,7 +36,7 @@ int total_string=0;
 vector<string> int_to_string;
 int line=1;
 int malloc_cnt=0;
-vector<CFGnode*> ext_dec;
+vector<pair<CFGnode*,CFGnode*> > ext_dec;
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -226,15 +226,15 @@ int yywrap(void)        /* called at end of input */
         if (int_to_string[fun[i].id]=="main")
         {
             CFGnode::flag++;
-            if (fun[i].parms) ext_dec.push_back(fun[i].parms);
+            if (fun[i].init.first) ext_dec.push_back(fun[i].init);
             for(int j=1;j<ext_dec.size();j++)
             {
-                link(ext_dec[j-1],ext_dec[j]);
+                link(ext_dec[j-1].second,ext_dec[j].first);
             }
             if (ext_dec.size()) 
             {
-                link(ext_dec[ext_dec.size()-1],fun[i].CFG.first);
-                point_analysis(ext_dec[0]);
+                link(ext_dec.back().second,fun[i].CFG.first);
+                point_analysis(ext_dec[0].first);
             }
             else
                 point_analysis(fun[i].CFG.first);
@@ -287,6 +287,7 @@ int hash_string_to_int(const string&s)
     if (t==0)
     {
         t=string_to_int[s]=++total_string;
+        for(;int_to_string.size()<t;int_to_string.push_back(""));
         int_to_string.push_back(s);
     }
     return t;

@@ -1,51 +1,139 @@
 int *x;
+void foo(int* x,int *y)
+{
+	int t=*x;
+	*x=*y;
+	*y=t;
+}
+int* foo1(int*a,int*b)
+{
+	a=malloc(sizeof(int));
+	foo(a,b);
+	return a;
+}
 int main()
 {
-	int *y,a=1;
-	y=&a;
-	x=y;
+	int *y=malloc(sizeof(int));
+	foo(x,y);
+	int *x=malloc(sizeof(int)),*z=foo1(x,y);
+	foo(foo1(z,x),y);
 }
-95
+525
 translation_unit
  translation_unit
-  external_declaration
-   declaration
-    declaration_specifiers
-     INT
-    init_declarator_list
-     init_declarator
-      declarator
-       *
+  translation_unit
+   translation_unit
+    external_declaration
+     declaration
+      declaration_specifiers
+       INT
+      init_declarator_list
+       init_declarator
+        declarator
+         *
+         direct_declarator
+          x
+   external_declaration
+    function_definition
+     declaration_specifiers
+      VOID
+     declarator
+      direct_declarator
        direct_declarator
-        x
- external_declaration
-  function_definition
-   declaration_specifiers
-    INT
-   declarator
-    direct_declarator
-     direct_declarator
-      main
-   compound_statement
-    block_item_list
-     block_item_list
-      block_item_list
-       block_item
-        declaration
-         declaration_specifiers
-          INT
-         init_declarator_list
-          init_declarator_list
-           init_declarator
-            declarator
-             *
-             direct_declarator
-              y
-          init_declarator
+        foo
+       parameter_type_list
+        parameter_list
+         parameter_list
+          parameter_declaration
+           declaration_specifiers
+            INT
            declarator
+            *
             direct_declarator
-             a
-           initializer1
+             x
+         parameter_declaration
+          declaration_specifiers
+           INT
+          declarator
+           *
+           direct_declarator
+            y
+     compound_statement
+      block_item_list
+       block_item_list
+        block_item_list
+         block_item
+          declaration
+           declaration_specifiers
+            INT
+           init_declarator_list
+            init_declarator
+             declarator
+              direct_declarator
+               t
+             initializer1
+              assignment_expression
+               conditional_expression
+                logical_or_expression
+                 logical_and_expression
+                  inclusive_or_expression
+                   exclusive_or_expression
+                    and_expression
+                     equality_expression
+                      relational_expression
+                       shift_expression
+                        additive_expression
+                         multiplicative_expression
+                          cast_expression
+                           unary_expression
+                            *
+                            cast_expression
+                             unary_expression
+                              postfix_expression
+                               x
+        block_item
+         statement
+          expression_statement
+           expression
+            assignment_expression
+             unary_expression
+              *
+              cast_expression
+               unary_expression
+                postfix_expression
+                 x
+             =
+             assignment_expression
+              conditional_expression
+               logical_or_expression
+                logical_and_expression
+                 inclusive_or_expression
+                  exclusive_or_expression
+                   and_expression
+                    equality_expression
+                     relational_expression
+                      shift_expression
+                       additive_expression
+                        multiplicative_expression
+                         cast_expression
+                          unary_expression
+                           *
+                           cast_expression
+                            unary_expression
+                             postfix_expression
+                              y
+       block_item
+        statement
+         expression_statement
+          expression
+           assignment_expression
+            unary_expression
+             *
+             cast_expression
+              unary_expression
+               postfix_expression
+                y
+            =
             assignment_expression
              conditional_expression
               logical_or_expression
@@ -61,17 +149,85 @@ translation_unit
                         cast_expression
                          unary_expression
                           postfix_expression
-                           primary_expression
-                            I_CONSTANT
-      block_item
-       statement
-        expression_statement
-         expression
-          assignment_expression
-           unary_expression
-            postfix_expression
-             y
-           =
+                           t
+  external_declaration
+   function_definition
+    declaration_specifiers
+     INT
+    declarator
+     *
+     direct_declarator
+      direct_declarator
+       foo1
+      parameter_type_list
+       parameter_list
+        parameter_list
+         parameter_declaration
+          declaration_specifiers
+           INT
+          declarator
+           *
+           direct_declarator
+            a
+        parameter_declaration
+         declaration_specifiers
+          INT
+         declarator
+          *
+          direct_declarator
+           b
+    compound_statement
+     block_item_list
+      block_item_list
+       block_item_list
+        block_item
+         statement
+          expression_statement
+           expression
+            assignment_expression
+             unary_expression
+              postfix_expression
+               a
+             =
+             assignment_expression
+              conditional_expression
+               logical_or_expression
+                logical_and_expression
+                 inclusive_or_expression
+                  exclusive_or_expression
+                   and_expression
+                    equality_expression
+                     relational_expression
+                      shift_expression
+                       additive_expression
+                        multiplicative_expression
+                         cast_expression
+                          unary_expression
+                           function
+                            postfix_expression
+                             malloc
+                            argument_expression_list
+                             assignment_expression
+                              conditional_expression
+                               logical_or_expression
+                                logical_and_expression
+                                 inclusive_or_expression
+                                  exclusive_or_expression
+                                   and_expression
+                                    equality_expression
+                                     relational_expression
+                                      shift_expression
+                                       additive_expression
+                                        multiplicative_expression
+                                         cast_expression
+                                          unary_expression
+                                           type_name
+                                            specifier_qualifier_list
+                                             INT
+       block_item
+        statement
+         expression_statement
+          expression
            assignment_expression
             conditional_expression
              logical_or_expression
@@ -86,20 +242,47 @@ translation_unit
                       multiplicative_expression
                        cast_expression
                         unary_expression
-                         &
-                         cast_expression
-                          unary_expression
-                           postfix_expression
-                            a
-     block_item
-      statement
-       expression_statement
-        expression
-         assignment_expression
-          unary_expression
-           postfix_expression
-            x
-          =
+                         function
+                          postfix_expression
+                           foo
+                          argument_expression_list
+                           argument_expression_list
+                            assignment_expression
+                             conditional_expression
+                              logical_or_expression
+                               logical_and_expression
+                                inclusive_or_expression
+                                 exclusive_or_expression
+                                  and_expression
+                                   equality_expression
+                                    relational_expression
+                                     shift_expression
+                                      additive_expression
+                                       multiplicative_expression
+                                        cast_expression
+                                         unary_expression
+                                          postfix_expression
+                                           a
+                           assignment_expression
+                            conditional_expression
+                             logical_or_expression
+                              logical_and_expression
+                               inclusive_or_expression
+                                exclusive_or_expression
+                                 and_expression
+                                  equality_expression
+                                   relational_expression
+                                    shift_expression
+                                     additive_expression
+                                      multiplicative_expression
+                                       cast_expression
+                                        unary_expression
+                                         postfix_expression
+                                          b
+      block_item
+       statement
+        RETURN
+         expression
           assignment_expression
            conditional_expression
             logical_or_expression
@@ -115,9 +298,317 @@ translation_unit
                       cast_expression
                        unary_expression
                         postfix_expression
-                         y
-1
-=====d41cb010=====
+                         a
+ external_declaration
+  function_definition
+   declaration_specifiers
+    INT
+   declarator
+    direct_declarator
+     direct_declarator
+      main
+   compound_statement
+    block_item_list
+     block_item_list
+      block_item_list
+       block_item_list
+        block_item
+         declaration
+          declaration_specifiers
+           INT
+          init_declarator_list
+           init_declarator
+            declarator
+             *
+             direct_declarator
+              y
+            initializer1
+             assignment_expression
+              conditional_expression
+               logical_or_expression
+                logical_and_expression
+                 inclusive_or_expression
+                  exclusive_or_expression
+                   and_expression
+                    equality_expression
+                     relational_expression
+                      shift_expression
+                       additive_expression
+                        multiplicative_expression
+                         cast_expression
+                          unary_expression
+                           function
+                            postfix_expression
+                             malloc
+                            argument_expression_list
+                             assignment_expression
+                              conditional_expression
+                               logical_or_expression
+                                logical_and_expression
+                                 inclusive_or_expression
+                                  exclusive_or_expression
+                                   and_expression
+                                    equality_expression
+                                     relational_expression
+                                      shift_expression
+                                       additive_expression
+                                        multiplicative_expression
+                                         cast_expression
+                                          unary_expression
+                                           type_name
+                                            specifier_qualifier_list
+                                             INT
+       block_item
+        statement
+         expression_statement
+          expression
+           assignment_expression
+            conditional_expression
+             logical_or_expression
+              logical_and_expression
+               inclusive_or_expression
+                exclusive_or_expression
+                 and_expression
+                  equality_expression
+                   relational_expression
+                    shift_expression
+                     additive_expression
+                      multiplicative_expression
+                       cast_expression
+                        unary_expression
+                         function
+                          postfix_expression
+                           foo
+                          argument_expression_list
+                           argument_expression_list
+                            assignment_expression
+                             conditional_expression
+                              logical_or_expression
+                               logical_and_expression
+                                inclusive_or_expression
+                                 exclusive_or_expression
+                                  and_expression
+                                   equality_expression
+                                    relational_expression
+                                     shift_expression
+                                      additive_expression
+                                       multiplicative_expression
+                                        cast_expression
+                                         unary_expression
+                                          postfix_expression
+                                           x
+                           assignment_expression
+                            conditional_expression
+                             logical_or_expression
+                              logical_and_expression
+                               inclusive_or_expression
+                                exclusive_or_expression
+                                 and_expression
+                                  equality_expression
+                                   relational_expression
+                                    shift_expression
+                                     additive_expression
+                                      multiplicative_expression
+                                       cast_expression
+                                        unary_expression
+                                         postfix_expression
+                                          y
+      block_item
+       declaration
+        declaration_specifiers
+         INT
+        init_declarator_list
+         init_declarator_list
+          init_declarator
+           declarator
+            *
+            direct_declarator
+             x
+           initializer1
+            assignment_expression
+             conditional_expression
+              logical_or_expression
+               logical_and_expression
+                inclusive_or_expression
+                 exclusive_or_expression
+                  and_expression
+                   equality_expression
+                    relational_expression
+                     shift_expression
+                      additive_expression
+                       multiplicative_expression
+                        cast_expression
+                         unary_expression
+                          function
+                           postfix_expression
+                            malloc
+                           argument_expression_list
+                            assignment_expression
+                             conditional_expression
+                              logical_or_expression
+                               logical_and_expression
+                                inclusive_or_expression
+                                 exclusive_or_expression
+                                  and_expression
+                                   equality_expression
+                                    relational_expression
+                                     shift_expression
+                                      additive_expression
+                                       multiplicative_expression
+                                        cast_expression
+                                         unary_expression
+                                          type_name
+                                           specifier_qualifier_list
+                                            INT
+         init_declarator
+          declarator
+           *
+           direct_declarator
+            z
+          initializer1
+           assignment_expression
+            conditional_expression
+             logical_or_expression
+              logical_and_expression
+               inclusive_or_expression
+                exclusive_or_expression
+                 and_expression
+                  equality_expression
+                   relational_expression
+                    shift_expression
+                     additive_expression
+                      multiplicative_expression
+                       cast_expression
+                        unary_expression
+                         function
+                          postfix_expression
+                           foo1
+                          argument_expression_list
+                           argument_expression_list
+                            assignment_expression
+                             conditional_expression
+                              logical_or_expression
+                               logical_and_expression
+                                inclusive_or_expression
+                                 exclusive_or_expression
+                                  and_expression
+                                   equality_expression
+                                    relational_expression
+                                     shift_expression
+                                      additive_expression
+                                       multiplicative_expression
+                                        cast_expression
+                                         unary_expression
+                                          postfix_expression
+                                           x
+                           assignment_expression
+                            conditional_expression
+                             logical_or_expression
+                              logical_and_expression
+                               inclusive_or_expression
+                                exclusive_or_expression
+                                 and_expression
+                                  equality_expression
+                                   relational_expression
+                                    shift_expression
+                                     additive_expression
+                                      multiplicative_expression
+                                       cast_expression
+                                        unary_expression
+                                         postfix_expression
+                                          y
+     block_item
+      statement
+       expression_statement
+        expression
+         assignment_expression
+          conditional_expression
+           logical_or_expression
+            logical_and_expression
+             inclusive_or_expression
+              exclusive_or_expression
+               and_expression
+                equality_expression
+                 relational_expression
+                  shift_expression
+                   additive_expression
+                    multiplicative_expression
+                     cast_expression
+                      unary_expression
+                       function
+                        postfix_expression
+                         foo
+                        argument_expression_list
+                         argument_expression_list
+                          assignment_expression
+                           conditional_expression
+                            logical_or_expression
+                             logical_and_expression
+                              inclusive_or_expression
+                               exclusive_or_expression
+                                and_expression
+                                 equality_expression
+                                  relational_expression
+                                   shift_expression
+                                    additive_expression
+                                     multiplicative_expression
+                                      cast_expression
+                                       unary_expression
+                                        function
+                                         postfix_expression
+                                          foo1
+                                         argument_expression_list
+                                          argument_expression_list
+                                           assignment_expression
+                                            conditional_expression
+                                             logical_or_expression
+                                              logical_and_expression
+                                               inclusive_or_expression
+                                                exclusive_or_expression
+                                                 and_expression
+                                                  equality_expression
+                                                   relational_expression
+                                                    shift_expression
+                                                     additive_expression
+                                                      multiplicative_expression
+                                                       cast_expression
+                                                        unary_expression
+                                                         postfix_expression
+                                                          z
+                                          assignment_expression
+                                           conditional_expression
+                                            logical_or_expression
+                                             logical_and_expression
+                                              inclusive_or_expression
+                                               exclusive_or_expression
+                                                and_expression
+                                                 equality_expression
+                                                  relational_expression
+                                                   shift_expression
+                                                    additive_expression
+                                                     multiplicative_expression
+                                                      cast_expression
+                                                       unary_expression
+                                                        postfix_expression
+                                                         x
+                         assignment_expression
+                          conditional_expression
+                           logical_or_expression
+                            logical_and_expression
+                             inclusive_or_expression
+                              exclusive_or_expression
+                               and_expression
+                                equality_expression
+                                 relational_expression
+                                  shift_expression
+                                   additive_expression
+                                    multiplicative_expression
+                                     cast_expression
+                                      unary_expression
+                                       postfix_expression
+                                        y
+3
+=====d8ea0010=====
 !!Left:1!!
 line=0
 ===G1===
@@ -129,8 +620,8 @@ line=0
 
 ===pure===
 
-  To d4141010
-=====d4141010=====
+  To d8e16010
+=====d8e16010=====
 line=0
 ===G1===
 ===dec===
@@ -141,20 +632,44 @@ line=0
 
 ===pure===
 
-  To d40b7010
-=====d40b7010=====
+  To d8d8c010
+=====d8d8c010=====
 line=4
 ===G1===
 ===dec===
-3 4 
+4 
+===def===
+
+===use===
+
+===pure===
+
+  To d8074010
+=====d8074010=====
+line=4
+===G1===
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To d802f010
+=====d802f010=====
+line=4
+===G1===
+===dec===
+
 ===def===
 4 
 ===use===
-0 
+1 
 ===pure===
-(4,0) 
-  To d40fc010
-=====d40fc010=====
+(4,1) 
+  To d8dd1010
+=====d8dd1010=====
 line=0
 ===G1===
 ===dec===
@@ -165,8 +680,8 @@ line=0
 
 ===pure===
 
-  To e353060
-=====e353060=====
+  To bc30e970
+=====bc30e970=====
 line=0
 ===G1===
 ===dec===
@@ -177,45 +692,9 @@ line=0
 
 ===pure===
 
-  To e3dbd80
-=====e3dbd80=====
+  To bc3976b0
+=====bc3976b0=====
 line=5
-===G1===
-===dec===
-
-===def===
-3 
-===use===
-4 
-===pure===
-(3,4) 
-  To e3976f0
-=====e3976f0=====
-line=0
-===G1===
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To e420660
-=====e420660=====
-line=0
-===G1===
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To e4a9380
-=====e4a9380=====
-line=6
 ===G1===
 ===dec===
 
@@ -225,8 +704,8 @@ line=6
 3 
 ===pure===
 (1,3) 
-  To e464cf0
-=====e464cf0=====
+  To bc353010
+=====bc353010=====
 line=0
 ===G1===
 ===dec===
@@ -237,8 +716,44 @@ line=0
 
 ===pure===
 
-  To d4186010
-=====d4186010=====
+  To bc3dc0c0
+=====bc3dc0c0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc464e00
+=====bc464e00=====
+line=6
+===G1===
+===dec===
+
+===def===
+3 
+===use===
+4 
+===pure===
+(3,4) 
+  To bc420760
+=====bc420760=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To d8e5b010
+=====d8e5b010=====
 !!Right:1!!
 line=0
 ===G1===
@@ -250,16 +765,622 @@ line=0
 
 ===pure===
 
-=========Next[2]->4==========
+=====bc576bf0=====
+!!Left:2!!
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc5ff930
+=====bc5ff930=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc688670
+=====bc688670=====
+line=10
+===G1===
+===dec===
+
+===def===
+6 
+===use===
+-1 
+===pure===
+(6,-1) 
+  To bc643fd0
+=====bc643fd0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc6ccd10
+=====bc6ccd10=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc79a0f0
+=====bc79a0f0=====
+line=11
+===G1===
+===dec===
+
+===def===
+
+===use===
+6 
+===pure===
+
+  To bc7de790
+=====bc7de790=====
+line=11
+===G1===
+===dec===
+
+===def===
+
+===use===
+7 
+===pure===
+
+  To bc822e30
+=====bc822e30=====
+line=11
+===G1===
+===dec===
+11 
+===def===
+11 
+===use===
+6 7 
+===pure===
+
+  To bc8674d0
+=====bc8674d0=====
+line=11
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc755a50
+=====bc755a50=====
+line=11
+===G1===
+===dec===
+
+===def===
+
+===use===
+11 
+===pure===
+
+  To bc7113b0
+=====bc7113b0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc8abb70
+=====bc8abb70=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bc5bb290
+=====bc5bb290=====
+!!Right:2!!
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+=====bc9348b0=====
+!!Left:3!!
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bca46330
+=====bca46330=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcacf070
+=====bcacf070=====
+line=16
+===G1===
+===dec===
+3 
+===def===
+
+===use===
+
+===pure===
+
+  To bcb13710
+=====bcb13710=====
+line=16
+===G1===
+===dec===
+
+===def===
+
+===use===
+-2 
+===pure===
+
+  To bcb57db0
+=====bcb57db0=====
+line=16
+===G1===
+===dec===
+
+===def===
+3 
+===use===
+-2 
+===pure===
+(3,-2) 
+  To bca8a9d0
+=====bca8a9d0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcb9c450
+=====bcb9c450=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcc69830
+=====bcc69830=====
+line=17
+===G1===
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To bccaded0
+=====bccaded0=====
+line=17
+===G1===
+===dec===
+
+===def===
+
+===use===
+3 
+===pure===
+
+  To bccf2570
+=====bccf2570=====
+line=17
+===G1===
+===dec===
+12 
+===def===
+12 
+===use===
+1 3 
+===pure===
+
+  To bcd36c10
+=====bcd36c10=====
+line=17
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcc25190
+=====bcc25190=====
+line=17
+===G1===
+===dec===
+
+===def===
+
+===use===
+12 
+===pure===
+
+  To bcbe0af0
+=====bcbe0af0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcd7b2b0
+=====bcd7b2b0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bce03ff0
+=====bce03ff0=====
+line=18
+===G1===
+===dec===
+1 
+===def===
+
+===use===
+
+===pure===
+
+  To bce48690
+=====bce48690=====
+line=18
+===G1===
+===dec===
+
+===def===
+
+===use===
+-3 
+===pure===
+
+  To bce8cd30
+=====bce8cd30=====
+line=18
+===G1===
+===dec===
+
+===def===
+1 
+===use===
+-3 
+===pure===
+(1,-3) 
+  To bced13d0
+=====bced13d0=====
+line=18
+===G1===
+===dec===
+10 
+===def===
+
+===use===
+
+===pure===
+
+  To bcf5a110
+=====bcf5a110=====
+line=18
+===G1===
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To bcf9e7b0
+=====bcf9e7b0=====
+line=18
+===G1===
+===dec===
+
+===def===
+
+===use===
+3 
+===pure===
+
+  To bcfe2e50
+=====bcfe2e50=====
+line=18
+===G1===
+===dec===
+13 
+===def===
+13 
+===use===
+1 3 
+===pure===
+
+  To bd0274f0
+=====bd0274f0=====
+line=18
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcf15a70
+=====bcf15a70=====
+line=18
+===G1===
+===dec===
+
+===def===
+
+===use===
+13 
+===pure===
+
+  To bd06bb90
+=====bd06bb90=====
+line=18
+===G1===
+===dec===
+
+===def===
+10 
+===use===
+13 
+===pure===
+(10,13) 
+  To bcdbf950
+=====bcdbf950=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd0b0230
+=====bd0b0230=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd1c1cb0
+=====bd1c1cb0=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+10 
+===pure===
+
+  To bd206350
+=====bd206350=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To bd24a9f0
+=====bd24a9f0=====
+line=19
+===G1===
+===dec===
+15 
+===def===
+15 
+===use===
+10 1 
+===pure===
+
+  To bd28f090
+=====bd28f090=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd17d610
+=====bd17d610=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+15 
+===pure===
+
+  To bd2d3730
+=====bd2d3730=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+3 
+===pure===
+
+  To bd317dd0
+=====bd317dd0=====
+line=19
+===G1===
+===dec===
+14 
+===def===
+14 
+===use===
+15 3 
+===pure===
+
+  To bd35c470
+=====bd35c470=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd138f70
+=====bd138f70=====
+line=19
+===G1===
+===dec===
+
+===def===
+
+===use===
+14 
+===pure===
+
+  To bd0f48d0
+=====bd0f48d0=====
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bca01c90
+=====bca01c90=====
+!!Right:3!!
+line=0
+===G1===
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
 
 ===================================
-=====d41cb010=====
-!!Left:1!!
+=====bc9348b0=====
+!!Left:3!!
 line=0
 ===G1===
   1:
   2:
   3:
+  4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
@@ -268,13 +1389,18 @@ line=0
 
 ===pure===
 
-  To d4141010
-=====d4141010=====
+  To bca46330
+=====bca46330=====
 line=0
 ===G1===
   1:
   2:
   3:
+  4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
@@ -283,74 +1409,78 @@ line=0
 
 ===pure===
 
-  To d40b7010
-=====d40b7010=====
-line=4
+  To bcacf070
+=====bcacf070=====
+line=16
 ===G1===
   1:
   2:
   3:
+  4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
-3 4 
+3 
 ===def===
-4 
+
 ===use===
-0 
+
 ===pure===
-(4,0) 
-  To d40fc010
-=====d40fc010=====
-line=0
+
+  To bcb13710
+=====bcb13710=====
+line=16
 ===G1===
   1:
   2:
   3:
+  4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
 
 ===use===
-
+-2 
 ===pure===
 
-  To e353060
-=====e353060=====
-line=0
+  To bcb57db0
+=====bcb57db0=====
+line=16
 ===G1===
   1:
-  2:
+  2: -2
   3:
-===dec===
-
-===def===
-
-===use===
-
-===pure===
-
-  To e3dbd80
-=====e3dbd80=====
-line=5
-===G1===
-  1:
-  2: 3
-  3:
+  4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
 3 
 ===use===
-4 
+-2 
 ===pure===
-(3,4) 
-  To e3976f0
-=====e3976f0=====
+(3,-2) 
+  To bca8a9d0
+=====bca8a9d0=====
 line=0
 ===G1===
   1:
-  2: 3
+  2: -2
   3:
   4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
@@ -359,14 +1489,18 @@ line=0
 
 ===pure===
 
-  To e420660
-=====e420660=====
+  To bcb9c450
+=====bcb9c450=====
 line=0
 ===G1===
   1:
-  2: 3
+  2: -2
   3:
   4:
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
@@ -375,30 +1509,298 @@ line=0
 
 ===pure===
 
-  To e4a9380
-=====e4a9380=====
-line=6
+  To bcc69830
+=====bcc69830=====
+line=17
 ===G1===
-  1: 3
-  2: 3
+  1:
+  2: -2
   3:
   4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To bccaded0
+=====bccaded0=====
+line=17
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+3 
+===pure===
+
+  To bccf2570
+=====bccf2570=====
+line=17
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+12 
+===def===
+12 
+===use===
+1 3 
+===pure===
+
+  To bcd36c10
+=====bcd36c10=====
+line=17
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcc25190
+=====bcc25190=====
+line=17
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+12 
+===pure===
+
+  To bcbe0af0
+=====bcbe0af0=====
+line=0
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bcd7b2b0
+=====bcd7b2b0=====
+line=0
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bce03ff0
+=====bce03ff0=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+1 
+===def===
+
+===use===
+
+===pure===
+
+  To bce48690
+=====bce48690=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+-3 
+===pure===
+
+  To bce8cd30
+=====bce8cd30=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
 1 
 ===use===
+-3 
+===pure===
+(1,-3) 
+  To bced13d0
+=====bced13d0=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+10 
+===def===
+
+===use===
+
+===pure===
+
+  To bcf5a110
+=====bcf5a110=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To bcf9e7b0
+=====bcf9e7b0=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
 3 
 ===pure===
-(1,3) 
-  To e464cf0
-=====e464cf0=====
-line=0
+
+  To bcfe2e50
+=====bcfe2e50=====
+line=18
 ===G1===
-  1: 3
-  2: 3
+  1:
+  2: -2
   3:
-  4:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+13 
+===def===
+13 
+===use===
+1 3 
+===pure===
+
+  To bd0274f0
+=====bd0274f0=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===
@@ -407,15 +1809,299 @@ line=0
 
 ===pure===
 
-  To d4186010
-=====d4186010=====
-!!Right:1!!
+  To bcf15a70
+=====bcf15a70=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+13 
+===pure===
+
+  To bd06bb90
+=====bd06bb90=====
+line=18
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+10 
+===use===
+13 
+===pure===
+(10,13) 
+  To bcdbf950
+=====bcdbf950=====
 line=0
 ===G1===
-  1: 3
-  2: 3
+  1:
+  2: -2
   3:
-  4:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd0b0230
+=====bd0b0230=====
+line=0
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd1c1cb0
+=====bd1c1cb0=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+10 
+===pure===
+
+  To bd206350
+=====bd206350=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+1 
+===pure===
+
+  To bd24a9f0
+=====bd24a9f0=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+15 
+===def===
+15 
+===use===
+10 1 
+===pure===
+
+  To bd28f090
+=====bd28f090=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd17d610
+=====bd17d610=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+15 
+===pure===
+
+  To bd2d3730
+=====bd2d3730=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+3 
+===pure===
+
+  To bd317dd0
+=====bd317dd0=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+14 
+===def===
+14 
+===use===
+15 3 
+===pure===
+
+  To bd35c470
+=====bd35c470=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bd138f70
+=====bd138f70=====
+line=19
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+14 
+===pure===
+
+  To bd0f48d0
+=====bd0f48d0=====
+line=0
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
+===dec===
+
+===def===
+
+===use===
+
+===pure===
+
+  To bca01c90
+=====bca01c90=====
+!!Right:3!!
+line=0
+===G1===
+  1:
+  2: -2
+  3:
+  4: -3
+  5:
+  6:
+  7:
+  8:
 ===dec===
 
 ===def===

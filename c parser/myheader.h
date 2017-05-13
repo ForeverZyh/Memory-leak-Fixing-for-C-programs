@@ -220,7 +220,7 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
-	int isRrac,isLrac,ln,vis;
+	int isRrac,isLrac,ln,vis,tag;
 	G1 g1;
 	static int rac_cnt;
 	static int flag;
@@ -229,6 +229,7 @@ struct CFGnode
 	{
 		env.init();
 		isRrac=isLrac=ln=vis=0;
+		tag=-1;
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
@@ -237,6 +238,7 @@ struct CFGnode
 	{
 		env.init();
 		isRrac=isLrac=vis=0;
+		tag=-1;
 		ln=line;
 		succ.clear();
 		prev.clear();
@@ -275,12 +277,13 @@ struct func
 {
 	pair<CFGnode*,CFGnode*> CFG;
 	int id;
-	CFGnode* parms;
+	pair<CFGnode*,CFGnode*> init;
+	vector<int> parms;
 	func()
 	{
-		//CFG=make_pair(NULL,NULL);
+		init=CFG=make_pair((CFGnode*)NULL,(CFGnode*)NULL);
 		id=0;
-		parms=NULL;
+		parms.clear();
 	}
 };
 typedef node* myYYSTYPE;
