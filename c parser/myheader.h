@@ -7,6 +7,7 @@
 #include <iostream>
 #include <utility>
 #include <stack>
+#include <cassert>
 #include <queue>
 #include <unordered_set>
 #define MAXN 10000
@@ -226,6 +227,7 @@ struct CFGnode
 	environment_identifiers env;
 	CFGnode():defuse(),g1()
 	{
+		flag = 2333;
 		env.init();
 		isRrac=isLrac=ln=vis=0;
 		succ.clear();
@@ -268,6 +270,59 @@ struct CFGnode
 			printf("  To %x\n",succ[i]);
 		for(int i=0;i<(int)succ.size();i++)
 			succ[i]->print();
+	}
+
+	/*
+	 * clone the cfg
+	 *
+	 * Author : Yicheng Lee
+	 *
+	 */
+	static CFGnode *vt_, *new_vt_;
+	static void clone_cfg_dfs(CFGnode *u, CFGnode *new_u)
+	{
+		if (u == vt_)
+		{
+			new_vt_ = u;
+			return;
+		}
+		for(int i=0;i<(int)u->succ.size();i++)
+		{
+			CFGnode *v = u->succ[i];
+			if (v->vis != flag)
+			{
+				v->vis = flag;
+				CFGnode *new_v = new CFGnode(); *new_v = *v; new_v->prev.clear(); new_v->succ.clear();
+				new_u->succ.push_back(new_v);
+				new_v->prev.push_back(new_u);
+				clone_cfg_dfs(v, new_v);
+			}
+		}
+	}
+	/*
+	 * param
+	 * - vs : source of the original cfg
+	 * - vt : destination of the original cfg
+	 *
+	 * return
+	 * - pair<new_vt, new_vt>
+	 * 		- new_vs : source of the new cfg
+	 * 		- new_vt : destination of the new cfg
+	 *
+	 *
+	 * ensure it before call this function:
+	 * 		for each node u in the original cfg,
+	 *	there's no edge(u, v) that v is not in the original cfg.
+	 *
+	 */
+	static pair<CFGnode*, CFGnode*> clone_cfg(CFGnode *vs, CFGnode* vt)
+	{
+		++flag;
+		CFGnode *new_vs = new CFGnode(), *new_vt = NULL; *new_vs = *vs; new_vs->prev.clear(); new_vs->succ.clear();
+		vt_ = vt;
+		dfs(vs, new_vs);
+		assert(new_vt != NULL);
+		return pair<CFGnode*, CFGnode*> (new_vs, new_vt);
 	}
 };
 struct func
