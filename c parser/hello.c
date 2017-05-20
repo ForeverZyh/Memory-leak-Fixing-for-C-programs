@@ -14,7 +14,9 @@ int* foo1(int*a,int*b)
 int main()
 {
 	int *y=malloc(sizeof(int));
+	x=malloc(sizeof(int));
 	foo(x,y);
 	int *x=malloc(sizeof(int)),*z=foo1(x,y);
 	foo(foo1(z,x),y);
+	return 0;
 }

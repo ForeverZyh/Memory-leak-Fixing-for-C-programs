@@ -222,26 +222,26 @@ int yywrap(void)        /* called at end of input */
         fun[i].CFG.first->print();
     }
 
-    for(int i=0;i<fun.size();i++)
-        if (int_to_string[fun[i].id]=="main")
-        {
-            CFGnode::flag++;
-            if (fun[i].init.first) ext_dec.push_back(fun[i].init);
-            for(int j=1;j<ext_dec.size();j++)
-            {
-                link(ext_dec[j-1].second,ext_dec[j].first);
-            }
-            if (ext_dec.size()) 
-            {
-                link(ext_dec.back().second,fun[i].CFG.first);
-                point_analysis(ext_dec[0].first);
-            }
-            else
-                point_analysis(fun[i].CFG.first);
-            CFGnode::flag++;
-            printf("\n===================================\n");
-            fun[i].CFG.first->print();
-        }
+    //identifier for @0...@x and @return
+    CFGnode *very_beginning=new CFGnode();
+    very_beginning->identifier_list.push_back(string_to_int["@return"]);
+    for(int i=0;;i++)
+    {
+        char tmpstr[10];
+        sprintf(tmpstr,"@%d",i);
+        int idt=string_to_int[tmpstr];
+        if (idt==0) break; 
+        very_beginning->identifier_list.push_back(idt);
+    }
+    if (ext_dec.size())
+    {
+        link(very_beginning,ext_dec[0].first);
+        ext_dec[0].first=very_beginning;
+    }
+    else 
+        ext_dec.push_back(make_pair(very_beginning,very_beginning));
+    for(int j=1;j<ext_dec.size();j++)
+        link(ext_dec[j-1].second,ext_dec[j].first);
 
     return 1;           /* terminate now */
 }
@@ -311,6 +311,7 @@ static int check_type(void)
 int main(int argv,char* argc[])
 {
     int_to_string.push_back("");
+    hash_string_to_int("@return");
 	if (argv==2)
 	{
 		FILE* in=fopen(argc[1],"r");

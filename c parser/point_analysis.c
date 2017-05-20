@@ -1,31 +1,32 @@
 #include "myheader.h"
 queue<CFGnode*> h;
 static int Next[MAXN];
-extern int environment_identifiers::unique_identifier_count;
-extern map<pair<int, int>, int> environment_identifiers::added;
+environment_identifiers env;
 void dfs_add(CFGnode* u)
 {
 	u->vis=u->flag;
 	h.push(u);
-	if (u->isLrac) u->env.left_bracket(u->isLrac);
-	if (u->isRrac) u->env.right_bracket(u->isRrac);
+	if (u->isLrac) env.left_bracket(u->isLrac);
+	if (u->isRrac) env.right_bracket(u->isRrac);
 	for(int i=0;i<u->identifier_list.size();i++)
 	{
-		u->env.add(u->identifier_list[i],u->ln);
+		env.add(u->identifier_list[i],u->ln);
 	}
 	//u->g1.init(u->act_env_cnt=u->env.get_unique_identifier_count());
 	for(int i=0;i<u->succ.size();i++)
 		if (u->succ[i]->vis!=u->flag)
 		{
-			u->succ[i]->env=u->env;
+			environment_identifiers tmp=env;
 			dfs_add(u->succ[i]);
+			env=tmp;
 		}
 }
 int find_next(CFGnode*u,int id)
 {
 	if (Next[id]==0)
 	{
-		Next[id]=u->env.plus1_unique_identifier_count();
+		Next[id]=env.plus1_unique_identifier_count();
+		u->g1.init(Next[id]);
 		u->g1.isUpdate=true;
 		printf("=========Next[%d]->%d==========\n",id,Next[id]);
 	}
@@ -38,7 +39,8 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 		if (pure.first.unary.size()==1)
 		{
 			//*a=b
-			u->g1.Union(find_next(u,pure.first.id),pure.second.id);
+			//u->g1.Union(find_next(u,pure.first.id),pure.second.id);
+			u->g1.f[u->g1.find(find_next(u,pure.first.id))].p=u->g1.f[u->g1.find(pure.second.id)].p;
 		}
 		else if (pure.second.unary.size()==1)
 		{
@@ -52,7 +54,8 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 			else
 			{
 				//a=*b
-				u->g1.Union(pure.first.id,find_next(u,pure.second.id));
+				//u->g1.Union(pure.first.id,find_next(u,pure.second.id));
+				u->g1.f[u->g1.find(pure.first.id)].p=u->g1.f[u->g1.find(find_next(u,pure.second.id))].p;
 			}
 		}
 		else
@@ -63,7 +66,7 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 	}
 	else if (pure.first.unary.size()>1)
 	{
-		int tmp=u->env.plus1_unique_identifier_count();
+		int tmp=env.plus1_unique_identifier_count();
 		u->g1.init(tmp);
 		pair<pointer,pointer> t1(pointer(tmp),pure.first),t2=pure;
 		bool mk=t1.second.unary.back();
@@ -75,7 +78,7 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 	}
 	else if (pure.second.unary.size()>1)
 	{
-		int tmp=u->env.plus1_unique_identifier_count();
+		int tmp=env.plus1_unique_identifier_count();
 		u->g1.init(tmp);
 		pair<pointer,pointer> t1(pointer(tmp),pure.second),t2=pure;
 		bool mk=t1.second.unary.back();
@@ -87,7 +90,7 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 	}
 	else
 	{
-		int tmp=u->env.plus1_unique_identifier_count();
+		int tmp=env.plus1_unique_identifier_count();
 		u->g1.init(tmp);
 		pair<pointer,pointer> t1(pointer(tmp),pure.first),t2(pointer(tmp),pure.second);
 		solve(u,t1);
@@ -96,6 +99,7 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 }
 void point_analysis(CFGnode* root)
 {
+	env.init();
 	dfs_add(root);
 
 	while (h.size())
@@ -104,7 +108,7 @@ void point_analysis(CFGnode* root)
 		h.pop();
 		u->vis=0;
 		u->g1.isUpdate=false;
-		u->g1.init(u->env.get_unique_identifier_count());
+		u->g1.init(env.get_unique_identifier_count());
 		for(int i=0;i<u->prev.size();i++)
 		{
 			CFGnode *v=u->prev[i];
@@ -115,8 +119,6 @@ void point_analysis(CFGnode* root)
 			if (u->defuse.pure[i].second.id) 
 			{
 				pair<pointer,pointer> it=u->defuse.pure[i];
-				it.first.id=u->env.get(it.first.id);
-				it.second.id=u->env.get(it.second.id);
 				solve(u,it);
 			}
 		}

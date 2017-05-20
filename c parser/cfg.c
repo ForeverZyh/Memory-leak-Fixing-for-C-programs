@@ -10,6 +10,7 @@ extern vector<pair<CFGnode*,CFGnode*> > ext_dec;
 extern vector<string> int_to_string;
 static CFGnode *begin_exp,*prev_exp,*begin_dec,*prev_dec;
 static int prev_id;
+extern int hash_string_to_int(const string&s);
 
 void link(CFGnode* a,CFGnode* b)
 {
@@ -36,19 +37,34 @@ void dfs_function_call(node*root, vector<pointer>* a)
 }
 int get_func(int name)
 {
+	//TODO maybe performance issues
 	for(int i=0;i<fun.size();i++)
 		if (fun[i].id==name) return i;
+	return -1;
 }
 void function_call(int name,int id,node* root)
 {
+	int tag=get_func(name);
+	if (tag==-1) return;
 	vector<pointer> list;list.clear();
 	dfs_function_call(root,&list);
 	CFGnode* res=new CFGnode(root->ln);
-	res->defuse.use=list;
-	res->defuse.def.push_back(pointer(id));
+	for(int i=0;i<list.size();i++)
+	{
+		char tmpstr[10];
+		sprintf(tmpstr,"@%d",i);
+		int def=hash_string_to_int(tmpstr);
+		res->defuse.def.push_back(pointer(def));
+		res->defuse.use.push_back(list[i]);
+		res->defuse.pure.push_back(make_pair(pointer(def),list[i]));
+	}
 	res->identifier_list.push_back(id);
-	res->tag=get_func(name);
+	res->tag=tag;
 	CFGnode* next=new CFGnode(root->ln);
+	int return_id=string_to_int["@return"];
+	next->defuse.pure.push_back(make_pair(pointer(id),pointer(return_id)));
+	next->defuse.use.push_back(pointer(return_id));
+	next->defuse.def.push_back(pointer(id));
 	link(prev_exp,res);
 	link(res,next);
 	prev_exp=next;
@@ -282,7 +298,21 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 		else if (root->son[i]->str=="RETURN")
 		{
-			link(pre,return_node);
+			if (root->son[i]->son.size())
+			{
+				node* b=root->son[i]->son[0];
+				node* tot=new node("assignment_expression");
+				node* a=new node("@return");
+				node* eq=new node("=");
+				tot->ln=a->ln=eq->ln=root->son[i]->ln;
+				tot->son.push_back(a);
+				tot->son.push_back(eq);
+				tot->son.push_back(b);
+				pair<CFGnode*,CFGnode*> it=Expression(tot);
+				link(pre,it.first);
+				link(it.second,return_node);
+			}
+			else link(pre,return_node);
 			flag=false;
 		}
 		else if (root->son[i]->str=="WHILE")
@@ -443,7 +473,7 @@ void get_parms(pair<CFGnode*,CFGnode*> list,vector<int>* a)
 	for(auto it=list.first;;it=it->succ[0])
 	{
 		int t;
-		if (it->identifier_list.size()&&(int_to_string[t=it->identifier_list[0]]!="")) a->push_back(t);
+		if (it->identifier_list.size()&&(t=it->identifier_list[0]!=0)) a->push_back(t);
 		if (it==list.second) break;
 	}
 }
@@ -463,7 +493,7 @@ void function(node* root)
 			f.CFG=create(root->son[2]);
 			CFGnode* tmp=Declaration(root->son[1]).first;
 			f.id=tmp->identifier_list[0];
-			delete tmp;
+			delete tmp; 
 		}
 		else
 		{
@@ -471,8 +501,22 @@ void function(node* root)
 			CFGnode* tmp=Declaration(root->son[1]).first;
 			pair<CFGnode*,CFGnode*> list=Declaration(root->son[2]);
 			f.id=tmp->identifier_list[0];
-			get_parms(list,&f.parms);
-			f.init=list;
+			vector<int> parms;
+			parms.clear();
+			get_parms(list,&parms);
+			CFGnode* next=new CFGnode(root->ln);
+			for(int i=0;i<parms.size();i++)
+			{
+				char tmpstr[10];
+				sprintf(tmpstr,"@%d",i);
+				int use=hash_string_to_int(tmpstr);
+				next->defuse.def.push_back(pointer(parms[i]));
+				next->defuse.use.push_back(pointer(use));
+				next->defuse.pure.push_back(make_pair(pointer(parms[i]),pointer(use)));
+			}
+			link(list.second,next);
+			link(next,f.CFG.first);
+			f.CFG.first=list.first;
 			delete tmp;
 		}
 		fun.push_back(f);
