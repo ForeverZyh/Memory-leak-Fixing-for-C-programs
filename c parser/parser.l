@@ -201,6 +201,8 @@ void dfs(node* root,int cnt)
         dfs(root->son[i],cnt+1);
 }
 
+
+
 int yywrap(void)        /* called at end of input */
 {
     printf("%d\n",(int)forest.size());
@@ -222,6 +224,12 @@ int yywrap(void)        /* called at end of input */
         fun[i].CFG.first->print();
     }
 
+    clone_build_graph_init();
+
+    CFGnode *begin, *end;
+    pair<CFGnode*, CFGnode*> pa = clone_build_graph_work();
+    begin = pa.first, end = pa.second;
+    
     for(int i=0;i<fun.size();i++)
         if (int_to_string[fun[i].id]=="main")
         {
