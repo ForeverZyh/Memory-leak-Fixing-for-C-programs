@@ -1,28 +1,16 @@
-#include <cstring>
-#include <cstdio>
-#include <string>
-#include <vector>
-#include <stack>
-#include <map>
-#include <iostream>
-#include <utility>
-#include <stack>
-#include <cassert>
-#include <queue>
-#include <unordered_set>
-
 #include "myheader.h"
-#include "y.tab.h"
-#include "cfg.h"
-
-
 
 #define MAX_PROC_NUM 10000
 
 #define MAX_CALL_NUM 100000
 
 #define MAX_CALLPAIR_NUM  1000000
-
+extern map<string,int> string_to_int;
+extern vector<func> fun;
+extern int get_func(int name);
+extern CFGnode* CFGnode::vt_;
+extern CFGnode* CFGnode::new_vt_;
+//extern pair<CFGnode*,CFGnode*> CFGnode::clone_cfg(CFGnode *vs, CFGnode* vt);
 
 int proc_n = 0;
 vector<int> G[MAX_PROC_NUM];
@@ -35,7 +23,7 @@ int current_proc = -1;
  */
 int call_n = 0;
 int caller_proc_list[MAX_CALL_NUM], callee_proc_list[MAX_CALL_NUM];
-CFGnode * zyhbegin_list[MAX_CALL_NUM], zyhend_list[MAX_CALL_NUM];
+CFGnode * zyhbegin_list[MAX_CALL_NUM], *zyhend_list[MAX_CALL_NUM];
 
 
 /*
@@ -80,7 +68,7 @@ int to_non_hole_proc_index(int proc_index_with_hole)
 void addedge(CFGnode *u, CFGnode *v)
 {
     u->succ.push_back(v);
-    v->proc.push_back(u);
+    v->prev.push_back(u);
 }
 
 
@@ -126,6 +114,7 @@ void dfs_procedure3(CFGnode *u)
  *
  *
  */
+void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *& begin, CFGnode *& end);
 void dfs_procedure4(CFGnode *u, int call_now)
 {
     u->vis4 = 1;
@@ -148,21 +137,21 @@ void dfs_procedure4(CFGnode *u, int call_now)
 
 void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *& begin, CFGnode *& end)
 {
-    if (call_vis[pair<int, int>(call_now, call_last)])
+    if (callpair_vis[pair<int, int>(call_now, call_last)])
         return;
     
     ln_delta += ln_delta_increment;
 
-    call_vis[pair<int, int>(call_now, call_last)] = callpair_n;
+    callpair_vis[pair<int, int>(call_now, call_last)] = callpair_n;
     
         /*
          * if call_last::call_now hasn't visited, we clone the procedure.
          */
         int non_hole_proc_index = to_non_hole_proc_index(u);
         func f = fun[non_hole_proc_index];
-        CFGnode *proc_begin = f.init.first, *proc_end = f.CFG.second;
+        CFGnode *proc_begin = f.CFG.first, *proc_end = f.CFG.second;
 
-        pair<CFGnode*, CFGnode*> cloned_CFG = CFGnode::clone_CFG(proc_begin, proc_end);
+        pair<CFGnode*, CFGnode*> cloned_CFG = CFGnode::clone_cfg(proc_begin, proc_end);
         
         begin = cloned_CFG.first, end = cloned_CFG.second;
 
@@ -195,7 +184,7 @@ void clone_build_graph_init()
     for(int i=0;i<fun.size();i++)
     {
         current_proc = fun[i].id;
-        dfs_CFG_in_single_proc(fun[i].init.first);
+        dfs_CFG_in_single_proc(fun[i].CFG.first);
     }
 }
 

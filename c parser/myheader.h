@@ -10,7 +10,6 @@
 #include <cassert>
 #include <queue>
 #include <unordered_set>
-#include <clone_build_graph.h>
 #define MAXN 10000
 #define MAGIC_NUMBER 999999
 using namespace std;
@@ -107,12 +106,9 @@ struct environment_identifiers
 		/*
 		 * to do : add some initial global identifier.
 		 */
-		unique_identifier_count = 0;
 
 		for(int i = 0; i < IDENTIFIER_NUMBER_LIMIT; ++i)
 			identifier_list[i].clear();
-
-		added.clear();
 	}
 	static int get_unique_identifier_count()
 	{
@@ -320,7 +316,7 @@ struct CFGnode
 		++flag;
 		CFGnode *new_vs = new CFGnode(), *new_vt = NULL; *new_vs = *vs; new_vs->prev.clear(); new_vs->succ.clear();
 		vt_ = vt;
-		dfs(vs, new_vs);
+		clone_cfg_dfs(vs, new_vs);
 		assert(new_vt != NULL);
 		return pair<CFGnode*, CFGnode*> (new_vs, new_vt);
 	}

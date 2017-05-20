@@ -2,6 +2,8 @@
 queue<CFGnode*> h;
 static int Next[MAXN];
 environment_identifiers env;
+extern int environment_identifiers::unique_identifier_count;
+extern map<pair<int, int>, int> environment_identifiers::added;
 void dfs_add(CFGnode* u)
 {
 	u->vis=u->flag;
@@ -100,6 +102,8 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 void point_analysis(CFGnode* root)
 {
 	env.init();
+	environment_identifiers::unique_identifier_count=0;
+	environment_identifiers::added.clear();
 	dfs_add(root);
 
 	while (h.size())

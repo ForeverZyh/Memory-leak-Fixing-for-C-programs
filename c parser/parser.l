@@ -27,6 +27,7 @@ WS  [ \t\v\n\f]
 #include "y.tab.h"
 #include "cfg.h"
 #include "point_analysis.h"
+#include "clone_build_graph.h"
 int sym_table[MAXN];
 vector<node*> forest;
 int cnt;
