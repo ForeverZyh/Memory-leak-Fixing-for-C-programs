@@ -10,6 +10,7 @@
 #include <cassert>
 #include <queue>
 #include <unordered_set>
+#include <clone_build_graph.h>
 #define MAXN 10000
 #define MAGIC_NUMBER 999999
 using namespace std;
@@ -221,13 +222,13 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
-	int isRrac,isLrac,ln,vis,tag;
+	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index;
 	G1 g1;
 	static int rac_cnt;
 	static int flag;
 	CFGnode():defuse(),g1()
 	{
-		isRrac=isLrac=ln=vis=0;
+		isRrac=isLrac=ln=vis=vis2=vis3=vis4=0; call_index = -1;
 		tag=-1;
 		succ.clear();
 		prev.clear();
@@ -235,7 +236,7 @@ struct CFGnode
 	}
 	CFGnode(int line):defuse(),g1()
 	{
-		isRrac=isLrac=vis=0;
+		isRrac=isLrac=vis=vis2=vis3=vis4=0; call_index = -1;
 		tag=-1;
 		ln=line;
 		succ.clear();
