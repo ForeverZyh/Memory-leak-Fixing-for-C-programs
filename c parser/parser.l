@@ -218,7 +218,7 @@ int yywrap(void)        /* called at end of input */
     CFGnode::flag=1;
     ext_dec.clear();
     function(root);
-
+    clone_build_graph_init();
     printf("%d\n",fun.size());
     for(int i=0;i<fun.size();i++)
     {
@@ -228,14 +228,6 @@ int yywrap(void)        /* called at end of input */
     //identifier for @0...@x and @return
     CFGnode *very_beginning=new CFGnode();
     very_beginning->identifier_list.push_back(string_to_int["@return"]);
-    for(int i=0;;i++)
-    {
-        char tmpstr[10];
-        sprintf(tmpstr,"@%d",i);
-        int idt=string_to_int[tmpstr];
-        if (idt==0) break; 
-        very_beginning->identifier_list.push_back(idt);
-    }
     if (ext_dec.size())
     {
         link(very_beginning,ext_dec[0].first);
@@ -245,11 +237,20 @@ int yywrap(void)        /* called at end of input */
         ext_dec.push_back(make_pair(very_beginning,very_beginning));
     for(int j=1;j<ext_dec.size();j++)
         link(ext_dec[j-1].second,ext_dec[j].first);
-	
+
     CFGnode *begin, *end;
     pair<CFGnode*, CFGnode*> pa = clone_build_graph_work();
     begin = pa.first, end = pa.second;
 
+    //CFGnode::flag++;
+    //printf("final!========================\n");
+    //begin->print();
+
+    link(ext_dec.back().second,begin);
+    begin=ext_dec[0].first;
+    point_analysis(begin);
+    printf("first analysis!========================\n");
+    begin->print();
 
     return 1;           /* terminate now */
 }
@@ -270,6 +271,7 @@ static void comment(void)
             if (c == 0)
                 break;
         }
+        else if (c == '\n') line++;
     yyerror("unterminated comment");
 }
 

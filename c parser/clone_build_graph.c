@@ -24,6 +24,7 @@ int current_proc = -1;
 int call_n = 0;
 int caller_proc_list[MAX_CALL_NUM], callee_proc_list[MAX_CALL_NUM];
 CFGnode * zyhbegin_list[MAX_CALL_NUM], *zyhend_list[MAX_CALL_NUM];
+pair<CFGnode*,CFGnode*> callpair[MAX_CALLPAIR_NUM];
 
 
 /*
@@ -43,9 +44,9 @@ void dfs_CFG_in_single_proc(CFGnode *u)
         
         G[current_proc].push_back(call_n);
 
-        u->call_index = call_n;
+        u->call_index = ++call_n;
 
-        ++ call_n;
+        //++ call_n;
 
     }
     for(unsigned k = 0;k < u->succ.size(); ++k)
@@ -91,10 +92,9 @@ int ln_delta = 0, ln_delta_increment = 100000;
 void dfs_procedure3(CFGnode *u)
 {
     u->vis3 = 1;
-    if (u->tag != -1)
-    {
-        u->ln += ln_delta;
-    }
+    u->ln += ln_delta;
+    if (u->isRrac) u->isRrac += ln_delta;
+    if (u->isLrac) u->isLrac += ln_delta;
     for(unsigned k = 0;k < u->succ.size(); ++k)
     {
         CFGnode *v = u->succ[k];
@@ -114,7 +114,7 @@ void dfs_procedure3(CFGnode *u)
  *
  *
  */
-void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *& begin, CFGnode *& end);
+void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *begin, CFGnode *end);
 void dfs_procedure4(CFGnode *u, int call_now)
 {
     u->vis4 = 1;
@@ -123,7 +123,7 @@ void dfs_procedure4(CFGnode *u, int call_now)
         int callee_proc = u->tag;
         int call_index = u->call_index;
 
-        dfs_whole_CFG(callee_proc, call_index, call_now, zyhbegin_list[call_index], zyhend_list[call_index]);
+        dfs_whole_CFG(callee_proc, call_index, call_now, u, u->succ[0]);
     }
     for(unsigned k = 0;k < u->succ.size(); ++k)
     {
@@ -135,10 +135,15 @@ void dfs_procedure4(CFGnode *u, int call_now)
     }
 }
 
-void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *& begin, CFGnode *& end)
+void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *begin, CFGnode *end)
 {
-    if (callpair_vis[pair<int, int>(call_now, call_last)])
+    if (callpair_vis.find(pair<int, int>(call_now, call_last))!=callpair_vis.end())
+    {
+        int id=callpair_vis[pair<int, int>(call_now, call_last)];
+        addedge(begin, callpair[id].first);
+        addedge(callpair[id].second, end);
         return;
+    }
     
     ln_delta += ln_delta_increment;
 
@@ -152,17 +157,18 @@ void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *& begin, CFGnode
         CFGnode *proc_begin = f.CFG.first, *proc_end = f.CFG.second;
 
         pair<CFGnode*, CFGnode*> cloned_CFG = CFGnode::clone_cfg(proc_begin, proc_end);
+        callpair[callpair_n]=cloned_CFG;
         
-        begin = cloned_CFG.first, end = cloned_CFG.second;
-
-        addedge(begin, proc_begin);
-        addedge(proc_end, end);
+        //begin = cloned_CFG.first, end = cloned_CFG.second;
 
         ++ callpair_n;
 
-    dfs_procedure3(begin);
+    dfs_procedure3(cloned_CFG.first);
 
-    dfs_procedure4(begin, call_now);
+    dfs_procedure4(cloned_CFG.first, call_now);
+
+    addedge(begin, cloned_CFG.first);
+    addedge(cloned_CFG.second, end);
 }
 
 
@@ -190,9 +196,7 @@ void clone_build_graph_init()
 
 pair<CFGnode*, CFGnode*> clone_build_graph_work()
 {
-
-    CFGnode *begin, *end;
+    CFGnode* begin=new CFGnode(),* end=new CFGnode();
     dfs_whole_CFG(string_to_int["main"], 0, 0, begin, end);
-
-    return pair<CFGnode*, CFGnode*>(begin, end);
+    return make_pair(begin,end);
 }

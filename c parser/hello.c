@@ -1,9 +1,7 @@
 int *x;
 void foo(int* x,int *y)
 {
-	int t=*x;
-	*x=*y;
-	*y=t;
+	x=y;
 }
 int* foo1(int*a,int*b)
 {

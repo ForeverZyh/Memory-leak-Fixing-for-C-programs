@@ -10,7 +10,7 @@
 #include <cassert>
 #include <queue>
 #include <unordered_set>
-#define MAXN 10000
+#define MAXN 100
 #define MAGIC_NUMBER 999999
 using namespace std;
 struct environment_identifiers;
@@ -58,15 +58,15 @@ struct expr
 	{
 		printf("===def===\n");
 		for(int i=0;i<def.size();i++)
-			printf("%d ",def[i].id);
+			printf("[%d unary:%d] ",def[i].id,def[i].unary.size());
 		printf("\n");
 		printf("===use===\n");
 		for(int i=0;i<use.size();i++)
-			printf("%d ",use[i].id);
+			printf("[%d unary:%d] ",use[i].id,use[i].unary.size());
 		printf("\n");
 		printf("===pure===\n");
 		for(int i=0;i<pure.size();i++)
-			printf("(%d,%d) ",pure[i].first.id,pure[i].second.id);
+			printf("([%d unary:%d],[%d unary:%d]) ",pure[i].first.id,pure[i].first.unary.size(),pure[i].second.id,pure[i].second.unary.size());
 		printf("\n");
 	}
 };
@@ -128,11 +128,12 @@ struct environment_identifiers
 		unique_identifier_num = added[PII(identifier_num, line_no)];
 
 		identifier_list[identifier_num].push_back(unique_identifier_num);
+		identifier_stack[++identifier_stack_top]=identifier_num;
 		return unique_identifier_num;
 	}
 	int get(int identifier_num)
 	{
-		if (identifier_num<0) return identifier_num;
+		if (identifier_num<=0) return identifier_num;
 		if (identifier_list[identifier_num].empty())
 		{
 			fprintf(stderr, "%s %d\n", "No such identifier :  required identifier num =", identifier_num);
@@ -198,7 +199,7 @@ struct G1
 	{
 		for(int i=1;i<f.size();i++)
 		{
-			int t=find(f[i].fa);
+			int t=find(i);
 			printf("  %d:",i);
 			auto it=f[t].p.begin();
 			for(;it!=f[t].p.end();it++)
@@ -218,13 +219,13 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
-	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index;
+	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index,put_back;
 	G1 g1;
 	static int rac_cnt;
 	static int flag;
 	CFGnode():defuse(),g1()
 	{
-		isRrac=isLrac=ln=vis=vis2=vis3=vis4=0; call_index = -1;
+		isRrac=isLrac=ln=vis=vis2=vis3=vis4=put_back=0; call_index = -1;
 		tag=-1;
 		succ.clear();
 		prev.clear();
@@ -232,7 +233,7 @@ struct CFGnode
 	}
 	CFGnode(int line):defuse(),g1()
 	{
-		isRrac=isLrac=vis=vis2=vis3=vis4=0; call_index = -1;
+		isRrac=isLrac=vis=vis2=vis3=vis4=put_back=0; call_index = -1;
 		tag=-1;
 		ln=line;
 		succ.clear();
@@ -255,6 +256,8 @@ struct CFGnode
 		if (isRrac) printf("!!Right:%d!!\n",isRrac);
 		if (isLrac) printf("!!Left:%d!!\n",isLrac);
 		printf("line=%d\n",ln);
+		printf("tag=%d\n",tag);
+		printf("call_index=%d\n",call_index);
 		printf("===G1===\n");
 		g1.print();
 		printf("===dec===\n");
@@ -266,6 +269,11 @@ struct CFGnode
 			printf("  To %x\n",succ[i]);
 		for(int i=0;i<(int)succ.size();i++)
 			succ[i]->print();
+	}
+	void initvis()
+	{
+		prev.clear();succ.clear();
+		vis=vis2=vis3=vis4=0;
 	}
 
 	/*
@@ -279,7 +287,7 @@ struct CFGnode
 	{
 		if (u == vt_)
 		{
-			new_vt_ = u;
+			new_vt_ = new_u;
 			return;
 		}
 		for(int i=0;i<(int)u->succ.size();i++)
@@ -288,7 +296,8 @@ struct CFGnode
 			if (v->vis != flag)
 			{
 				v->vis = flag;
-				CFGnode *new_v = new CFGnode(); *new_v = *v; new_v->prev.clear(); new_v->succ.clear();
+				CFGnode *new_v = new CFGnode();
+				*new_v = *v; new_v->initvis();
 				new_u->succ.push_back(new_v);
 				new_v->prev.push_back(new_u);
 				clone_cfg_dfs(v, new_v);
@@ -314,11 +323,13 @@ struct CFGnode
 	static pair<CFGnode*, CFGnode*> clone_cfg(CFGnode *vs, CFGnode* vt)
 	{
 		++flag;
-		CFGnode *new_vs = new CFGnode(), *new_vt = NULL; *new_vs = *vs; new_vs->prev.clear(); new_vs->succ.clear();
+		CFGnode *new_vs = new CFGnode();
+		*new_vs = *vs; new_vs->initvis();
 		vt_ = vt;
+		new_vt_=NULL;
 		clone_cfg_dfs(vs, new_vs);
-		assert(new_vt != NULL);
-		return pair<CFGnode*, CFGnode*> (new_vs, new_vt);
+		assert(new_vt_ != NULL);
+		return pair<CFGnode*, CFGnode*> (new_vs, new_vt_);
 	}
 };
 struct func

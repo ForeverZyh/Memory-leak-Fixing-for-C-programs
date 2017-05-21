@@ -46,6 +46,7 @@ void function_call(int name,int id,node* root)
 {
 	int tag=get_func(name);
 	if (tag==-1) return;
+	else tag=name;
 	vector<pointer> list;list.clear();
 	dfs_function_call(root,&list);
 	CFGnode* res=new CFGnode(root->ln);
@@ -54,6 +55,7 @@ void function_call(int name,int id,node* root)
 		char tmpstr[10];
 		sprintf(tmpstr,"@%d",i);
 		int def=hash_string_to_int(tmpstr);
+		res->identifier_list.push_back(def);
 		res->defuse.def.push_back(pointer(def));
 		res->defuse.use.push_back(list[i]);
 		res->defuse.pure.push_back(make_pair(pointer(def),list[i]));
@@ -61,10 +63,6 @@ void function_call(int name,int id,node* root)
 	res->identifier_list.push_back(id);
 	res->tag=tag;
 	CFGnode* next=new CFGnode(root->ln);
-	int return_id=string_to_int["@return"];
-	next->defuse.pure.push_back(make_pair(pointer(id),pointer(return_id)));
-	next->defuse.use.push_back(pointer(return_id));
-	next->defuse.def.push_back(pointer(id));
 	link(prev_exp,res);
 	link(res,next);
 	prev_exp=next;
@@ -311,6 +309,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 				pair<CFGnode*,CFGnode*> it=Expression(tot);
 				link(pre,it.first);
 				link(it.second,return_node);
+				it.second->put_back=1;
 			}
 			else link(pre,return_node);
 			flag=false;
@@ -473,7 +472,7 @@ void get_parms(pair<CFGnode*,CFGnode*> list,vector<int>* a)
 	for(auto it=list.first;;it=it->succ[0])
 	{
 		int t;
-		if (it->identifier_list.size()&&(t=it->identifier_list[0]!=0)) a->push_back(t);
+		if (it->identifier_list.size()&&((t=it->identifier_list[0])!=0)) a->push_back(t);
 		if (it==list.second) break;
 	}
 }
@@ -491,13 +490,33 @@ void function(node* root)
 		if (root->son.size()==3)
 		{
 			f.CFG=create(root->son[2]);
-			CFGnode* tmp=Declaration(root->son[1]).first;
-			f.id=tmp->identifier_list[0];
-			delete tmp; 
+			pair<CFGnode*,CFGnode*> list=Declaration(root->son[1]);
+			f.id=list.first->identifier_list[0];
+			vector<int> parms;
+			parms.clear();
+			get_parms(list,&parms);
+			CFGnode* next=f.CFG.first;
+			for(int i=1;i<parms.size();i++)
+			{
+				char tmpstr[10];
+				sprintf(tmpstr,"@%d",i-1);
+				int use=hash_string_to_int(tmpstr);
+				next->identifier_list.push_back(parms[i]);
+				next->defuse.def.push_back(pointer(parms[i]));
+				next->defuse.use.push_back(pointer(use));
+				next->defuse.pure.push_back(make_pair(pointer(parms[i]),pointer(use)));
+			}
+			for(auto i=list.first;i!=list.second;) 
+			{
+				auto next=i->succ[0];
+				delete i;
+				i=next;
+			}
+			delete list.second;
 		}
 		else
 		{
-			f.CFG=create(root->son[3]);
+			/*f.CFG=create(root->son[3]);
 			CFGnode* tmp=Declaration(root->son[1]).first;
 			pair<CFGnode*,CFGnode*> list=Declaration(root->son[2]);
 			f.id=tmp->identifier_list[0];
@@ -517,7 +536,8 @@ void function(node* root)
 			link(list.second,next);
 			link(next,f.CFG.first);
 			f.CFG.first=list.first;
-			delete tmp;
+			delete tmp;*/
+			assert(1);
 		}
 		fun.push_back(f);
 	}

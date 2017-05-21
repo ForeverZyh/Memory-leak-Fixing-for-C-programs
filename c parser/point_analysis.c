@@ -14,6 +14,15 @@ void dfs_add(CFGnode* u)
 	{
 		env.add(u->identifier_list[i],u->ln);
 	}
+	for(int i=0;i<u->defuse.def.size();i++)
+		u->defuse.def[i].id=env.get(u->defuse.def[i].id);
+	for(int i=0;i<u->defuse.use.size();i++)
+		u->defuse.use[i].id=env.get(u->defuse.use[i].id);
+	for(int i=0;i<u->defuse.pure.size();i++)
+	{
+		u->defuse.pure[i].first.id=env.get(u->defuse.pure[i].first.id);
+		u->defuse.pure[i].second.id=env.get(u->defuse.pure[i].second.id);
+	}
 	//u->g1.init(u->act_env_cnt=u->env.get_unique_identifier_count());
 	for(int i=0;i<u->succ.size();i++)
 		if (u->succ[i]->vis!=u->flag)
@@ -21,6 +30,35 @@ void dfs_add(CFGnode* u)
 			environment_identifiers tmp=env;
 			dfs_add(u->succ[i]);
 			env=tmp;
+		}
+}
+void dfs_put_back(CFGnode* u)
+{
+	if (u->tag!=-1)
+	{
+		CFGnode* next=u->succ[0];
+		int id=u->identifier_list.back();
+		assert(next->prev.size()==2);
+		CFGnode* return_node=next->prev[1];
+		for(int i=0;i<return_node->prev.size();i++)
+			if (return_node->prev[i]->put_back)
+			{
+				assert(return_node->prev[i]->defuse.def.size()==1);
+				return_node->prev[i]->defuse.def[0].id=id;
+				if (return_node->prev[i]->defuse.pure.size())
+				{
+					assert(return_node->prev[i]->defuse.pure.size()==1);
+					return_node->prev[i]->defuse.pure[0].first.id=id;
+				}
+			}
+		next->prev.erase(next->prev.begin()+0);
+		u->succ.erase(u->succ.begin()+0);
+	}
+	u->vis=u->flag;
+	for(int i=0;i<u->succ.size();i++)
+		if (u->succ[i]->vis!=u->flag)
+		{
+			dfs_put_back(u->succ[i]);
 		}
 }
 int find_next(CFGnode*u,int id)
@@ -41,29 +79,28 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 		if (pure.first.unary.size()==1)
 		{
 			//*a=b
-			//u->g1.Union(find_next(u,pure.first.id),pure.second.id);
-			u->g1.f[u->g1.find(find_next(u,pure.first.id))].p=u->g1.f[u->g1.find(pure.second.id)].p;
+			int nx_fi=find_next(u,pure.first.id);
+			u->g1.Union(nx_fi,pure.second.id);
 		}
 		else if (pure.second.unary.size()==1)
 		{
 			if (pure.second.unary[0])
 			{
 				//a=&b
-				u->g1.f[pure.first.id].p.clear();
 				u->g1.f[pure.first.id].p.insert(pure.second.id);
 				if (pure.second.id>0) u->g1.Union(find_next(u,pure.first.id),pure.second.id);
 			}
 			else
 			{
 				//a=*b
-				//u->g1.Union(pure.first.id,find_next(u,pure.second.id));
-				u->g1.f[u->g1.find(pure.first.id)].p=u->g1.f[u->g1.find(find_next(u,pure.second.id))].p;
+				int nx_se=find_next(u,pure.second.id);
+				u->g1.Union(pure.first.id,nx_se);
 			}
 		}
 		else
 		{
 			//a=b
-			u->g1.f[u->g1.find(pure.first.id)].p=u->g1.f[u->g1.find(pure.second.id)].p;
+			u->g1.Union(pure.first.id,pure.second.id);
 		}
 	}
 	else if (pure.first.unary.size()>1)
@@ -104,8 +141,13 @@ void point_analysis(CFGnode* root)
 	env.init();
 	environment_identifiers::unique_identifier_count=0;
 	environment_identifiers::added.clear();
+	CFGnode::flag++;
+	dfs_put_back(root);
+	CFGnode::flag++;
+    printf("final!========================\n");
+    root->print();
+	CFGnode::flag++;
 	dfs_add(root);
-
 	while (h.size())
 	{
 		CFGnode* u=h.front();
@@ -116,7 +158,7 @@ void point_analysis(CFGnode* root)
 		for(int i=0;i<u->prev.size();i++)
 		{
 			CFGnode *v=u->prev[i];
-			for(int j=1;j<v->g1.f.size();j++) u->g1.merge(j,v->g1.f[j].p);
+			for(int j=1;j<v->g1.f.size();j++) u->g1.merge(j,v->g1.f[v->g1.find(j)].p);
 		}
 		for(int i=0;i<u->defuse.pure.size();i++)
 		{
