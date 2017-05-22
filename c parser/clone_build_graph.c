@@ -10,6 +10,7 @@ extern vector<func> fun;
 extern int get_func(int name);
 extern CFGnode* CFGnode::vt_;
 extern CFGnode* CFGnode::new_vt_;
+extern unordered_map<CFGnode*,CFGnode*> CFGnode::Hash;
 //extern pair<CFGnode*,CFGnode*> CFGnode::clone_cfg(CFGnode *vs, CFGnode* vt);
 
 int proc_n = 0;

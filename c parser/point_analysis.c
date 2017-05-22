@@ -1,10 +1,10 @@
 #include "myheader.h"
-queue<CFGnode*> h;
-static int Next[MAXN];
+static queue<CFGnode*> h;
+int Next[MAXN];
 environment_identifiers env;
 extern int environment_identifiers::unique_identifier_count;
 extern map<pair<int, int>, int> environment_identifiers::added;
-void dfs_add(CFGnode* u)
+static void dfs_add(CFGnode* u)
 {
 	u->vis=u->flag;
 	h.push(u);
@@ -32,7 +32,7 @@ void dfs_add(CFGnode* u)
 			env=tmp;
 		}
 }
-void dfs_put_back(CFGnode* u)
+static void dfs_put_back(CFGnode* u)
 {
 	if (u->tag!=-1)
 	{
@@ -72,7 +72,7 @@ int find_next(CFGnode*u,int id)
 	}
 	return Next[id];
 }
-void solve(CFGnode* u,const pair<pointer,pointer>&pure)
+static void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 {
 	if (pure.first.unary.size()+pure.second.unary.size()<2)
 	{
@@ -136,6 +136,7 @@ void solve(CFGnode* u,const pair<pointer,pointer>&pure)
 		solve(u,t2);
 	}
 }
+static vector<int> E[MAXN];
 void point_analysis(CFGnode* root)
 {
 	env.init();
@@ -143,9 +144,9 @@ void point_analysis(CFGnode* root)
 	environment_identifiers::added.clear();
 	CFGnode::flag++;
 	dfs_put_back(root);
-	CFGnode::flag++;
-    printf("final!========================\n");
-    root->print();
+	//CFGnode::flag++;
+    //printf("final!========================\n");
+    //root->print();
 	CFGnode::flag++;
 	dfs_add(root);
 	while (h.size())
@@ -158,13 +159,27 @@ void point_analysis(CFGnode* root)
 		for(int i=0;i<u->prev.size();i++)
 		{
 			CFGnode *v=u->prev[i];
-			for(int j=1;j<v->g1.f.size();j++) u->g1.merge(j,v->g1.f[v->g1.find(j)].p);
+			for(int j=1;j<v->g1.f.size();j++)
+				E[j].clear();
+			for(int j=1;j<v->g1.f.size();j++)
+				E[v->g1.find(j)].push_back(j);
+			for(int j=1;j<v->g1.f.size();j++)
+			{
+				if (E[j].size())
+				{
+					for(int k=1;k<E[j].size();k++)
+						u->g1.Union(E[j][k-1],E[j][k]);
+					u->g1.merge(u->g1.find(j),v->g1.f[j].p);
+				}
+			}
 		}
 		for(int i=0;i<u->defuse.pure.size();i++)
 		{
 			if (u->defuse.pure[i].second.id) 
 			{
 				pair<pointer,pointer> it=u->defuse.pure[i];
+				it.first.id=u->g1.find(it.first.id);
+				if (it.second.id>0) it.second.id=u->g1.find(it.second.id);
 				solve(u,it);
 			}
 		}

@@ -10,6 +10,7 @@
 #include <cassert>
 #include <queue>
 #include <unordered_set>
+#include <unordered_map>
 #define MAXN 100
 #define MAGIC_NUMBER 999999
 using namespace std;
@@ -214,6 +215,32 @@ struct G1
 		if (pre!=f[x].p.size()) isUpdate=true;
 	}
 };
+struct G2
+{
+	unordered_set<int> p;
+	bool isUpdate;
+	G2()
+	{
+		p.clear();
+		isUpdate=false;
+	}
+	void clear()
+	{
+		if (p.size()) isUpdate=true;
+		p.clear();
+	}
+	void insert(int x)
+	{
+		if (p.find(x)!=p.end()) isUpdate=true;
+		p.insert(x);
+	}
+	void merge(const unordered_set<int>&q)
+	{
+		int pre=p.size();
+		p.insert(q.begin(),q.end());
+		if (pre!=p.size()) isUpdate=true;
+	}
+};
 struct CFGnode
 {
 	vector<CFGnode*> succ,prev;
@@ -221,6 +248,7 @@ struct CFGnode
 	vector<int> identifier_list;
 	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index,put_back;
 	G1 g1;
+	G2 g2,g3;
 	static int rac_cnt;
 	static int flag;
 	CFGnode():defuse(),g1()
@@ -283,6 +311,7 @@ struct CFGnode
 	 *
 	 */
 	static CFGnode *vt_, *new_vt_;
+	static unordered_map<CFGnode*,CFGnode*> Hash;
 	static void clone_cfg_dfs(CFGnode *u, CFGnode *new_u)
 	{
 		if (u == vt_)
@@ -298,9 +327,15 @@ struct CFGnode
 				v->vis = flag;
 				CFGnode *new_v = new CFGnode();
 				*new_v = *v; new_v->initvis();
+				Hash[v]=new_v;
 				new_u->succ.push_back(new_v);
 				new_v->prev.push_back(new_u);
 				clone_cfg_dfs(v, new_v);
+			}
+			else
+			{
+				new_u->succ.push_back(Hash[v]);
+				Hash[v]->prev.push_back(new_u);
 			}
 		}
 	}
@@ -325,6 +360,8 @@ struct CFGnode
 		++flag;
 		CFGnode *new_vs = new CFGnode();
 		*new_vs = *vs; new_vs->initvis();
+		Hash.clear();
+		Hash[vs]=new_vs;
 		vt_ = vt;
 		new_vt_=NULL;
 		clone_cfg_dfs(vs, new_vs);

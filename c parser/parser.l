@@ -28,6 +28,8 @@ WS  [ \t\v\n\f]
 #include "cfg.h"
 #include "point_analysis.h"
 #include "clone_build_graph.h"
+#include "first_analysis.h"
+#include "second_analysis.h"
 int sym_table[MAXN];
 vector<node*> forest;
 int cnt;
@@ -249,8 +251,11 @@ int yywrap(void)        /* called at end of input */
     link(ext_dec.back().second,begin);
     begin=ext_dec[0].first;
     point_analysis(begin);
-    printf("first analysis!========================\n");
+    printf("pointer analysis!========================\n");
     begin->print();
+
+    first_analysis(begin);
+    second_analysis(end);
 
     return 1;           /* terminate now */
 }
