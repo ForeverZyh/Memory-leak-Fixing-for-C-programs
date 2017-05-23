@@ -175,7 +175,7 @@ void point_analysis(CFGnode* root)
 		}
 		for(int i=0;i<u->defuse.pure.size();i++)
 		{
-			if (u->defuse.pure[i].second.id) 
+			if (u->defuse.pure[i].second.id&&u->defuse.pure[i].second.id!=-MAGIC_NUMBER) 
 			{
 				pair<pointer,pointer> it=u->defuse.pure[i];
 				it.first.id=u->g1.find(it.first.id);

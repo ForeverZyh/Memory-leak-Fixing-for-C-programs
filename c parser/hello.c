@@ -8,7 +8,7 @@ int main()
 	if (*x>*y)
 	{
 		int *z=malloc(sizeof(int));
-		x=z;
+		*z=*y;
 	}
 	else
 	{

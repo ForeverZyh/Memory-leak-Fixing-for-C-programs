@@ -11,6 +11,20 @@ static void dfs(CFGnode* u)
 		if (v->vis!=v->flag) dfs(v);
 	}
 }
+static void process(CFGnode*u,const pointer&it)
+{
+	int cnt=0;
+	for(int j=0;j<it.unary.size();j++)
+		if (it.unary[j]) cnt--;	//&
+			//*
+		else cnt++;
+	if (cnt)
+	{
+		int id=it.id;
+		for(;cnt>1;cnt--) id=find_next(NULL,id);
+		u->g3.merge(u->g1.f[u->g1.find(id)].p);
+	}
+}
 void second_analysis(CFGnode* root)
 {
 	CFGnode::flag++;
@@ -23,20 +37,8 @@ void second_analysis(CFGnode* root)
 		u->vis=0;
 		for(int i=0;i<u->succ.size();i++) 
 			u->g3.merge(u->succ[i]->g3.p);
-		for(int i=0;i<u->defuse.use.size();i++)
-		{
-			int cnt=0;
-			for(int j=0;j<u->defuse.use[i].unary.size();j++)
-				if (u->defuse.use[i].unary[j]) cnt--;	//&
-					//*
-				else cnt++;
-			if (cnt)
-			{
-				int id=u->defuse.use[i].id;
-				for(;cnt>1;cnt--) id=find_next(NULL,id);
-				u->g3.merge(u->g1.f[u->g1.find(id)].p);
-			}
-		}
+		for(int i=0;i<u->defuse.use.size();i++) process(u,u->defuse.use[i]);
+		for(int i=0;i<u->defuse.def.size();i++) process(u,u->defuse.def[i]);
 		if (u->g3.isUpdate)
 		{
 			for(int i=0;i<u->prev.size();i++)

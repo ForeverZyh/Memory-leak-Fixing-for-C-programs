@@ -13,6 +13,10 @@
 #include <unordered_map>
 #define MAXN 100
 #define MAGIC_NUMBER 999999
+#define MAX_PROC_NUM 10000
+#define MAX_CALL_NUM 100000
+#define MAX_CALLPAIR_NUM  1000000
+#define ln_delta_increment  100000
 using namespace std;
 struct environment_identifiers;
 struct node
@@ -69,6 +73,10 @@ struct expr
 		for(int i=0;i<pure.size();i++)
 			printf("([%d unary:%d],[%d unary:%d]) ",pure[i].first.id,pure[i].first.unary.size(),pure[i].second.id,pure[i].second.unary.size());
 		printf("\n");
+	}
+	bool empty()
+	{
+		return def.size()==0&&use.size()==0&&pure.size()==0;
 	}
 };
 /*
@@ -240,6 +248,13 @@ struct G2
 		p.insert(q.begin(),q.end());
 		if (pre!=p.size()) isUpdate=true;
 	}
+	void print()
+	{
+		auto it=p.begin();
+		for(;it!=p.end();it++)
+			printf(" %d",*it);
+		printf("\n");
+	}
 };
 struct CFGnode
 {
@@ -268,6 +283,10 @@ struct CFGnode
 		prev.clear();
 		identifier_list.clear();
 	}
+	bool empty()
+	{
+		return ln%ln_delta_increment==0&&defuse.empty()&&isRrac==0&&isLrac==0&&tag==-1&&put_back==0;
+	}
 	void addL(int id)
 	{
 		isLrac=id;
@@ -288,6 +307,10 @@ struct CFGnode
 		printf("call_index=%d\n",call_index);
 		printf("===G1===\n");
 		g1.print();
+		printf("===G2===\n");
+		g2.print();
+		printf("===G3===\n");
+		g3.print();
 		printf("===dec===\n");
 		for(int i=0;i<(int)identifier_list.size();i++)
 			printf("%d ",identifier_list[i]);
@@ -377,6 +400,26 @@ struct func
 	{
 		CFG=make_pair((CFGnode*)NULL,(CFGnode*)NULL);
 		id=0;
+	}
+	void dfs(CFGnode*u)
+	{
+		u->vis=u->flag;
+		if (u->succ.size()==1&&u->prev.size()==1&&u->empty())
+		{
+			CFGnode *pre=u->prev[0],*suc=u->succ[0];
+			for(int i=0;i<pre->succ.size();i++)
+				if (pre->succ[i]==u) pre->succ[i]=suc;
+			for(int i=0;i<suc->prev.size();i++)
+				if (suc->prev[i]==u) suc->prev[i]=pre;
+		}
+		for(int i=0;i<u->succ.size();i++)
+			if (u->succ[i]->vis!=u->flag)
+				dfs(u->succ[i]);
+	}
+	void reduce()
+	{
+		CFGnode::flag++;
+		dfs(CFG.first);
 	}
 };
 typedef node* myYYSTYPE;

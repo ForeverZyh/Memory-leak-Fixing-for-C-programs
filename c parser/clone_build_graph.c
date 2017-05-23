@@ -1,10 +1,4 @@
 #include "myheader.h"
-
-#define MAX_PROC_NUM 10000
-
-#define MAX_CALL_NUM 100000
-
-#define MAX_CALLPAIR_NUM  1000000
 extern map<string,int> string_to_int;
 extern vector<func> fun;
 extern int get_func(int name);
@@ -88,7 +82,7 @@ int callpair_n = 0;
  * after a cloning, we should update the ln of each CFGnode of the new procedure.
  *
  */
-int ln_delta = 0, ln_delta_increment = 100000;
+int ln_delta = 0;
 
 void dfs_procedure3(CFGnode *u)
 {
@@ -182,7 +176,6 @@ void clone_build_graph_init()
 
 
     ln_delta = 0;
-    ln_delta_increment = 100000;
 
     callpair_n = 0;
     callpair_vis.clear();

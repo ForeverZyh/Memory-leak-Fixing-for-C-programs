@@ -251,11 +251,14 @@ int yywrap(void)        /* called at end of input */
     link(ext_dec.back().second,begin);
     begin=ext_dec[0].first;
     point_analysis(begin);
-    printf("pointer analysis!========================\n");
-    begin->print();
+    //printf("pointer analysis!========================\n");
+    //begin->print();
 
     first_analysis(begin);
     second_analysis(end);
+
+    printf("final analysis!========================\n");
+    begin->print();
 
     return 1;           /* terminate now */
 }

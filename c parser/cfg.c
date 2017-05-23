@@ -537,8 +537,9 @@ void function(node* root)
 			link(next,f.CFG.first);
 			f.CFG.first=list.first;
 			delete tmp;*/
-			assert(1);
+			assert(0);
 		}
+		f.reduce();
 		fun.push_back(f);
 	}
 	else
