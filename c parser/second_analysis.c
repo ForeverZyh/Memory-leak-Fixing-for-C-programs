@@ -11,13 +11,14 @@ static void dfs(CFGnode* u)
 		if (v->vis!=v->flag) dfs(v);
 	}
 }
-static void process(CFGnode*u,const pointer&it)
+static void process(CFGnode*u,const pointer&it,bool flag=0)
 {
 	int cnt=0;
 	for(int j=0;j<it.unary.size();j++)
 		if (it.unary[j]) cnt--;	//&
 			//*
 		else cnt++;
+	cnt+=flag;
 	if (cnt)
 	{
 		int id=it.id;
@@ -39,6 +40,9 @@ void second_analysis(CFGnode* root)
 			u->g3.merge(u->succ[i]->g3.p);
 		for(int i=0;i<u->defuse.use.size();i++) process(u,u->defuse.use[i]);
 		for(int i=0;i<u->defuse.def.size();i++) process(u,u->defuse.def[i]);
+		for(int i=0;i<u->defuse.pure.size();i++)
+			if (u->defuse.pure[i].second.id==-MAGIC_NUMBER) 
+				process(u,u->defuse.pure[i].first,1);
 		if (u->g3.isUpdate)
 		{
 			for(int i=0;i<u->prev.size();i++)

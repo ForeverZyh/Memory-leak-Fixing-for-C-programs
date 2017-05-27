@@ -4,16 +4,22 @@ int Next[MAXN];
 environment_identifiers env;
 extern int environment_identifiers::unique_identifier_count;
 extern map<pair<int, int>, int> environment_identifiers::added;
+extern int environment_identifiers::identifier_to_var[IDENTIFIER_NUMBER_LIMIT];
 static void dfs_add(CFGnode* u)
 {
 	u->vis=u->flag;
 	h.push(u);
 	if (u->isLrac) env.left_bracket(u->isLrac);
-	if (u->isRrac) env.right_bracket(u->isRrac);
+	if (u->isRrac) 
+	{
+		env.right_bracket(u->isRrac);
+		assert(u->identifier_list.size()==0&&u->defuse.empty());
+	}
 	for(int i=0;i<u->identifier_list.size();i++)
 	{
 		env.add(u->identifier_list[i],u->ln);
 	}
+	env.inside(u->list_of_vars);
 	for(int i=0;i<u->defuse.def.size();i++)
 		u->defuse.def[i].id=env.get(u->defuse.def[i].id);
 	for(int i=0;i<u->defuse.use.size();i++)
@@ -23,6 +29,7 @@ static void dfs_add(CFGnode* u)
 		u->defuse.pure[i].first.id=env.get(u->defuse.pure[i].first.id);
 		u->defuse.pure[i].second.id=env.get(u->defuse.pure[i].second.id);
 	}
+	
 	//u->g1.init(u->act_env_cnt=u->env.get_unique_identifier_count());
 	for(int i=0;i<u->succ.size();i++)
 		if (u->succ[i]->vis!=u->flag)

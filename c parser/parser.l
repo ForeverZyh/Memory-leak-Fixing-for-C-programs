@@ -30,6 +30,7 @@ WS  [ \t\v\n\f]
 #include "clone_build_graph.h"
 #include "first_analysis.h"
 #include "second_analysis.h"
+#include "final_pass.h"
 int sym_table[MAXN];
 vector<node*> forest;
 int cnt;
@@ -40,6 +41,8 @@ vector<string> int_to_string;
 int line=1;
 int malloc_cnt=0;
 vector<pair<CFGnode*,CFGnode*> > ext_dec;
+string in_name,out_name;
+vector<pair<int,string> > res;
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -253,12 +256,33 @@ int yywrap(void)        /* called at end of input */
     point_analysis(begin);
     //printf("pointer analysis!========================\n");
     //begin->print();
-
+    res.clear();
     first_analysis(begin);
     second_analysis(end);
+    final_pass(begin);
 
+    CFGnode::flag++;
     printf("final analysis!========================\n");
     begin->print();
+
+    ifstream in;
+    in.open(in_name.c_str());
+    ofstream out;
+    out.open(out_name.c_str());
+    sort(res.begin(),res.end());
+    char s[1010];
+    int ln=0,now=0;
+    while (in.getline(s,1000))
+    {
+        ln++;
+        for(;now<res.size()&&res[now].first==ln;)
+        {
+            out<<res[now].second<<endl;
+            now++;
+            ln++;
+        }
+        out<<s<<endl;
+    }
 
     return 1;           /* terminate now */
 }
@@ -330,9 +354,11 @@ int main(int argv,char* argc[])
 {
     int_to_string.push_back("");
     hash_string_to_int("@return");
-	if (argv==2)
+	if (argv==3)
 	{
 		FILE* in=fopen(argc[1],"r");
+        in_name=argc[1];
+        out_name=argc[2];
 		yyin=in;
 	}
 	yyparse();

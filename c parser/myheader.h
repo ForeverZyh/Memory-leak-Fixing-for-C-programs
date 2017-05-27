@@ -11,12 +11,15 @@
 #include <queue>
 #include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
+#include <fstream>
 #define MAXN 100
 #define MAGIC_NUMBER 999999
 #define MAX_PROC_NUM 10000
 #define MAX_CALL_NUM 100000
 #define MAX_CALLPAIR_NUM  1000000
 #define ln_delta_increment  100000
+#define IDENTIFIER_NUMBER_LIMIT MAXN
 using namespace std;
 struct environment_identifiers;
 struct node
@@ -89,7 +92,6 @@ struct expr
  */
 struct environment_identifiers
 {
-	#define IDENTIFIER_NUMBER_LIMIT MAXN
 	#define PII pair<int, int>
 	#define c0 first
 	#define c1 second
@@ -108,6 +110,8 @@ struct environment_identifiers
 	static int unique_identifier_count;
 
 	static map<pair<int, int>, int> added;
+
+	static int identifier_to_var[IDENTIFIER_NUMBER_LIMIT];
 
 	void init()
 	{
@@ -132,7 +136,10 @@ struct environment_identifiers
 		int unique_identifier_num;
 		
 		if (!added[PII(identifier_num, line_no)])
+		{
 			added[PII(identifier_num, line_no)] = ++unique_identifier_count;
+			identifier_to_var[unique_identifier_count]=identifier_num;
+		}
 		
 		unique_identifier_num = added[PII(identifier_num, line_no)];
 
@@ -163,6 +170,17 @@ struct environment_identifiers
 			--identifier_stack_top;
 		}
 		--identifier_stack_top;
+	}
+	void inside(vector<pair<int,int> >&a)
+	{
+		unordered_set<int> hash;
+		hash.clear();
+		for(int i=identifier_stack_top;i>1;i--)
+			if (identifier_stack[i]>0&&hash.find(identifier_stack[i])==hash.end())
+			{
+				hash.insert(identifier_stack[i]);
+				a.push_back(make_pair(get(identifier_stack[i]),identifier_stack[i]));
+			}
 	}
 };
 
@@ -248,6 +266,10 @@ struct G2
 		p.insert(q.begin(),q.end());
 		if (pre!=p.size()) isUpdate=true;
 	}
+	bool find(int x)
+	{
+		return p.find(x)!=p.end();
+	}
 	void print()
 	{
 		auto it=p.begin();
@@ -261,6 +283,7 @@ struct CFGnode
 	vector<CFGnode*> succ,prev;
 	expr defuse;
 	vector<int> identifier_list;
+	vector<pair<int,int> > list_of_vars;
 	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index,put_back;
 	G1 g1;
 	G2 g2,g3;
@@ -273,6 +296,7 @@ struct CFGnode
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
+		list_of_vars.clear();
 	}
 	CFGnode(int line):defuse(),g1()
 	{
@@ -282,6 +306,7 @@ struct CFGnode
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
+		list_of_vars.clear();
 	}
 	bool empty()
 	{
@@ -316,6 +341,9 @@ struct CFGnode
 			printf("%d ",identifier_list[i]);
 		printf("\n");
 		defuse.print();
+		printf("===you can ues===\n");
+		for(int i=0;i<(int)list_of_vars.size();i++) printf("%d ",list_of_vars[i].second);
+		printf("\n");
 		for(int i=0;i<(int)succ.size();i++)
 			printf("  To %x\n",succ[i]);
 		for(int i=0;i<(int)succ.size();i++)
@@ -325,6 +353,52 @@ struct CFGnode
 	{
 		prev.clear();succ.clear();
 		vis=vis2=vis3=vis4=0;
+	}
+	bool canFreeBefore(int id,int*Next)
+	{
+		if (prev.size()!=1) return 0;
+		const unordered_set<int> &p=g1.f[g1.find(id)].p;
+		if (p.size()==0) return 0;
+		for(auto it=p.begin();it!=p.end();it++)
+		{
+			int item=*it;
+			if (item>=0) return 0;
+			if (prev[0]->g2.find(item)) return 0;
+			if (g3.find(item)) return 0;
+		}
+		for(id=Next[id];id;id=Next[id])
+		{
+			const unordered_set<int> &p=g1.f[g1.find(id)].p;
+			for(auto it=p.begin();it!=p.end();it++)
+			{
+				int item=*it;
+				if (g3.find(item)) return 0;
+			}
+		}
+		return 1;
+	}
+	bool canFreeAfter(int id,int*Next)
+	{
+		if (succ.size()!=1) return 0;
+		const unordered_set<int> &p=g1.f[g1.find(id)].p;
+		if (p.size()==0) return 0;
+		for(auto it=p.begin();it!=p.end();it++)
+		{
+			int item=*it;
+			if (item>=0) return 0;
+			if (g2.find(item)) return 0;
+			if (succ[0]->g3.find(item)) return 0;
+		}
+		for(id=Next[id];id;id=Next[id])
+		{
+			const unordered_set<int> &p=g1.f[g1.find(id)].p;
+			for(auto it=p.begin();it!=p.end();it++)
+			{
+				int item=*it;
+				if (succ[0]->g3.find(item)) return 0;
+			}
+		}
+		return 1;
 	}
 
 	/*
