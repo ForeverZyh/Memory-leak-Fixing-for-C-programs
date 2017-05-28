@@ -101,12 +101,11 @@ static bool bfs_find(CFGnode *root)
 		h.pop();
 		if (u->ln%ln_delta_increment)
 		{
-			for(int i=0;i<u->list_of_vars.size();i++)
-			{
-				int id=u->list_of_vars[i].first;
-				//if (1)
+			if (u->prev.size()==1)
+				for(int i=0;i<u->prev[0]->list_of_vars.size();i++)
 				{
-					string tmp=int_to_string[u->list_of_vars[i].second];
+					int id=u->prev[0]->list_of_vars[i].first;
+					string tmp=int_to_string[u->prev[0]->list_of_vars[i].second];
 					vector<int> ids;ids.clear();ids.push_back(id);
 					for(;Next[id];id=Next[id]) ids.push_back(Next[id]);
 					int num=ids.size();
@@ -129,8 +128,9 @@ static bool bfs_find(CFGnode *root)
 							free->g1=u->prev[0]->g1;
 							free->g2=u->prev[0]->g2;
 							free->g3=u->g3;
-							free->g2.merge(u->g1.f[u->g1.find(id)].p);
-							free->g3.merge(u->g1.f[u->g1.find(id)].p);
+							free->list_of_vars=u->prev[0]->list_of_vars;
+							free->g2.merge(u->prev[0]->g1.f[u->prev[0]->g1.find(id)].p);
+							free->g3.merge(u->prev[0]->g1.f[u->prev[0]->g1.find(id)].p);
 							addnode(u->prev[0],free,u);
 							bfs_forwards(free);
 							bfs_afterwards(free);
@@ -138,39 +138,39 @@ static bool bfs_find(CFGnode *root)
 						}
 					}
 				}
-				id=u->list_of_vars[i].first;
-				//if (1)
+			for(int i=0;i<u->list_of_vars.size();i++)
+			{
+				int id=u->list_of_vars[i].first;
+				string tmp=int_to_string[u->list_of_vars[i].second];
+				vector<int> ids;ids.clear();ids.push_back(id);
+				for(;Next[id];id=Next[id]) ids.push_back(Next[id]);
+				int num=ids.size();
+				while (ids.size())
 				{
-					string tmp=int_to_string[u->list_of_vars[i].second];
-					vector<int> ids;ids.clear();ids.push_back(id);
-					for(;Next[id];id=Next[id]) ids.push_back(Next[id]);
-					int num=ids.size();
-					while (ids.size())
+					string xing="";
+					num--;
+					for(int i=0;i<num;i++) xing+="*";
+					int id=ids.back();
+					ids.pop_back();
+					if (u->canFreeAfter(id,Next))
 					{
-						string xing="";
-						num--;
-						for(int i=0;i<num;i++) xing+="*";
-						int id=ids.back();
-						ids.pop_back();
-						if (u->canFreeAfter(id,Next))
-						{
-							fprintf(stderr,"after line%d free(%s%s)\n",u->ln%ln_delta_increment,xing.c_str(),tmp.c_str());
-							for(int i=0;i<res.size();i++)
-								if (res[i].first>=u->ln%ln_delta_increment+1) res[i].first++;
-							res.push_back(make_pair(u->ln%ln_delta_increment+1,"free("+xing+tmp+");"));
-							CFGnode*free=new CFGnode(u->ln+1);
-							CFGnode::flag++;
-							dfs(root,u->ln%ln_delta_increment+1);
-							free->g1=u->g1;
-							free->g2=u->g2;
-							free->g3=u->succ[0]->g3;
-							free->g2.merge(u->g1.f[u->g1.find(id)].p);
-							free->g3.merge(u->g1.f[u->g1.find(id)].p);
-							addnode(u,free,u->succ[0]);
-							bfs_forwards(free);
-							bfs_afterwards(free);
-							return true;
-						}
+						fprintf(stderr,"after line%d free(%s%s)\n",u->ln%ln_delta_increment,xing.c_str(),tmp.c_str());
+						for(int i=0;i<res.size();i++)
+							if (res[i].first>=u->ln%ln_delta_increment+1) res[i].first++;
+						res.push_back(make_pair(u->ln%ln_delta_increment+1,"free("+xing+tmp+");"));
+						CFGnode*free=new CFGnode(u->ln+1);
+						CFGnode::flag++;
+						dfs(root,u->ln%ln_delta_increment+1);
+						free->g1=u->g1;
+						free->g2=u->g2;
+						free->g3=u->succ[0]->g3;
+						free->list_of_vars=u->list_of_vars;
+						free->g2.merge(u->g1.f[u->g1.find(id)].p);
+						free->g3.merge(u->g1.f[u->g1.find(id)].p);
+						addnode(u,free,u->succ[0]);
+						bfs_forwards(free);
+						bfs_afterwards(free);
+						return true;
 					}
 				}
 			}

@@ -8,7 +8,6 @@ int main()
 		*z=*x+i;
 		if (*z>i*2)
 		{
-free(z);
 			break;
 		}
 		else

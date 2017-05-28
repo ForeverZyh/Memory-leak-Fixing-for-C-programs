@@ -285,12 +285,14 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		else if (root->son[i]->str=="CONTINUE")
 		{
 			link(pre,continue_node);
+			pre->ln=root->son[i]->ln;
 			pre->addR(rac.top());
 			flag=false;
 		}
 		else if (root->son[i]->str=="BREAK")
 		{
 			link(pre,break_node);
+			pre->ln=root->son[i]->ln;
 			pre->addR(rac.top());
 			flag=false;
 		}

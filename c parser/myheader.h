@@ -161,12 +161,16 @@ struct environment_identifiers
 	{
 		identifier_stack[++identifier_stack_top] = -bracket_num;
 	}
-	void right_bracket(int bracket_num)
+	void right_bracket(int bracket_num,vector<int>& a)
 	{
 		while (identifier_stack[identifier_stack_top] != -bracket_num)
 		{
 			int identifier_num = identifier_stack[identifier_stack_top];
-			identifier_list[identifier_num].pop_back();
+			if (identifier_num>0)
+			{
+				a.push_back(identifier_list[identifier_num].back());
+				identifier_list[identifier_num].pop_back();
+			}
 			--identifier_stack_top;
 		}
 		--identifier_stack_top;
@@ -194,6 +198,10 @@ struct G1
 		{
 			fa=x;
 			p.clear();
+		}
+		void init(int f)
+		{
+			fa=f;p.clear();
 		}
 	};
 	vector<ele> f;
@@ -240,6 +248,19 @@ struct G1
 		f[x].p.insert(q.begin(),q.end());
 		if (pre!=f[x].p.size()) isUpdate=true;
 	}
+	void erase(int id)
+	{
+		int newfa=0;
+		for(int j=1;j<f.size();j++)
+			if (j!=id&&find(j)==id) newfa=j;
+		if (newfa)
+		{
+			for(int j=1;j<f.size();j++)
+				if (j!=id&&f[j].fa==id) f[j].fa=newfa;
+			f[newfa].p=f[id].p;
+		}
+		f[id].init(id);
+	}
 };
 struct G2
 {
@@ -282,7 +303,7 @@ struct CFGnode
 {
 	vector<CFGnode*> succ,prev;
 	expr defuse;
-	vector<int> identifier_list;
+	vector<int> identifier_list,vars_to_kill;
 	vector<pair<int,int> > list_of_vars;
 	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index,put_back;
 	G1 g1;
@@ -296,6 +317,7 @@ struct CFGnode
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
+		vars_to_kill.clear();
 		list_of_vars.clear();
 	}
 	CFGnode(int line):defuse(),g1()
@@ -306,6 +328,7 @@ struct CFGnode
 		succ.clear();
 		prev.clear();
 		identifier_list.clear();
+		vars_to_kill.clear();
 		list_of_vars.clear();
 	}
 	bool empty()
@@ -357,7 +380,7 @@ struct CFGnode
 	bool canFreeBefore(int id,int*Next)
 	{
 		if (prev.size()!=1) return 0;
-		const unordered_set<int> &p=g1.f[g1.find(id)].p;
+		const unordered_set<int> &p=prev[0]->g1.f[prev[0]->g1.find(id)].p;
 		if (p.size()==0) return 0;
 		for(auto it=p.begin();it!=p.end();it++)
 		{
@@ -365,15 +388,6 @@ struct CFGnode
 			if (item>=0) return 0;
 			if (prev[0]->g2.find(item)) return 0;
 			if (g3.find(item)) return 0;
-		}
-		for(id=Next[id];id;id=Next[id])
-		{
-			const unordered_set<int> &p=g1.f[g1.find(id)].p;
-			for(auto it=p.begin();it!=p.end();it++)
-			{
-				int item=*it;
-				if (g3.find(item)) return 0;
-			}
 		}
 		return 1;
 	}
@@ -388,15 +402,6 @@ struct CFGnode
 			if (item>=0) return 0;
 			if (g2.find(item)) return 0;
 			if (succ[0]->g3.find(item)) return 0;
-		}
-		for(id=Next[id];id;id=Next[id])
-		{
-			const unordered_set<int> &p=g1.f[g1.find(id)].p;
-			for(auto it=p.begin();it!=p.end();it++)
-			{
-				int item=*it;
-				if (succ[0]->g3.find(item)) return 0;
-			}
 		}
 		return 1;
 	}

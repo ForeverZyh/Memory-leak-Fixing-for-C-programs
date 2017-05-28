@@ -22,8 +22,11 @@ static void process(CFGnode*u,const pointer&it,bool flag=0)
 	if (cnt)
 	{
 		int id=it.id;
-		for(;cnt>1;cnt--) id=find_next(NULL,id);
-		u->g3.merge(u->g1.f[u->g1.find(id)].p);
+		for(;cnt>=0;cnt--)
+		{
+			u->g3.merge(u->g1.f[u->g1.find(id)].p);
+			if (cnt>1) id=find_next(NULL,id);
+		}
 	}
 }
 void second_analysis(CFGnode* root)

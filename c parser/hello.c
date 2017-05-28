@@ -1,25 +1,19 @@
-int *x;
 int main()
 {
-	int *y=malloc(sizeof(int));
-	x=malloc(sizeof(int));
-	*x=0;
-	*y=1;
-	if (*x>*y)
+	int b=10;
+	int *x=&b;
+	for(int i=1;i<=b;i++)
 	{
 		int *z=malloc(sizeof(int));
-		*z=*y;
+		*z=*x+i;
+		if (*z>i*2)
+		{
+			break;
+		}
+		else
+		{
+			i++;
+		}
 	}
-	else
-	{
-		x=y;
-		//free(y);
-	}
-	/*for(int i=1;i<=10;i++)
-	{
-		int *z;
-		z=malloc(sizeof(int));
-		break;
-	}*/
 	return 0;
 }

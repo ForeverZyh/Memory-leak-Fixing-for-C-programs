@@ -12,12 +12,13 @@ static void dfs_add(CFGnode* u)
 	if (u->isLrac) env.left_bracket(u->isLrac);
 	if (u->isRrac) 
 	{
-		env.right_bracket(u->isRrac);
+		env.right_bracket(u->isRrac,u->vars_to_kill);
 		assert(u->identifier_list.size()==0&&u->defuse.empty());
 	}
 	for(int i=0;i<u->identifier_list.size();i++)
 	{
 		env.add(u->identifier_list[i],u->ln);
+		u->identifier_list[i]=env.get(u->identifier_list[i]);
 	}
 	env.inside(u->list_of_vars);
 	for(int i=0;i<u->defuse.def.size();i++)
@@ -180,6 +181,9 @@ void point_analysis(CFGnode* root)
 				}
 			}
 		}
+		for(int i=1;i<u->g1.f.size();i++) u->g1.find(i);
+		for(int i=0;i<u->identifier_list.size();i++)
+			u->g1.erase(u->identifier_list[i]);
 		for(int i=0;i<u->defuse.pure.size();i++)
 		{
 			if (u->defuse.pure[i].second.id&&u->defuse.pure[i].second.id!=-MAGIC_NUMBER) 
@@ -189,6 +193,12 @@ void point_analysis(CFGnode* root)
 				if (it.second.id>0) it.second.id=u->g1.find(it.second.id);
 				solve(u,it);
 			}
+		}
+		if (u->isRrac)
+		{
+			assert(u->defuse.empty()&&u->identifier_list.size()==0);
+			for(int i=0;i<u->vars_to_kill.size();i++)
+				u->g1.erase(u->vars_to_kill[i]);
 		}
 		if (u->g1.isUpdate)
 		{

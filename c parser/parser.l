@@ -247,12 +247,11 @@ int yywrap(void)        /* called at end of input */
     pair<CFGnode*, CFGnode*> pa = clone_build_graph_work();
     begin = pa.first, end = pa.second;
 
+    link(ext_dec.back().second,begin);
+    begin=ext_dec[0].first;
     //CFGnode::flag++;
     //printf("final!========================\n");
     //begin->print();
-
-    link(ext_dec.back().second,begin);
-    begin=ext_dec[0].first;
     point_analysis(begin);
     //printf("pointer analysis!========================\n");
     //begin->print();
