@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <fstream>
-#define MAXN 100
+#define MAXN 1000
 #define MAGIC_NUMBER 999999
 #define MAX_PROC_NUM 10000
 #define MAX_CALL_NUM 100000
@@ -175,15 +175,17 @@ struct environment_identifiers
 		}
 		--identifier_stack_top;
 	}
-	void inside(vector<pair<int,int> >&a)
+	void inside(vector<pair<int,int> >&a,const vector<string>&int_to_string)
 	{
 		unordered_set<int> hash;
 		hash.clear();
 		for(int i=identifier_stack_top;i>1;i--)
 			if (identifier_stack[i]>0&&hash.find(identifier_stack[i])==hash.end())
 			{
-				hash.insert(identifier_stack[i]);
-				a.push_back(make_pair(get(identifier_stack[i]),identifier_stack[i]));
+				int id=identifier_stack[i];
+				hash.insert(id);
+				if (int_to_string[id].size()&&int_to_string[id][0]!='@')
+					a.push_back(make_pair(get(id),id));
 			}
 	}
 };
@@ -305,14 +307,16 @@ struct CFGnode
 	expr defuse;
 	vector<int> identifier_list,vars_to_kill;
 	vector<pair<int,int> > list_of_vars;
-	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index,put_back;
+	int isRrac,isLrac,ln,vis,vis2,vis3,vis4,tag,call_index;
+	bool cantAfter,put_back,isFirst,isLast;
 	G1 g1;
 	G2 g2,g3;
 	static int rac_cnt;
 	static int flag;
-	CFGnode():defuse(),g1()
+	CFGnode():defuse(),g1(),g2(),g3()
 	{
 		isRrac=isLrac=ln=vis=vis2=vis3=vis4=put_back=0; call_index = -1;
+		cantAfter=isFirst=isLast=0;
 		tag=-1;
 		succ.clear();
 		prev.clear();
@@ -320,9 +324,10 @@ struct CFGnode
 		vars_to_kill.clear();
 		list_of_vars.clear();
 	}
-	CFGnode(int line):defuse(),g1()
+	CFGnode(int line):defuse(),g1(),g2(),g3()
 	{
 		isRrac=isLrac=vis=vis2=vis3=vis4=put_back=0; call_index = -1;
+		cantAfter=isFirst=isLast=0;
 		tag=-1;
 		ln=line;
 		succ.clear();
@@ -380,6 +385,7 @@ struct CFGnode
 	bool canFreeBefore(int id,int*Next)
 	{
 		if (prev.size()!=1) return 0;
+		if (!isFirst) return 0;
 		const unordered_set<int> &p=prev[0]->g1.f[prev[0]->g1.find(id)].p;
 		if (p.size()==0) return 0;
 		for(auto it=p.begin();it!=p.end();it++)
@@ -394,6 +400,8 @@ struct CFGnode
 	bool canFreeAfter(int id,int*Next)
 	{
 		if (succ.size()!=1) return 0;
+		if (!isLast) return 0;
+		if (cantAfter) return 0;
 		const unordered_set<int> &p=g1.f[g1.find(id)].p;
 		if (p.size()==0) return 0;
 		for(auto it=p.begin();it!=p.end();it++)

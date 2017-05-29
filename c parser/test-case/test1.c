@@ -1,7 +1,7 @@
 int main()
 {
-	int *x=malloc(sizeof(int)),*y;
-	y=x;
-	free(x);
+	int **z=malloc(sizeof(int*));
+	*z=malloc(sizeof(int));
+	**z=0;
 	return 0;
 }

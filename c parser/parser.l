@@ -220,10 +220,10 @@ int yywrap(void)        /* called at end of input */
         }
     dfs(root,0);
     CFGnode::rac_cnt=0;
-    CFGnode::flag=1;
     ext_dec.clear();
     function(root);
     clone_build_graph_init();
+    CFGnode::flag++;
     printf("%d\n",fun.size());
     for(int i=0;i<fun.size();i++)
     {
@@ -258,11 +258,15 @@ int yywrap(void)        /* called at end of input */
     res.clear();
     first_analysis(begin);
     second_analysis(end);
-    final_pass(begin);
-
     CFGnode::flag++;
     printf("final analysis!========================\n");
     begin->print();
+
+    final_pass(begin);
+
+    //CFGnode::flag++;
+    //printf("final analysis!========================\n");
+    //begin->print();
 
     ifstream in;
     in.open(in_name.c_str());

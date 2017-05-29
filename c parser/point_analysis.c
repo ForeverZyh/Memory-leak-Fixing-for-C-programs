@@ -5,6 +5,7 @@ environment_identifiers env;
 extern int environment_identifiers::unique_identifier_count;
 extern map<pair<int, int>, int> environment_identifiers::added;
 extern int environment_identifiers::identifier_to_var[IDENTIFIER_NUMBER_LIMIT];
+extern vector<string> int_to_string;
 static void dfs_add(CFGnode* u)
 {
 	u->vis=u->flag;
@@ -20,7 +21,7 @@ static void dfs_add(CFGnode* u)
 		env.add(u->identifier_list[i],u->ln);
 		u->identifier_list[i]=env.get(u->identifier_list[i]);
 	}
-	env.inside(u->list_of_vars);
+	env.inside(u->list_of_vars,int_to_string);
 	for(int i=0;i<u->defuse.def.size();i++)
 		u->defuse.def[i].id=env.get(u->defuse.def[i].id);
 	for(int i=0;i<u->defuse.use.size();i++)

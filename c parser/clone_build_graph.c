@@ -32,6 +32,7 @@ void dfs_CFG_in_single_proc(CFGnode *u)
     u->vis2 = 1;
     if (u->tag != -1)
     {
+        ++call_n;
         caller_proc_list[call_n] = current_proc;
         callee_proc_list[call_n] = u->tag;
         zyhbegin_list[call_n] = u;
@@ -39,7 +40,7 @@ void dfs_CFG_in_single_proc(CFGnode *u)
         
         G[current_proc].push_back(call_n);
 
-        u->call_index = ++call_n;
+        u->call_index = call_n;
 
         //++ call_n;
 
@@ -150,7 +151,7 @@ void dfs_whole_CFG(int u, int call_now, int call_last, CFGnode *begin, CFGnode *
         int non_hole_proc_index = to_non_hole_proc_index(u);
         func f = fun[non_hole_proc_index];
         CFGnode *proc_begin = f.CFG.first, *proc_end = f.CFG.second;
-
+        CFGnode::flag++;
         pair<CFGnode*, CFGnode*> cloned_CFG = CFGnode::clone_cfg(proc_begin, proc_end);
         callpair[callpair_n]=cloned_CFG;
         

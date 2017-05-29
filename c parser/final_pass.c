@@ -105,6 +105,7 @@ static bool bfs_find(CFGnode *root)
 				for(int i=0;i<u->prev[0]->list_of_vars.size();i++)
 				{
 					int id=u->prev[0]->list_of_vars[i].first;
+					int base=id;
 					string tmp=int_to_string[u->prev[0]->list_of_vars[i].second];
 					vector<int> ids;ids.clear();ids.push_back(id);
 					for(;Next[id];id=Next[id]) ids.push_back(Next[id]);
@@ -130,7 +131,8 @@ static bool bfs_find(CFGnode *root)
 							free->g3=u->g3;
 							free->list_of_vars=u->prev[0]->list_of_vars;
 							free->g2.merge(u->prev[0]->g1.f[u->prev[0]->g1.find(id)].p);
-							free->g3.merge(u->prev[0]->g1.f[u->prev[0]->g1.find(id)].p);
+							for(int i=0,ii=base;i<=num;i++,ii=Next[ii])
+								free->g3.merge(u->prev[0]->g1.f[u->prev[0]->g1.find(ii)].p);
 							addnode(u->prev[0],free,u);
 							bfs_forwards(free);
 							bfs_afterwards(free);
@@ -141,6 +143,7 @@ static bool bfs_find(CFGnode *root)
 			for(int i=0;i<u->list_of_vars.size();i++)
 			{
 				int id=u->list_of_vars[i].first;
+				int base=id;
 				string tmp=int_to_string[u->list_of_vars[i].second];
 				vector<int> ids;ids.clear();ids.push_back(id);
 				for(;Next[id];id=Next[id]) ids.push_back(Next[id]);
@@ -166,7 +169,8 @@ static bool bfs_find(CFGnode *root)
 						free->g3=u->succ[0]->g3;
 						free->list_of_vars=u->list_of_vars;
 						free->g2.merge(u->g1.f[u->g1.find(id)].p);
-						free->g3.merge(u->g1.f[u->g1.find(id)].p);
+						for(int i=0,ii=base;i<=num;i++,ii=Next[ii])
+							free->g3.merge(u->g1.f[u->g1.find(ii)].p);
 						addnode(u,free,u->succ[0]);
 						bfs_forwards(free);
 						bfs_afterwards(free);

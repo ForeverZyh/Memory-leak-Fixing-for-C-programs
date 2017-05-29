@@ -11,6 +11,7 @@ extern vector<string> int_to_string;
 static CFGnode *begin_exp,*prev_exp,*begin_dec,*prev_dec;
 static int prev_id;
 extern int hash_string_to_int(const string&s);
+static bool Hash[MAXN];
 
 void link(CFGnode* a,CFGnode* b)
 {
@@ -24,6 +25,7 @@ CFGnode* expression(node*);
 
 void dfs_function_call(node*root, vector<pointer>* a)
 {
+	if (root==NULL) return;
 	int t=0;
 	if (root->son.size()>1) 
 	{
@@ -42,14 +44,14 @@ int get_func(int name)
 		if (fun[i].id==name) return i;
 	return -1;
 }
-void function_call(int name,int id,node* root)
+void function_call(int name,int id,node* root,int ln)
 {
 	int tag=get_func(name);
 	if (tag==-1) return;
 	else tag=name;
 	vector<pointer> list;list.clear();
 	dfs_function_call(root,&list);
-	CFGnode* res=new CFGnode(root->ln);
+	CFGnode* res=new CFGnode(ln);
 	for(int i=0;i<list.size();i++)
 	{
 		char tmpstr[10];
@@ -62,10 +64,8 @@ void function_call(int name,int id,node* root)
 	}
 	res->identifier_list.push_back(id);
 	res->tag=tag;
-	CFGnode* next=new CFGnode(root->ln);
 	link(prev_exp,res);
-	link(res,next);
-	prev_exp=next;
+	prev_exp=res;
 }
 
 expr dfs_expression(node *root)
@@ -123,7 +123,7 @@ expr dfs_expression(node *root)
 		{
 			expr res;
 			int tmp=++total_string;
-			function_call(string_to_int[root->son[0]->son[0]->str],tmp,(root->son.size()>1)?root->son[1]:NULL);
+			function_call(string_to_int[root->son[0]->son[0]->str],tmp,(root->son.size()>1)?root->son[1]:NULL,root->ln);
 			res.use.push_back(pointer(tmp));
 			return res;
 		}
@@ -312,8 +312,10 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 				link(pre,it.first);
 				link(it.second,return_node);
 				it.second->put_back=1;
+				pre=it.second;
 			}
-			else link(pre,return_node);
+			else 
+				link(pre,return_node);
 			flag=false;
 		}
 		else if (root->son[i]->str=="WHILE")
@@ -462,6 +464,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 		}
 	}
 	if (flag) link(pre,end);
+	else pre->cantAfter=true;
 	if (root->str=="compound_statement")
 	{
 		if (!rac.empty()&&rac.top()==tmp) rac.pop();
@@ -469,7 +472,7 @@ pair<CFGnode*,CFGnode*> create(node* root,CFGnode* return_node=NULL,CFGnode *con
 	return make_pair(begin,end);
 }
 
-void get_parms(pair<CFGnode*,CFGnode*> list,vector<int>* a)
+static void get_parms(pair<CFGnode*,CFGnode*> list,vector<int>* a)
 {
 	for(auto it=list.first;;it=it->succ[0])
 	{
@@ -477,6 +480,37 @@ void get_parms(pair<CFGnode*,CFGnode*> list,vector<int>* a)
 		if (it->identifier_list.size()&&((t=it->identifier_list[0])!=0)) a->push_back(t);
 		if (it==list.second) break;
 	}
+}
+
+static void dfs_first(CFGnode *u)
+{
+	u->vis=u->flag;
+	if (u->ln)
+	{
+		if (!Hash[u->ln])
+		{
+			Hash[u->ln]=true;
+			u->isFirst=true;
+		}
+	}
+	for(int i=0;i<u->succ.size();i++)
+		if (u->succ[i]->vis!=u->flag) 
+			dfs_first(u->succ[i]);
+}
+static void dfs_last(CFGnode *u)
+{
+	u->vis=u->flag;
+	if (u->ln)
+	{
+		if (!Hash[u->ln])
+		{
+			Hash[u->ln]=true;
+			u->isLast=true;
+		}
+	}
+	for(int i=0;i<u->prev.size();i++)
+		if (u->prev[i]->vis!=u->flag) 
+			dfs_last(u->prev[i]);
 }
 
 void function(node* root)
@@ -488,15 +522,16 @@ void function(node* root)
 	}
 	else if (root->str=="function_definition")
 	{
-		func f;
+		fun.push_back(func());
+		func&f=fun.back();
 		if (root->son.size()==3)
 		{
-			f.CFG=create(root->son[2]);
 			pair<CFGnode*,CFGnode*> list=Declaration(root->son[1]);
 			f.id=list.first->identifier_list[0];
 			vector<int> parms;
 			parms.clear();
 			get_parms(list,&parms);
+			f.CFG=create(root->son[2]);
 			CFGnode* next=f.CFG.first;
 			for(int i=1;i<parms.size();i++)
 			{
@@ -508,6 +543,12 @@ void function(node* root)
 				next->defuse.use.push_back(pointer(use));
 				next->defuse.pure.push_back(make_pair(pointer(parms[i]),pointer(use)));
 			}
+			memset(Hash,0,sizeof(Hash));
+			CFGnode::flag++;
+			dfs_first(f.CFG.first);
+			memset(Hash,0,sizeof(Hash));
+			CFGnode::flag++;
+			dfs_last(f.CFG.second);
 			for(auto i=list.first;i!=list.second;) 
 			{
 				auto next=i->succ[0];
@@ -542,7 +583,6 @@ void function(node* root)
 			assert(0);
 		}
 		f.reduce();
-		fun.push_back(f);
 	}
 	else
 	{

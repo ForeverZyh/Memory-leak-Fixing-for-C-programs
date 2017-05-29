@@ -1,20 +1,17 @@
+int *sum;
+void foo(int x)
+{
+	if (x<=1)
+	{
+		return ;
+	}
+	*sum*=x;
+	foo(x-1);
+}
 int main()
 {
-	int b=10;
-	int *x=&b;
-	for(int i=1;i<=b;i++)
-	{
-		int *z=malloc(sizeof(int));
-		*z=*x+i;
-		if (*z>i*2)
-		{
-free(z);
-			break;
-		}
-		else
-		{
-			i++;
-		}
-	}
+	sum=malloc(sizeof(int));
+	foo(10);
+free(sum);
 	return 0;
 }
