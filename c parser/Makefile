@@ -1,4 +1,4 @@
-inputs := test-case/test1.c test-case/test2.c test-case/test3.c test-case/test4.c test-case/test5.c test-case/test6.c test-case/test7.c
+inputs := test-case/test1.c test-case/test2.c test-case/test3.c test-case/test4.c test-case/test5.c test-case/test6.c test-case/test7.c test-case/test8.c test-case/test9.c test-case/test10.c
 all:clean y.tab.c y.tab.h lex.yy.c parser
 y.tab.c y.tab.h : parser.y
 	-yacc -d parser.y

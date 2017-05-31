@@ -223,12 +223,12 @@ int yywrap(void)        /* called at end of input */
     ext_dec.clear();
     function(root);
     clone_build_graph_init();
-    CFGnode::flag++;
+    /*CFGnode::flag++;
     printf("%d\n",fun.size());
     for(int i=0;i<fun.size();i++)
     {
         fun[i].CFG.first->print();
-    }
+    }*/
 
     //identifier for @0...@x and @return
     CFGnode *very_beginning=new CFGnode();

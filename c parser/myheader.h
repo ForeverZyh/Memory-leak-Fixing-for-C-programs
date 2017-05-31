@@ -163,8 +163,17 @@ struct environment_identifiers
 	}
 	void right_bracket(int bracket_num,vector<int>& a)
 	{
+		bool flag=0;
+		for(int i=1;i<=identifier_stack_top;i++)
+			if (identifier_stack[i] == -bracket_num)
+			{
+				flag=1;
+				break;
+			}
+		if (!flag) return;
 		while (identifier_stack[identifier_stack_top] != -bracket_num)
 		{
+			assert(identifier_stack_top);
 			int identifier_num = identifier_stack[identifier_stack_top];
 			if (identifier_num>0)
 			{
@@ -184,7 +193,7 @@ struct environment_identifiers
 			{
 				int id=identifier_stack[i];
 				hash.insert(id);
-				if (int_to_string[id].size()&&int_to_string[id][0]!='@')
+				if (int_to_string.size()>id&&int_to_string[id].size()&&int_to_string[id][0]!='@')
 					a.push_back(make_pair(get(id),id));
 			}
 	}

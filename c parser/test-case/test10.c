@@ -1,12 +1,17 @@
+int *x;
+int a()
+{
+	
+}
+int b()
+{
+	a();
+}
 int main()
 {
-	int **z1, **z2, y, x;
-	z1=malloc(sizeof(int*));
-	z2=malloc(sizeof(int*));
-	y=malloc(sizeof(int));
-	x=5;
-	*z1=y, *z2=y;
-	*y=x;
+	x=malloc(sizeof(int));
+	a();
+	*x=1;
+	b();
 	return 0;
 }
-

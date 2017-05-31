@@ -64,7 +64,8 @@ void function_call(int name,int id,node* root,int ln)
 	}
 	res->identifier_list.push_back(id);
 	res->tag=tag;
-	link(prev_exp,res);
+	if (prev_exp) link(prev_exp,res);
+	else begin_exp=res;
 	prev_exp=res;
 }
 
