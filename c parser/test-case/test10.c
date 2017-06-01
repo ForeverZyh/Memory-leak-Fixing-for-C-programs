@@ -1,17 +1,11 @@
-int *x;
-int a()
-{
-	
-}
-int b()
-{
-	a();
-}
 int main()
 {
-	x=malloc(sizeof(int));
-	a();
-	*x=1;
-	b();
+	int **z1, **z2, y, x;
+	z1=malloc(sizeof(int*));
+	z2=malloc(sizeof(int*));
+	y=malloc(sizeof(int));
+	x=5;
+	*z1=y, *z2=y;
+	*y=x;
 	return 0;
 }

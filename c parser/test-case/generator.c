@@ -9,9 +9,9 @@ using namespace std;
  *
  * PROC_NUM : number of different procedures
  */
-#define VAR_NUM 20
+#define VAR_NUM 3
 
-#define PROC_NUM 50
+#define PROC_NUM 500
 
 
 char arg_list[10000]={'(','\0'};
@@ -49,7 +49,7 @@ int main()
 	for(int proc_t = 1; proc_t < PROC_NUM; ++proc_t)
 	{
 		int fath = fa[proc_t] = rand() % proc_t;
-		sprintf(proc_list[fath] + strlen(proc_list[fath]), "\t%s%d%s\n", "proc", proc_t, arg_list2);
+		sprintf(proc_list[fath] + strlen(proc_list[fath]), "\t%s%d%s;\n", "proc", proc_t, arg_list2);
 	}
 	
 	for(int proc_t = 0; proc_t < PROC_NUM; ++proc_t)
@@ -57,7 +57,7 @@ int main()
 		sprintf(proc_list[proc_t] + strlen(proc_list[proc_t]), "%s\n", "}");
 	}
 	
-	for(int proc_t = 0; proc_t < PROC_NUM; ++proc_t)
+	for(int proc_t = PROC_NUM - 1; proc_t >= 0; --proc_t)
 	{
 		printf("%s\n", proc_list[proc_t]);
 	}
@@ -68,6 +68,7 @@ int main()
 	{
 		printf("\t%s%d%s\n", "int *x", i, " = malloc(sizeof(int));");
 	}
+	printf("\t%s%d%s;\n", "proc", 0, arg_list2);
 	printf("\t%s\n", "return 0;");
 	printf("%s\n", "}");
 	return 0;

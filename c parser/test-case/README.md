@@ -1,6 +1,6 @@
 # TEST CASES
 
-## Е┘ЁД╨▌ generator.c Г └Х╞╢Ф≤▌
+## ╧ьсз generator.c ╣дк╣цВ
 
 ### Parameters
 * VAR\_NUM : number of different variables
@@ -9,7 +9,7 @@
 
 
 ### Tips
-* Е╩╨Е⌡╬Г └Ф∙┬Г▌┤Е┬├Ф·░
-	+ Е▐╞Д╩╔Х╝╬Г╫╝ `define VAR_NUM 0`О╪▄Е╧╤И─┌Е╫⌠Е┼═Е╓╖ PROC\_NUM
-* Ф∙╟Ф█╝Ф╣│Е┬├Ф·░
-	+ Е▐╞Д╩╔И─┌Е╫⌠Е┼═Е╓╖ VAR\_NUM Е▓▄ PROC\_NUM
+* ╫╗м╪╣дп╖бй╥жнЖ
+	+ ©иртиХжц `define VAR_NUM 0`ё╛╡╒йй╣╠╪с╢С PROC\_NUM
+* йЩ╬щаВ╥жнЖ
+	+ ©иртйй╣╠╪с╢С VAR\_NUM ╨м PROC\_NUM

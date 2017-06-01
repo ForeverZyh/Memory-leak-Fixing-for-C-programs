@@ -18,4 +18,3 @@ int main()
 	fib(10);
 	return 0;
 }
-
