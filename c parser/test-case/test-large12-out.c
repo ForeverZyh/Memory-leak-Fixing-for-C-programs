@@ -76,6 +76,7 @@ void proc34(int *x0,int *x1)
 void proc33(int *x0,int *x1)
 {
 	*x1=-1;
+free(x1);
 }
 
 void proc32(int *x0,int *x1)
@@ -147,6 +148,7 @@ void proc20(int *x0,int *x1)
 void proc19(int *x0,int *x1)
 {
 	*x0=*x1+1;
+free(x0);
 	proc25(x0,x1);
 }
 
