@@ -8,7 +8,7 @@ int main()
 		*z=*x+i;
 		if (*z>i*2)
 		{
-free(z);
+/*Created by our project*/	free(z);	/************************/
 			break;
 		}
 		else

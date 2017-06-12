@@ -12,7 +12,7 @@ int main()
 	x=malloc(sizeof(int));
 	a();
 	*x=1;
-free(x);
+/*Created by our project*/	free(x);	/************************/
 	b();
 	return 0;
 }

@@ -31,7 +31,6 @@ int main()
 {
 	x=malloc(sizeof(int));
 	y=malloc(sizeof(int));
-	z=malloc(sizeof(int));
 	int n=10;
 	*x=3;*y=4;z=&n;
 	int ans=foo(x,y,z);

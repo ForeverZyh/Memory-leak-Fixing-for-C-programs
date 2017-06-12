@@ -43,6 +43,9 @@ int malloc_cnt=0;
 vector<pair<CFGnode*,CFGnode*> > ext_dec;
 string in_name,out_name;
 vector<pair<int,string> > res;
+unordered_set<int> warning;
+int id_to_line[MAXN];
+int type[MAXN];
 
 static int sym_type(const char * s)  /* returns type from symbol table */
 {
@@ -280,13 +283,24 @@ int yywrap(void)        /* called at end of input */
         ln++;
         for(;now<res.size()&&res[now].first==ln;)
         {
-            out<<res[now].second<<endl;
+            out<<"/*Created by our project*/";
+            out<<"\t"<<res[now].second<<"\t";
+            out<<"/************************/\n";
             now++;
             ln++;
         }
         out<<s<<endl;
     }
-
+    if (warning.size())
+    {
+        out<<"/*Warning created by our project\n";
+        for(auto iter=warning.begin();iter!=warning.end();iter++)
+        {
+            out<<"\tAfter fixing, malloc in line"<<id_to_line[-*iter]<<" may still cause memory leaking.\n";
+            if (type[-*iter]) out<<"\t\tDereference when return\n";
+        }
+        out<<"*******************************/\n";
+    }
     return 1;           /* terminate now */
 }
 

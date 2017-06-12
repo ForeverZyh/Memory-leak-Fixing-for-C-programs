@@ -1,9 +1,13 @@
 #include "myheader.h"
 static queue<CFGnode*> h,q;
+extern unordered_set<int> warning;
 extern vector<pair<int,string> > res;
 extern int Next[MAXN];
 extern vector<string> int_to_string;
 extern void link(CFGnode*,CFGnode*);
+extern int id_to_line[MAXN];
+extern int type[MAXN];
+extern int malloc_cnt;
 static void bfs_afterwards(CFGnode *root)
 {
 	assert(!q.size());
@@ -120,8 +124,18 @@ static bool bfs_find(CFGnode *root)
 						if (u->canFreeBefore(id,Next))
 						{
 							fprintf(stderr,"before line%d free(%s%s)\n",u->ln%ln_delta_increment,xing.c_str(),tmp.c_str());
+							int tid=u->prev[0]->g1.find(id);
+							if (u->prev[0]->g1.f[tid].p.size()>1)
+							{
+								for(auto iter=u->prev[0]->g1.f[tid].p.begin();iter!=u->prev[0]->g1.f[tid].p.end();iter++)
+								{
+									warning.insert(*iter);
+								}
+							}
 							for(int i=0;i<res.size();i++)
 								if (res[i].first>=u->ln%ln_delta_increment) res[i].first++;
+							for(int i=1;i<=malloc_cnt;i++)
+								if (id_to_line[i]>=u->ln%ln_delta_increment) id_to_line[i]++;
 							res.push_back(make_pair(u->ln%ln_delta_increment,"free("+xing+tmp+");"));
 							CFGnode*free=new CFGnode(u->ln);
 							CFGnode::flag++;
@@ -157,9 +171,28 @@ static bool bfs_find(CFGnode *root)
 					ids.pop_back();
 					if (u->canFreeAfter(id,Next))
 					{
+						int tid=u->g1.find(id);
+						if (u->cantAfter)
+						{
+							for(auto iter=u->g1.f[tid].p.begin();iter!=u->g1.f[tid].p.end();iter++)
+							{
+								warning.insert(*iter);
+								type[-*iter]=1;
+							}
+							continue;
+						}
 						fprintf(stderr,"after line%d free(%s%s)\n",u->ln%ln_delta_increment,xing.c_str(),tmp.c_str());
+						if (u->g1.f[tid].p.size()>1)
+						{
+							for(auto iter=u->g1.f[tid].p.begin();iter!=u->g1.f[tid].p.end();iter++)
+							{
+								warning.insert(*iter);
+							}
+						}
 						for(int i=0;i<res.size();i++)
 							if (res[i].first>=u->ln%ln_delta_increment+1) res[i].first++;
+						for(int i=1;i<=malloc_cnt;i++)
+							if (id_to_line[i]>=u->ln%ln_delta_increment+1) id_to_line[i]++;
 						res.push_back(make_pair(u->ln%ln_delta_increment+1,"free("+xing+tmp+");"));
 						CFGnode*free=new CFGnode(u->ln+1);
 						CFGnode::flag++;

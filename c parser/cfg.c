@@ -12,6 +12,7 @@ static CFGnode *begin_exp,*prev_exp,*begin_dec,*prev_dec;
 static int prev_id;
 extern int hash_string_to_int(const string&s);
 static bool Hash[MAXN];
+extern int id_to_line[MAXN];
 
 void link(CFGnode* a,CFGnode* b)
 {
@@ -106,6 +107,7 @@ expr dfs_expression(node *root)
 		{
 			expr res;
 			++malloc_cnt;
+			id_to_line[malloc_cnt]=root->ln;
 			pointer po(-malloc_cnt);
 			po.unary.push_back(1);
 			res.use.push_back(po);

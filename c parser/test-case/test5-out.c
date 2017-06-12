@@ -12,5 +12,9 @@ int main()
 	int *x=malloc(sizeof(int));
 	swap(x,haha);
 	*youcantcatchme=0;
-free(x);
+/*Created by our project*/	free(x);	/************************/
 }
+/*Warning created by our project
+	After fixing, malloc in line12 may still cause memory leaking.
+	After fixing, malloc in line9 may still cause memory leaking.
+*******************************/

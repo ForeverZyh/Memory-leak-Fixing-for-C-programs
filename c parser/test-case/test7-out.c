@@ -12,6 +12,6 @@ int main()
 {
 	sum=malloc(sizeof(int));
 	foo(10);
-free(sum);
+/*Created by our project*/	free(sum);	/************************/
 	return 0;
 }

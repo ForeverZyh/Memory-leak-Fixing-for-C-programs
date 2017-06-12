@@ -410,7 +410,6 @@ struct CFGnode
 	{
 		if (succ.size()!=1) return 0;
 		if (!isLast) return 0;
-		if (cantAfter) return 0;
 		const unordered_set<int> &p=g1.f[g1.find(id)].p;
 		if (p.size()==0) return 0;
 		for(auto it=p.begin();it!=p.end();it++)

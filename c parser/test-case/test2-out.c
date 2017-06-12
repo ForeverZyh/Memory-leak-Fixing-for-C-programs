@@ -7,16 +7,16 @@ int main()
 	*y=1;
 	if (*x>*y)
 	{
-free(x);
+/*Created by our project*/	free(x);	/************************/
 		int *z=malloc(sizeof(int));
 		*z=*y;
-free(y);
-free(z);
+/*Created by our project*/	free(y);	/************************/
+/*Created by our project*/	free(z);	/************************/
 	}
 	else
 	{
-free(y);
-free(x);
+/*Created by our project*/	free(y);	/************************/
+/*Created by our project*/	free(x);	/************************/
 		x=y;
 		//free(y);
 	}
